@@ -1,0 +1,139 @@
+module i2c_master #(
+    parameter CLOCK_FREQ = 50_000_000, // System clock frequency (50 MHz)
+    parameter I2C_FREQ = 400_000       // I2C clock frequency (400 kHz)
+)(
+    input wire clk,          // System clock
+    input wire rst_n,        // Active-low reset
+    input wire start,        // Start signal for transaction
+    input wire rw,           // Read (1) / Write (0)
+    input wire [6:0] addr,   // 7-bit I2C slave address
+    input wire [7:0] data_in,// Data to send
+    output reg [7:0] data_out, // Data received (for reads)
+    output reg busy,         // Busy signal
+    output reg ack_error,    // Acknowledge error
+    inout wire sda,          // Serial Data
+    output reg scl           // Serial Clock
+);
+    // Clock divider for SCL
+    localparam CLOCK_DIV = CLOCK_FREQ / (2*I2C_FREQ);
+	 localparam SLAVE_ADDRESS_MASK = 7b'1011100;
+
+	 
+    reg [15:0] clk_cnt;
+    reg scl_enable;
+	 reg [7:0] slave_addr;
+    
+    // SDA Control (tristate buffer)
+    reg sda_out;
+    assign (strong0, highz1) sda_out = sda; // Open-drain
+
+    // State machine definition
+    typedef enum reg [3:0] {
+        IDLE, START, SLAVE_ADDR, RW, ACK1, SUB_ADDR, ACK2, DATA, ACK3, STOP, DONE
+    } i2c_state_t;
+    
+    i2c_state_t state;
+    reg [3:0] bit_cnt;  // Bit counter
+    
+    always @(posedge clk or negedge rst_n) begin
+
+        if (!rst_n) begin
+            state <= IDLE;
+            scl <= 1;
+            sda_out <= 1;
+            busy <= 0;
+            clk_cnt <= 0;
+            bit_cnt <= 0;
+        end else begin
+						  if (clk_cnt < CLOCK_DIV) begin
+				clk_cnt <= clk_cnt + 1;
+		  end else begin
+				clk_cnt <= 0;
+				scl <= ~scl;  // tick scl
+		  end
+				if (state != IDLE) begin
+					scl <= ~scl;
+				end
+            case (state)
+                IDLE: begin
+                    if (start) begin
+                        busy <= 1;
+                        state <= START;
+                        sda_out <= 0; // Start condition
+                        clk_cnt <= 0;
+                    end
+                end
+                
+                START: begin
+                    if (clk_cnt < CLOCK_DIV) begin
+                        clk_cnt <= clk_cnt + 1;
+                    end else begin
+                        clk_cnt <= 0;
+                        scl <= 0;  // Pull SCL low
+                        state <= SLAVE_ADDR;
+                        bit_cnt <= 0;
+                    end
+                end
+                
+                SLAVE_ADDR: begin
+                    if (bit_cnt < 7) begin
+								sda_out <= SLAVE_ADDRESS_MASK[6 - bit_cnt];
+								bit_cnt <= bit_cnt + 1;
+                    end else begin
+                        sda_out <= rw;
+                        state <= RW;
+                    end
+                end
+                
+                RW: begin
+                    scl <= 1;  // Clock high
+                    state <= ACK1;
+                end
+                
+                ACK1: begin
+                    scl <= 0;
+                    if (sda) ack_error <= 1; // Check for ACK
+                    state <= DATA;
+                    bit_cnt <= 0;
+                end
+                
+                DATA: begin
+                    if (!rw) begin
+                        if (bit_cnt < 8) begin
+                            sda_out <= data_in[7 - bit_cnt];
+                            bit_cnt <= bit_cnt + 1;
+                        end else begin
+                            state <= ACK2;
+                        end
+                    end else begin
+                        if (bit_cnt < 8) begin
+                            data_out[7 - bit_cnt] <= sda;
+                            bit_cnt <= bit_cnt + 1;
+                        end else begin
+                            state <= ACK2;
+                        end
+                    end
+                end
+                
+                ACK2: begin
+                    scl <= 1;
+                    state <= STOP;
+                end
+                
+                STOP: begin
+                    sda_out <= 0;
+                    scl <= 1;
+                    sda_out <= 1; // Stop condition
+                    busy <= 0;
+                    state <= DONE;
+                end
+                
+                DONE: begin
+                    if (!start) state <= IDLE;
+                end
+                
+                default: state <= IDLE;
+            endcase
+        end
+    end
+endmodule
