@@ -1,0 +1,126 @@
+Input select 00h 00h R/W
+AFE gain control 01h 0Fh R/W
+Video standard 02h 00h R/W
+Operation mode 03h 00h R/W
+Autoswitch mask 04h 23h R/W
+Color killer 05h 10h R/W
+Luminance processing control 1 06h 00h R/W
+Luminance processing control 2 07h 00h R/W
+Luminance processing control 3 08h 02h R/W
+Luminance brightness 09h 80h R/W
+Luminance contrast 0Ah 80h R/W
+Chrominance saturation 0Bh 80h R/W
+Chroma hue 0Ch 00h R/W
+Chrominance processing control 1 0Dh 00h R/W
+Chrominance processing control 2 0Eh 0Eh R/W
+Reserved 0Fh-15h
+AVID start pixel 16h-17h 055h R/W
+AVID stop pixel 18h-19h 325h R/W
+HSYNC start pixel 1Ah-1Bh 000h R/W
+HSYNC stop pixel 1Ch-1Dh 040h R/W
+VSYNC start line 1Eh-1Fh 004h R/W
+VSYNC stop line 20h-21h 007h R/W
+VBLK start line 22h-23h 001h R/W
+VBLK stop line 24h-25h 015h R/W
+Embedded Sync Offset Control 1 26h 00h R/W
+Embedded Sync Offset Control 2 27h 00h R/W
+Reserved 28h-2Ah
+Overlay delay 2Bh 00h R/W
+Reserved 2Ch
+CTI delay 2Dh 00h R/W
+CTI control 2Eh 00h R/W
+Reserved 2Fh-31h
+Sync control 32h 00h R/W
+Output formatter 1 33h 40h R/W
+Output formatter 2 34h 00h R/W
+Output formatter 3 35h FFh R/W
+Output formatter 4 36h FFh R/W
+Output formatter 5 37h FFh R/W
+Output formatter 6 38h FFh R/W
+Clear lost lock detect 39h 00h R/W
+Status 1 3Ah R
+Status 2 3Bh R
+AGC gain status 3Ch-3Dh R
+Reserved 3Eh
+Video standard status 3Fh R
+GPIO input 1 40h R
+GPIO input 2 41h R
+Reserved 42h-45h
+AFE coarse gain for CH1 46h 20h R/W
+AFE coarse gain for CH2 47h 20h R/W
+AFE coarse gain for CH3 48h 20h R/W
+AFE coarse gain for CH4 49h 20h R/W
+AFE fine gain for Pb 4Ah-4Bh 900h R/W
+AFE fine gain for chroma 4Ch-4Dh 900h R/W
+AFE fine gain for Pr 4Eh-4Fh 900h R/W
+AFE fine gain for CVBS_Luma 50h-51h 900h R/W
+Reserved 52h-56h
+Field ID control 57h 00h R/W
+Reserved 58h-68h
+F-bit and V-bit control 1 69h 00h R/W
+Reserved 6Ah-6Bh
+Back-end AGC control 6Ch 08h R/W
+Reserved 6Dh-6Eh
+AGC decrement speed control 6Fh 04h R/W
+ROM version 70h R
+RAM Version MSB 71h R
+Reserved 72h-73h
+AGC white peak processing 74h 00h R/W
+F and V bit control 75h 12h R/W
+VCR trick mode control 76h 8Ah R/W
+Horizontal shake increment 77h 64h R/W
+AGC increment speed 78h 05h R/W
+AGC increment delay 79h 1Eh R/W
+Reserved 7Ah-7Eh
+Analog output control 1 7Fh 00h R/W
+Chip ID MSB 80h 51h R
+Chip ID LSB 81h 47h R
+RAM Version LSB 82h R
+CPLL speed control 83h 09h R/W
+Reserved 84h-96h
+Status request 97h 00h R/W
+Reserved 98h-99h
+Vertical line count 9Ah-9Bh R
+Reserved 9Ch-9Dh
+AGC decrement delay 9Eh 00h R/W
+Reserved 9Fh-B0h
+VDP TTX filter 1 mask 1 B1h 00h R/W
+VDP TTX filter 1 mask 2 B2h 00h R/W
+VDP TTX filter 1 mask 3 B3h 00h R/W
+VDP TTX filter 1 mask 4 B4h 00h R/W
+VDP TTX filter 1 mask 5 B5h 00h R/W
+VDP TTX filter 2 mask 1 B6h 00h R/W
+VDP TTX filter 2 mask 2 B7h 00h R/W
+VDP TTX filter 2 mask 3 B8h 00h R/W
+VDP TTX filter 2 mask 4 B9h 00h R/W
+VDP TTX filter 2 mask 5 BAh 00h R/W
+VDP TTX filter control BBh 00h R/W
+VDP FIFO word count BCh R
+VDP FIFO interrupt threshold BDh 80h R/W
+Reserved BEh
+VDP FIFO reset BFh 00h R/W
+VDP FIFO output control C0h 00h R/W
+VDP line number interrupt C1h 00h R/W
+VDP pixel alignment C2h-C3h 01Eh R/W
+Reserved C4h-D5h
+VDP line start D6h 06h R/W
+VDP line stop D7h 1Bh R/W
+VDP global line mode D8h FFh R/W
+VDP full field enable D9h 00h R/W
+VDP full field mode DAh FFh R/W
+Reserved DBh-DFh
+VBUS data access with no VBUS address increment E0h 00h R/W
+VBUS data access with VBUS address increment E1h 00h R/W
+FIFO read data E2h R
+Reserved E3h-E7h
+VBUS address access E8h-EAh 00 0000h R/W
+Reserved EBh-EFh
+Interrupt raw status 0 F0h R
+Interrupt raw status 1 F1h R
+Interrupt status 0 F2h R
+Interrupt status 1 F3h R
+Interrupt mask 0 F4h 00h R/W
+Interrupt mask 1 F5h 00h R/W
+Interrupt clear 0 F6h 00h R/W
+Interrupt clear 1 F7h 00h R/W
+Reserved F8h-FFh
