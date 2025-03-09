@@ -1,4 +1,7 @@
-module i2c_master #(
+
+`define DEBUG
+
+module i2c_master_controller #(
     parameter CLOCK_FREQ = 50_000_000, // System clock frequency (50 MHz)
     parameter I2C_FREQ = 400_000       // I2C clock frequency (400 kHz)
 )(
@@ -6,16 +9,22 @@ module i2c_master #(
     input wire rst_n,        // Active-low reset
     input wire start,        // Start signal for transaction
     input wire rw,           // Read (1) / Write (0)
-    input wire [7:0] addr,   // 7-bit I2C slave address
+    input wire [7:0] sub_addr,   // Sub-address for read/write
+    input wire [7:0] slave_addr,   // 7-bit I2C slave address
     input wire [7:0] data_in,// Data to send
     output reg [7:0] data_out, // Data received (for reads)
     output reg busy,         // Busy signal
     output reg ack_error,    // Acknowledge error
     inout wire sda,          // Serial Data
-    output reg scl           // Serial Clock
+    output wire scl           // Serial Clock
 );
     // Clock divider for scl_out
-	localparam DIV_CLOCK_BIT = 7; // resulting frequency: CLOCK_FREQ / 2 ** DIV_CLOCK_BIT; Approx 400k
+	`ifdef DEBUG
+		localparam DIV_CLOCK_BIT = 0; 
+	`else
+	    localparam DIV_CLOCK_BIT = 7; // resulting frequency: CLOCK_FREQ / 2 ** DIV_CLOCK_BIT; Approx 400k
+	`endif
+	
 	localparam SUBDIV_CLOCK_BITS = 2;
    
 	localparam SLAVE_ADDRESS_MASK = 7'b1011100;
@@ -30,7 +39,7 @@ module i2c_master #(
 	reg [SUBDIV_CLOCK_BITS-1:0] subdiv_cnt;
    reg [DIV_CLOCK_BIT:0] clk_cnt;
    reg scl_enable;
-	reg [7:0] slave_addr;
+
     
     // sda_out Control (tristate buffer)
     reg sda_out;
@@ -106,7 +115,7 @@ module i2c_master #(
 		 * 	clk_cnt
 		 *		subdiv_cnt
 		 */
-		
+		begin
 
 		case (subdiv_cnt)
 			SUBDIV_CLK_HIGH: scl_out <= 1;
@@ -137,38 +146,41 @@ module i2c_master #(
 			end							
 		endcase
 		incr_subdiv;
-		
+		end
 	endtask
 
 	 
 	 always @(posedge clk or negedge rst_n) begin
-		if (!clk_cnt[DIV_CLOCK_BIT])
-			clk_cnt <= clk_cnt + 1;
-		else
-			clk_cnt <= 1;
+	     if (!rst_n) begin
+            sda_out <= 1;
+            scl_out <= 1;
+            bit_cnt <= 0;
+            subdiv_cnt <= 0;
+				clk_cnt <= 0;
+            busy <= 0;
+				finished <= 0;
+				state <= IDLE;
+			end else begin
+			   clk_cnt <= clk_cnt + 1;
+			end
 	 end
 	 
 		
-    always @(posedge clk_cnt[DIV_CLOCK_BIT] or negedge rst_n) begin
+    always @(posedge clk_cnt[DIV_CLOCK_BIT]) begin
 	 
-        if (!rst_n) begin
-            sda_out <= 1;
-            scl_out <= 1;
-            clk_cnt <= 0;
-            bit_cnt <= 0;
-            subdiv_cnt <= 0;
-            busy <= 0;
-				finished <= 0;
-        end else begin
+
             case (state)
                  IDLE: begin
                     if (start) begin
-                    busy <= 1;
-                    state <= START;
-                    sda_out <= 0; // Start condition
-                    clk_cnt <= 0;
-                            subdiv_cnt <= 0;
-                            start_happened <= 0;
+                        busy <= 1;
+                        state <= START;
+                        sda_out <= 0; // Start condition
+                       
+                        subdiv_cnt <= 0;
+                        start_happened <= 0;
+								finished <= 0;
+								bit_cnt <= 0;
+								subdiv_cnt <= 0;
                     end
                  end
                  START: begin
@@ -186,17 +198,17 @@ module i2c_master #(
 						  end_rw <= RW_START; // resetting the stop condition for the task;
 						  // if start happened is set before transition
 						  if (!start_happened) begin
-								tick_scl_and_do_rw_task_data <= {SLAVE_ADDRESS_MASK, 0};
+								tick_scl_and_do_rw_task_data <= slave_addr | 0;
 						  end else begin
-								// start can happen twice only if it was read but i will leave this
-								tick_scl_and_do_rw_task_data <= {SLAVE_ADDRESS_MASK, 1}; //pass argument for the task in the next state
+								// start can happen twice only if it was read
+								tick_scl_and_do_rw_task_data <= slave_addr | 1; //pass argument for the task in the next state
 						  end
 						  tick_scl_and_do_rw_task_rw <= RW_WRITE; // write slave address
 		
                     
                  end
                  SLAVE_ADDR: begin
-                    if (!end_rw) begin
+                    if (end_rw == RW_START) begin
                         tick_scl_and_do_rw_task;
                     end else begin
                          //previous clock state was SUBDIV_CLK_WRITE so this is SUBDIV_CLK_HIGH and subdiv_cnt == SUBDIV_CLK_HIGH is always true, hence no need for the check
@@ -223,7 +235,7 @@ module i2c_master #(
 								 // set arguments before transition
 								 // if prev = slave_addr
 								 if (!sent_sub_addr) begin
-									  tick_scl_and_do_rw_task_data <= addr;
+									  tick_scl_and_do_rw_task_data <= sub_addr;
 									  tick_scl_and_do_rw_task_rw <= RW_WRITE;
 									  state <= SLAVE_ADDR;
 									  sent_sub_addr <= 1;
@@ -252,8 +264,7 @@ module i2c_master #(
 						   state <= IDLE;
 					end
             endcase
-				
-		  end
+
 	end
 	 
 endmodule
