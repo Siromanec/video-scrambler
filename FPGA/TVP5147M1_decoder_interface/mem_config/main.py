@@ -3,117 +3,6 @@ from typing import Literal
 import numpy as np
 
 
-# class I2CRegister(dataclass):
-#     name: str
-#     address_range: tuple[int, int]
-#     values: list[int] | None = None
-#     mode: Literal["rw", "r"] | None = None
-#
-#     def format_value(self):
-#         if self.values is None:
-#             return 0
-#         return self.values
-#
-#     def is_modified(self):
-#         return self.values is not None
-#
-#
-# class GenericI2CMemConfig:
-#     def __init__(self, i2c_address: int, init_sequence: list[tuple[int, int]], registers: list[I2CRegister],
-#                  size: int = 256):
-#         """
-#
-#         :param i2c_address: address of the I2C device
-#         :param init_sequence: subaddresses and values to be written to the device
-#         """
-#         self.i2c_address = i2c_address
-#         self.init_sequence = init_sequence
-#         self.registers = registers
-#         self.size = size
-#         self.register_dict = {register.name: register for register in self.registers}
-#
-#     def registers_to_np_array(self):
-#         memory = np.zeros(self.size, dtype=np.uint8)
-#         for register in self.registers:
-#             memory[register.address_range[0]:register.address_range[1]] = register.format_value()
-#         return memory
-#
-#     def get_modified_registers_bitmask(self):
-#         return np.array([register.is_modified() for register in self.registers], dtype=bool)
-#
-#
-# class __InputSelect(Enum):
-#     CVBS = 0b000
-#     SVIDEO = 0b001
-#     YPbPr = 0b010
-#     RGB = 0b011
-#     YC = 0b100
-#     AUTO = 0b101
-#     D = 0b110
-#     RESERVED = 0b111
-#     DEFAULT = -1
-#
-# def from_intel_hex_int(string):
-#     """
-#     XXh -> 0xXX
-#     """
-#     return int("0x"+string[:-1], 16)
-# def raw_address_to_address_range(address):
-#     """
-#     XXh -> (0xXX, 0xXX + 1)
-#     XXh-YYh -> (0xXX, 0xYY + 1)
-#     """
-#     if "-" not in address:
-#         address = from_intel_hex_int(address)
-#         address_range = (address, address + 1)
-#     else:
-#         address_range = address.split("-")
-#         address_range = from_intel_hex_int(address_range[0]), from_intel_hex_int(address_range[1]) + 1
-#     return address_range
-#
-# def read_register_config(register_config_file_name: str) -> list[I2CRegister]:
-#
-#     with open(register_config_file_name, 'r') as file:
-#         lines = file.readlines()
-#     reserved_counter = 0
-#     registers = []
-#     for line in lines:
-#
-#         line = line.strip().split()
-#         if line[0].lower() != "reserved":
-#             *name, address, default, mode = line
-#             if address[-1] != "h":
-#                 name.append(address)
-#                 address = default
-#             mode = mode.lower()
-#             if mode == "r/w":
-#                 mode = "rw"
-#         else:
-#
-#             name, address = line
-#             mode = None
-#             name = (name, str(reserved_counter))
-#             reserved_counter += 1
-#         name = "_".join(name).lower()
-#         address_range = raw_address_to_address_range(address)
-#         registers.append(I2CRegister(name, address_range, None, mode))
-#     return registers
-# class TVP5147M1MemConfig(GenericI2CMemConfig):
-#     """
-#     Do not write to reserved registers. Reserved bits in any defined register must be written with
-#     0s, unless otherwise noted.
-#     """
-#     register_config_file_name = "TVP5147M1_i2c_registers.txt"
-#
-#     def __init__(self):
-#         init_sequence = [
-#             (0x03, 0x01),
-#             (0x03, 0x00),
-#         ]
-#         registers = read_register_config(self.register_config_file_name)
-#         super().__init__(0b10111000, init_sequence, registers)
-
-
 class GenericI2CMemConfig:
     init_sequence: np.ndarray[np.uint8]
     i2c_address: np.uint8
@@ -240,8 +129,8 @@ class TVP5147M1MemConfig(GenericI2CMemConfig):
         ]
         super().__init__(0xB8, init_sequence)  # I2CA = 0, ADDR = 0xB8; I2CA = 1, ADDR = 0xBA
 
-class FPGAConfig:
 
+class FPGAConfig:
     PERIPHERAL_OFFSET = 0x10
 
     def __init__(self, adv7393: ADV7393MemConfig, tvp5147m1: TVP5147M1MemConfig):
@@ -249,7 +138,10 @@ class FPGAConfig:
         self.tvp5147m1 = tvp5147m1
 
     def to_array(self):
-        return np.concatenate([np.zeros(self.PERIPHERAL_OFFSET, np.uint8), self.adv7393.init_to_array(), self.tvp5147m1.init_to_array()])
+        return np.concatenate(
+            [np.zeros(self.PERIPHERAL_OFFSET, np.uint8), self.adv7393.init_to_array(), self.tvp5147m1.init_to_array()])
+
+
 def main():
     adv7393 = ADV7393MemConfig()
     tvp5147m1 = TVP5147M1MemConfig()
@@ -258,14 +150,12 @@ def main():
 
     import mif
 
-
-    print(f"Mapped memory size: {len(memory)}")
-    print(*memory)
+    print(f"Mapped memory size: {len(memory)} bytes")
     bit_mem = np.unpackbits(memory, bitorder="little").reshape(-1, 8)
-    print(bit_mem)
-
     with open("config.mif", 'w') as fp:
         mif.dump(bit_mem, fp)
+    print("Memory dumped to 'config.mif'")
+
 
 if __name__ == "__main__":
     main()
