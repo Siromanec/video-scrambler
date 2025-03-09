@@ -19,36 +19,36 @@ Intel and sold by Intel or its authorized distributors.  Please
 refer to the applicable agreement for further details, at
 https://fpgasoftware.intel.com/eula.
 */
-(header "graphic" (version "1.4"))
+(header "symbol" (version "1.2"))
 (symbol
-	(rect 328 120 544 248)
+	(rect 0 0 216 128)
 	(text "rom_1" (rect 90 0 132 16)(font "Arial" (font_size 10)))
 	(text "inst" (rect 8 112 25 124)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
 		(text "address[5..0]" (rect 0 0 75 14)(font "Arial" (font_size 8)))
-		(text "address[5..0]" (rect 4 18 79 32)(font "Arial" (font_size 8)))
+		(text "address[5..0]" (rect 4 18 66 31)(font "Arial" (font_size 8)))
 		(line (pt 0 32)(pt 88 32)(line_width 3))
 	)
 	(port
 		(pt 0 112)
 		(input)
 		(text "clock" (rect 0 0 29 14)(font "Arial" (font_size 8)))
-		(text "clock" (rect 4 98 33 112)(font "Arial" (font_size 8)))
+		(text "clock" (rect 4 98 27 111)(font "Arial" (font_size 8)))
 		(line (pt 0 112)(pt 144 112))
 	)
 	(port
 		(pt 216 32)
 		(output)
 		(text "q[7..0]" (rect 0 0 35 14)(font "Arial" (font_size 8)))
-		(text "q[7..0]" (rect 183 18 218 32)(font "Arial" (font_size 8)))
+		(text "q[7..0]" (rect 183 18 211 31)(font "Arial" (font_size 8)))
 		(line (pt 216 32)(pt 160 32)(line_width 3))
 	)
 	(drawing
-		(text "8 bits" (rect 109 23 121 50)(font "Arial" )(vertical))
-		(text "64 words" (rect 120 12 132 55)(font "Arial" )(vertical))
-		(text "Block type: M10K" (rect 48 114 135 126)(font "Arial" ))
+		(text "8 bits" (rect 109 23 191 153)(font "Arial" )(vertical))
+		(text "64 words" (rect 120 12 209 167)(font "Arial" )(vertical))
+		(text "Block type: M10K" (rect 48 114 169 239)(font "Arial" ))
 		(line (pt 104 24)(pt 136 24))
 		(line (pt 136 24)(pt 136 96))
 		(line (pt 136 96)(pt 104 96))

@@ -15,8 +15,9 @@ module i2c_master #(
     output reg scl           // Serial Clock
 );
     // Clock divider for scl_out
+	localparam DIV_CLOCK_BIT = 7; // resulting frequency: CLOCK_FREQ / 2 ** DIV_CLOCK_BIT; Approx 400k
 	localparam SUBDIV_CLOCK_BITS = 2;
-    localparam CLOCK_SUBDIV = CLOCK_FREQ / ((2 ** SUBDIV_CLOCK_BITS) * I2C_FREQ);
+   
 	localparam SLAVE_ADDRESS_MASK = 7'b1011100;
 	 
 	 // events at subdiv_clk
@@ -27,8 +28,8 @@ module i2c_master #(
 	 
 	 
 	reg [SUBDIV_CLOCK_BITS-1:0] subdiv_cnt;
-    reg [15:0] clk_cnt;
-    reg scl_enable;
+   reg [DIV_CLOCK_BIT:0] clk_cnt;
+   reg scl_enable;
 	reg [7:0] slave_addr;
     
     // sda_out Control (tristate buffer)
@@ -65,13 +66,13 @@ module i2c_master #(
 	 reg tick_scl_and_do_rw_task_rw;
 	 reg start_happened;
 	 reg sent_sub_addr;
+	 reg finished;
 
 
 	 task incr_subdiv;
 		/*Increments subdiv and clears clk_cnt*/
 		begin
 		    subdiv_cnt <= subdiv_cnt + 1;
-		    clk_cnt <= 0;
 		end
 	 endtask
 
@@ -81,15 +82,11 @@ module i2c_master #(
 		 *
 		 */
 		begin
-            if (clk_cnt < CLOCK_SUBDIV) begin
-                clk_cnt <= clk_cnt + 1;
-            end else begin
-                case (subdiv_cnt)
-                    SUBDIV_CLK_HIGH: scl_out <= 1;
-                    SUBDIV_CLK_LOW: scl_out <= 0;							
-                endcase
-                incr_subdiv;
-            end
+			 case (subdiv_cnt)
+				  SUBDIV_CLK_HIGH: scl_out <= 1;
+				  SUBDIV_CLK_LOW: scl_out <= 0;							
+			 endcase
+			 incr_subdiv;
 		end
 	 endtask
     
@@ -110,44 +107,50 @@ module i2c_master #(
 		 *		subdiv_cnt
 		 */
 		
-		if (clk_cnt < CLOCK_SUBDIV) begin
-			clk_cnt <= clk_cnt + 1;
-		end else begin
-			case (subdiv_cnt)
-				SUBDIV_CLK_HIGH: scl_out <= 1;
-				SUBDIV_CLK_READ: begin
-					/*well, it is a good time to read*/
-				  if (tick_scl_and_do_rw_task_rw) begin
-						if (bit_cnt < 8) begin
-							 data_out[7 - bit_cnt] <= sda;
-							 bit_cnt <= bit_cnt + 1;
-						end else begin
-							 end_rw <= 0;
-							 bit_cnt <= 0;
-						end
-				  end
-				end
-				SUBDIV_CLK_LOW: scl_out <= 0;
-				SUBDIV_CLK_WRITE: begin
-						if (!tick_scl_and_do_rw_task_rw) begin
-							if (bit_cnt < 8) begin
-								 sda_out <= tick_scl_and_do_rw_task_data[7 - bit_cnt];
-								 bit_cnt <= bit_cnt + 1;
-							end else begin
-								 bit_cnt <= 0;
-								 end_rw <= 0;
-								 //sda_out is set back to high impendance so the slave can send ACK back. If it does not, it is a NACK for the master, hence no further handling is required.
-								 sda_out <= 1; 
-						end
-					end
-				end							
-			endcase
-			incr_subdiv;
-		end
+
+		case (subdiv_cnt)
+			SUBDIV_CLK_HIGH: scl_out <= 1;
+			SUBDIV_CLK_READ: begin
+                 if (tick_scl_and_do_rw_task_rw) begin
+                     if (bit_cnt < 8) begin
+                          data_out[7 - bit_cnt] <= sda;
+                          bit_cnt <= bit_cnt + 1;
+                     end else begin
+                          end_rw <= 0;
+                          bit_cnt <= 0;
+                     end
+                 end
+			end
+			SUBDIV_CLK_LOW: scl_out <= 0;
+			SUBDIV_CLK_WRITE: begin
+                if (!tick_scl_and_do_rw_task_rw) begin
+                    if (bit_cnt < 8) begin
+                         sda_out <= tick_scl_and_do_rw_task_data[7 - bit_cnt];
+                         bit_cnt <= bit_cnt + 1;
+                    end else begin
+                         bit_cnt <= 0;
+                         end_rw <= 0;
+                         //sda_out is set back to high impendance so the slave can send ACK back. If it does not, it is a NACK for the master, hence no further handling is required.
+                         sda_out <= 1;
+                    end
+                end
+			end							
+		endcase
+		incr_subdiv;
+		
 	endtask
 
+	 
+	 always @(posedge clk or negedge rst_n) begin
+		if (!clk_cnt[DIV_CLOCK_BIT])
+			clk_cnt <= clk_cnt + 1;
+		else
+			clk_cnt <= 1;
+	 end
+	 
 		
-    always @(posedge clk or negedge rst_n) begin
+    always @(posedge clk_cnt[DIV_CLOCK_BIT] or negedge rst_n) begin
+	 
         if (!rst_n) begin
             sda_out <= 1;
             scl_out <= 1;
@@ -155,9 +158,9 @@ module i2c_master #(
             bit_cnt <= 0;
             subdiv_cnt <= 0;
             busy <= 0;
+				finished <= 0;
         end else begin
             case (state)
-
                  IDLE: begin
                     if (start) begin
                     busy <= 1;
@@ -169,102 +172,88 @@ module i2c_master #(
                     end
                  end
                  START: begin
-                    if (clk_cnt < CLOCK_SUBDIV) begin
-                        clk_cnt <= clk_cnt + 1;
-                    end else begin
-                        clk_cnt <= 0;
-                        scl_out <= 0;  // Pull scl_out low
-                                sent_sub_addr <= 0;
+
+                        
+						  scl_out <= 0;  // Pull scl_out low
+						  sent_sub_addr <= 0;
 
 
-                        state <= SLAVE_ADDR;
+						  state <= SLAVE_ADDR;
 
-                        bit_cnt <= 0;
-                                subdiv_cnt <= SUBDIV_CLK_WRITE; // this will force the next state to write the data first, and then tick the clock
+						  bit_cnt <= 0;
+						  subdiv_cnt <= SUBDIV_CLK_WRITE; // this will force the next state to write the data first, and then tick the clock
 
-                                end_rw <= RW_START; // resetting the stop condition for the task;
-                                // if start happened is set before transition
-                                if (!start_happened) begin
-                                    tick_scl_and_do_rw_task_data <= {SLAVE_ADDRESS_MASK, 0};
-                                end else begin
-                                    // start can happen twice only if it was read but i will leave this
-                                    tick_scl_and_do_rw_task_data <= {SLAVE_ADDRESS_MASK, 1}; //pass argument for the task in the next state
-                                end
-                                tick_scl_and_do_rw_task_rw <= RW_WRITE; // write slave address
-                                start_happened <= 1;
-                    end
+						  end_rw <= RW_START; // resetting the stop condition for the task;
+						  // if start happened is set before transition
+						  if (!start_happened) begin
+								tick_scl_and_do_rw_task_data <= {SLAVE_ADDRESS_MASK, 0};
+						  end else begin
+								// start can happen twice only if it was read but i will leave this
+								tick_scl_and_do_rw_task_data <= {SLAVE_ADDRESS_MASK, 1}; //pass argument for the task in the next state
+						  end
+						  tick_scl_and_do_rw_task_rw <= RW_WRITE; // write slave address
+		
+                    
                  end
                  SLAVE_ADDR: begin
                     if (!end_rw) begin
                         tick_scl_and_do_rw_task;
                     end else begin
-                        if (clk_cnt < CLOCK_SUBDIV) begin
-                            clk_cnt <= clk_cnt + 1;
-                        end else begin
-                            //previous clock state was SUBDIV_CLK_WRITE so this is SUBDIV_CLK_HIGH and subdiv_cnt == SUBDIV_CLK_HIGH is always true, hence no need for the check
-                            scl_out <= 1;
-                            subdiv_cnt <= subdiv_cnt + 1;
-                            clk_cnt <= 0;
-                            state <= ACK1;
-                        end
+                         //previous clock state was SUBDIV_CLK_WRITE so this is SUBDIV_CLK_HIGH and subdiv_cnt == SUBDIV_CLK_HIGH is always true, hence no need for the check
+                         scl_out <= 1;
+                         subdiv_cnt <= subdiv_cnt + 1;
+
+                         state <= ACK1;
                     end
                  end
-                ACK1: begin
-                    if (clk_cnt < CLOCK_SUBDIV)
-                        clk_cnt <= clk_cnt + 1;
-                    else begin
-                        //previous clock state was SUBDIV_CLK_HIGH so this is SUBDIV_CLK_READ and subdiv_cnt == SUBDIV_CLK_READ is always true, hence no need for the check
+                 ACK1: begin
 
-                        incr_subdiv;
-                        end_rw <= RW_START;
-                        if (tick_scl_and_do_rw_task_rw != RW_READ) begin // TODO: Check for NACK conditions
-                            // tick_scl_and_do_rw_task_rw could be RW_READ only if the previous state was the last read
-                            if (sda) ack_error <= 1; // Check for ACK
-                            // set arguments before transition
-                            // if prev = slave_addr
-                            if (!sent_sub_addr) begin
-                                tick_scl_and_do_rw_task_data <= addr;
-                                tick_scl_and_do_rw_task_rw <= RW_WRITE;
-                                state <= SLAVE_ADDR;
-                                sent_sub_addr <= 1;
-                            end else /*if (sent_sub_addr)*/ begin
-                                if (rw == RW_WRITE) begin
-                                    tick_scl_and_do_rw_task_data <= data_in;
-                                    tick_scl_and_do_rw_task_rw <= RW_WRITE;
-                                    state <= SLAVE_ADDR;
-                                end else if (!start_happened /*&& rw == RW_READ*/) begin
-                                    sda_out <= 0; // Start condition
-                                    start_happened <= 1;
-                                    state <= START;
-                                end else if (start_happened /*&& rw == RW_READ*/) begin // Phase 1 read is done, Phase 2 address sent, now receive data
-                                    tick_scl_and_do_rw_task_rw <= RW_READ;
-                                    state <= SLAVE_ADDR;
-                                end
+							//previous clock state was SUBDIV_CLK_HIGH so this is SUBDIV_CLK_READ and subdiv_cnt == SUBDIV_CLK_READ is always true, hence no need for the check
 
-                            end
-                        end else /*if (nack conditions)*/ begin
-                            state <= STOP;
+							incr_subdiv;
+							end_rw <= RW_START;
+							
+							if (finished) begin
+								state <= STOP;
+								scl_out <= 1; // stop condition
+								sda_out <= 0;
+							end else if (tick_scl_and_do_rw_task_rw != RW_READ) begin // TODO: Check for NACK conditions
+								 // tick_scl_and_do_rw_task_rw could be RW_READ only if the previous state was the last read
+								 if (sda) ack_error <= 1; // Check for ACK
+								 // set arguments before transition
+								 // if prev = slave_addr
+								 if (!sent_sub_addr) begin
+									  tick_scl_and_do_rw_task_data <= addr;
+									  tick_scl_and_do_rw_task_rw <= RW_WRITE;
+									  state <= SLAVE_ADDR;
+									  sent_sub_addr <= 1;
+								 end else /*if (sent_sub_addr)*/ begin
+									  if (rw == RW_WRITE) begin
+											tick_scl_and_do_rw_task_data <= data_in;
+											tick_scl_and_do_rw_task_rw <= RW_WRITE;
+											state <= SLAVE_ADDR;
+											finished <= 1;
+									  end else if (!start_happened /*&& rw == RW_READ*/) begin
+											sda_out <= 0; // Start condition
+											start_happened <= 1;
+											state <= START;
+									  end else if (start_happened /*&& rw == RW_READ*/) begin // Phase 1 read is done, Phase 2 address sent, now receive data
+											tick_scl_and_do_rw_task_rw <= RW_READ;
+											state <= SLAVE_ADDR;
+											finished <= 1;
+									  end
+
+								 end
+
                         end
-                    end
-
-
-
-
-                    /*tick_scl_and_do_rw_task_data <= addr;
-                    // if prev = sub_addr
-                    // 	tick_scl_and_do_rw_task_data <= data_in;
-                    if (prev == slave_addr && rw == RW_READ)
-
-                    // 	state <= START;
-                    // 	start_happened <= 1;
-                    // if start_happened and rw and prev = slave_addr
-                    // 	state <= SLAVE_ADDR
-                    //    tick_scl_and_do_rw_task_rw <= RW_READ;
-                    tick_scl_and_do_rw_task_rw <= RW_WRITE;
-                    state <= SLAVE_ADDR;*/
-            end
+							end
+					  STOP: begin
+					      sda_out <= 1;
+						   state <= IDLE;
+					end
             endcase
-		end
+				
+		  end
 	end
 	 
 /*
