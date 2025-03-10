@@ -7,17 +7,17 @@ module i2c_master_controller(input             i_clk,              //input clock
                              input             req_trans,          //denotes when to start a new transaction
 
                              /** For Reads **/
-                             output reg [7:0]  data_out,
-                             output reg        valid_out,
+                             output [7:0]  data_out,
+                             output        valid_out,
 
                              /** I2C Lines **/
                              inout             scl_o,              //i2c clck line, output by this module, 400 kHz
                              inout             sda_o,              //i2c data line, set to 1'bz when not utilized (resistors will pull it high)
 
                              /** Comms to Master Module **/
-                             output reg        req_data_chunk ,    //Request master to send new data chunk in i_data_write
-                             output reg        busy,               //denotes whether module is currently communicating with a slave
-                             output reg        nack);
+                             output            req_data_chunk ,    //Request master to send new data chunk in i_data_write
+                             output            busy,               //denotes whether module is currently communicating with a slave
+                             output            nack);
 
     i2c_master i2c_master_inst(.i_clk(i_clk),                     //input clock to the module @100MHz (or whatever crystal you have on the board)
                                .reset_n(reset_n),               //reset for creating a known start condition
