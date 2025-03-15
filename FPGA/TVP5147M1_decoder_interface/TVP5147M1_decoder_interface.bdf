@@ -422,11 +422,6 @@ https://fpgasoftware.intel.com/eula.
 	(pt 296 112)
 )
 (connector
-	(text "RESET" (rect 282 16 312 33)(font "Intel Clear" ))
-	(pt 208 32)
-	(pt 312 32)
-)
-(connector
 	(text "i2c_busy" (rect 346 168 387 185)(font "Intel Clear" ))
 	(pt 920 184)
 	(pt 336 184)
@@ -454,6 +449,11 @@ https://fpgasoftware.intel.com/eula.
 (connector
 	(pt 928 64)
 	(pt 896 64)
+)
+(connector
+	(text "RESET" (rect 226 16 256 33)(font "Intel Clear" ))
+	(pt 256 32)
+	(pt 208 32)
 )
 (junction (pt 568 112))
 (junction (pt 568 128))
