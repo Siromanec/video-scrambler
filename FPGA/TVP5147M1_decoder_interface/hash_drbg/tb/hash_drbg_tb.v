@@ -1,3 +1,4 @@
+`timescale 10ns / 1ns
 module hash_drgb_tb();
 
     localparam MODE_SHA_256   = 1'h1;
@@ -75,8 +76,6 @@ module hash_drgb_tb();
         reset_n = 1'b1;
         #10;
         update = 1'b1;
-        #10;
-        update = 1'b0;
     end
     always @(posedge init_ready) begin
         $display("init_ready");
@@ -90,11 +89,17 @@ module hash_drgb_tb();
             generated_counter = generated_counter + 1;
             $display("next_ready, bits=0x%0h", random_bits[31:0]);
 
+            next = 1'b0;
+            #5
+            next = 1'b1;
+
+
+
         end else begin
             next = 1'b0;
             $display("next_ready, bits=0x%0h", random_bits[31:0]);
             $display("next_ready, done");
-            $finish;
+            $stop;
         end
 
 

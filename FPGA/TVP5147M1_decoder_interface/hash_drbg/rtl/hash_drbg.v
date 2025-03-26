@@ -14,6 +14,7 @@ module hash_drbg #(parameter SEEDLEN = 256,
 
     output do_reseed,
     output reg [255:0] random_bits,
+	 output wire [63:0] reseed_counter_out,
 
     // ------------------------------------------------------------
     // SHA-256 core interface.
@@ -47,7 +48,7 @@ module hash_drbg #(parameter SEEDLEN = 256,
     localparam NBITS_DEFAULT = SEEDLEN;
 
     wire [BLOCKSIZE-1:0] seed_material;
-    assign seed_material = {BLOCKSIZE-1{entropy, personalization_string, 1'b1, NBITS}};
+    assign seed_material = {entropy, personalization_string, 1'b1, NBITS};
 
     reg [SEEDLEN-1:0] v;
     reg [SEEDLEN-1:0] c;
@@ -78,7 +79,10 @@ module hash_drbg #(parameter SEEDLEN = 256,
 
     reg begin_init;
     reg generate_next;
-    reg [63:0] reseed_counter;
+	 reg [63:0] reseed_counter;
+	 
+	 assign reseed_counter_out = reseed_counter;
+
 
 
     assign do_reseed = reseed_counter >= RESEED_INTERVAL;  // master will need to call reset, set new entropy and then call update
@@ -89,7 +93,7 @@ module hash_drbg #(parameter SEEDLEN = 256,
     reg do_sha_request;
 
     // ------------------------------------------------------------
-    // SHA-256 core interface.
+    // SHA-256 core interface and fsm
     // ------------------------------------------------------------
     reg do_sha_need_init_flag;
     reg accuire_sha_bus;
@@ -103,172 +107,175 @@ module hash_drbg #(parameter SEEDLEN = 256,
                SHA_RELEASE = 3;
     reg [1:0] do_sha_state;
 
-    always @(posedge clk or negedge reset_n or posedge do_sha_request or posedge sha_digest_valid) begin: do_sha
+    task do_sha;
+      begin
+			case (do_sha_state)
+				 SHA_IDLE: begin
+					  if (sha_ready && !accuire_sha_bus && !sha_digest_valid) begin
+							do_sha_state <= SHA_WAIT;
+							do_sha_reset_n_flag = 1;
+							do_sha_need_init_flag = 1;
+							accuire_sha_bus = 1;
+					  end
+				 end // SHA_IDLE
+				 SHA_WAIT: begin
+					  if (sha_digest_valid && accuire_sha_bus) begin
+							// set values
+							do_sha_digest = sha_digest;
+							// reset internal state
+							do_sha_need_init_flag = 0;
+							// reset external state
+							do_sha_request = 0;
+							// release the bus
+							accuire_sha_bus = 0;
+							do_sha_reset_n_flag = 0;
+
+							do_sha_state <= SHA_IDLE;
+							$display("hash=0x%0h", sha_digest[31:0]);
+
+					  end  // if (sha_digest_valid) begin
+				 end // SHA_WAIT
+
+			endcase
+      end
+    endtask
+	 
+    // ------------------------------------------------------------
+    // init fsm
+    // ------------------------------------------------------------
+   task do_init;
+		begin
+			case (init_state)
+				INIT_V_DONE: begin
+						// retrieve the the do_sha_digest
+						v = do_sha_digest;
+						// set the message for the next hash
+						do_sha_message = {PREPEND_INIT, do_sha_digest, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
+						// prepare control signals for do_sha
+						do_sha_request = 1;
+						// set the next state
+						init_state <= INIT_C_DONE;
+
+						$display("init_v=0x%0h", do_sha_digest[31:0]);
+				  end
+				  INIT_C_DONE: begin
+						// retrieve the the do_sha_digest
+						c = do_sha_digest;
+						// indicate that the init is done
+						init_ready_new = 1;
+						// reset the state
+						begin_init = 0;
+						init_state <= INIT_IDLE; // skips INIT_IDLE because it is equivalent to begin_init
+						// reset the reseed counter
+						reseed_counter = 1;
+
+						$display("init_c=0x%0h", do_sha_digest[31:0]);
+				  end
+			 endcase // case (init_state)
+	   end // if began init and not doing a request
+   endtask
+
+	
+    // ------------------------------------------------------------
+    // generate fsm
+    // ------------------------------------------------------------
+   task do_next;
+      begin
+         case (generate_state)
+				GENERATE_RETURN_BITS_DONE: begin
+					// retrieve the the do_sha_digest
+					random_bits = do_sha_digest;
+					// set the message for the next hash
+					do_sha_message = {PREPEND_HASH, v, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
+					// prepare control signals for do_sha
+					do_sha_request = 1;
+					// set the next state
+					generate_state <= GENERATE_UPDATE_CNT;
+					$display("old_v=0x%0h", v[31:0]);
+				end // GENERATE_RETURN_BITS_DONE
+				GENERATE_UPDATE_CNT: begin
+					// retrieve the the do_sha_digest and use it as intermideate instead of h
+					v = v + do_sha_digest + c + reseed_counter;
+					$display("new_v=0x%0h", v[31:0]);
+					reseed_counter = reseed_counter + 1;
+					// reset state
+					generate_next = 0;
+					// set external state
+					next_ready_new = 1;
+					generate_state <= GENERATE_IDLE;
+				end // GENERATE_UPDATE_CNT
+         endcase // case (generate_state)
+      end // if generating next and not doing a request
+   endtask
+	
+	
+	
+	
+    // ------------------------------------------------------------
+    // function selection/ dispatch
+    // ------------------------------------------------------------
+
+    always @ (posedge clk or 
+				  negedge reset_n) begin
         if (!reset_n) begin
-            // reset do_sha
+		      // reset do_sha
             do_sha_state <= SHA_IDLE;
             do_sha_request <= 0;
             do_sha_need_init_flag <= 0;
             accuire_sha_bus <= 0;
             do_sha_reset_n_flag <= 1'b0;
-        end else if (do_sha_request) begin
-            case (do_sha_state)
-                SHA_IDLE: begin
-                    if (sha_ready && !accuire_sha_bus && !sha_digest_valid) begin
-                        do_sha_state <= SHA_WAIT;
-                        do_sha_reset_n_flag <= 1;
-                        do_sha_need_init_flag <= 1;
-                        accuire_sha_bus <= 1;
-                    end
-                end // SHA_IDLE
-                SHA_INIT: begin
-                    do_sha_need_init_flag <= 0;
-                    do_sha_state <= SHA_WAIT;
-                end // SHA_INIT
-                SHA_WAIT: begin
-                    if (sha_digest_valid && accuire_sha_bus) begin
-                        // set values
-                        do_sha_digest <= sha_digest;
-                        // reset internal state
-                        do_sha_need_init_flag <= 0;
-                        // reset external state
-                        do_sha_request <= 0;
-                        // release the bus
-                        accuire_sha_bus <= 0;
-                        do_sha_reset_n_flag <= 0;
-
-                        do_sha_state <= SHA_IDLE;
-                        $display("hash=0x%0h", sha_digest[31:0]);
-
-                    end  // if (sha_digest_valid) begin
-                end // SHA_WAIT
-
-            endcase
-        end
-
-    end
-
-    // ------------------------------------------------------------
-    // function selection/ dispatch
-    // ------------------------------------------------------------
-
-    always @ (posedge clk or negedge reset_n) begin
-        if (!reset_n) begin
+				
             // set working variables to 0
             v <= 0;
             c <= 0;
             reseed_counter <= 0;
-        end else begin
-            if (update && !begin_init && !do_sha_request) begin
-                // set the message for the next hash
-                do_sha_message <= seed_material;
-                // prepare control signals for do_sha
-                do_sha_request <= 1;
-                // set external state
-                init_ready_new <= 0;
-                // set the next state
-                begin_init <= 1;
-                init_state <= INIT_V_DONE;
-            end else if (init_ready && !generate_next && next && !do_sha_request) begin // if (update) begin
-                // set the message for the next hash
-                do_sha_message <= {v, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
-                // prepare control signals for do_sha
-                do_sha_request <= 1;
-                // set external state
-                next_ready_new <= 0;
-                // set the next state
-                generate_next <= 1;
-                generate_state <= GENERATE_RETURN_BITS_DONE;
-
-            end // if (update) begin
-        end // if (!reset_n) begin
-    end // always @ (posedge clk or negedge reset_n) begin
-    
-    
-    // ------------------------------------------------------------
-    // init fsm
-    // ------------------------------------------------------------
-    always @(posedge clk or negedge reset_n) begin: do_init
-        if (!reset_n) begin
-            // reset external state
+				
+				// reset external state
             init_ready_new <= 0;
 
             // reset internal state
             begin_init <= 0;
             init_state <= INIT_IDLE;
-        end else if (begin_init && !do_sha_request && !init_ready) begin // if began init and not doing a request
-                case (init_state)
-                    INIT_V_DONE: begin
-                        // retrieve the the do_sha_digest
-                        v <= do_sha_digest;
-                        // set the message for the next hash
-                        do_sha_message <= {PREPEND_INIT, do_sha_digest, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
-                        // prepare control signals for do_sha
-                        do_sha_request <= 1;
-                        // set the next state
-                        init_state <= INIT_C_DONE;
-
-                        $display("init_v=0x%0h", do_sha_digest[31:0]);
-                    end
-                    INIT_C_DONE: begin
-                        // retrieve the the do_sha_digest
-                        c <= do_sha_digest;
-                        // indicate that the init is done
-                        init_ready_new <= 1;
-                        // reset the state
-                        begin_init <= 0;
-                        init_state <= INIT_IDLE; // skips INIT_IDLE because it is equivalent to begin_init
-                        // reset the reseed counter
-                        reseed_counter <= 1;
-
-                        $display("init_c=0x%0h", do_sha_digest[31:0]);
-                    end
-                endcase // case (init_state)
-        end // if began init and not doing a request
-    end
-
-    // ------------------------------------------------------------
-    // generate fsm
-    // ------------------------------------------------------------
-    always @(posedge clk or negedge reset_n) begin: do_next
-        if (!reset_n) begin
+				
             // reset external state
             next_ready_new <= 0;
             // reset internal state
             generate_next <= 0;
             generate_state <= GENERATE_IDLE;
-        end else if (generate_next && !do_sha_request && !next_ready) begin  // if generating next and not doing a request
-            case (generate_state)
-                GENERATE_RETURN_BITS_DONE: begin
-                    // retrieve the the do_sha_digest
-                    random_bits <= do_sha_digest;
-                    // set the message for the next hash
-                    do_sha_message <= {PREPEND_HASH, v, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
-                    // prepare control signals for do_sha
-                    do_sha_request <= 1;
-                    // set the next state
-                    generate_state <= GENERATE_UPDATE_V;
-                    $display("old_v=0x%0h", v[31:0]);
-                end // GENERATE_RETURN_BITS_DONE
-                GENERATE_UPDATE_V: begin
-                    // retrieve the the do_sha_digest and use it as intermideate instead of h
-                    v <= v + do_sha_digest + c + reseed_counter;
-                    generate_state <= GENERATE_UPDATE_CNT;
-                end // GENERATE_UPDATE_V
-                GENERATE_UPDATE_CNT: begin
-                    $display("new_v=0x%0h", v[31:0]);
-                    reseed_counter <= reseed_counter + 1;
-                    // reset state
-                    generate_next <= 0;
-                    // set external state
-                    next_ready_new <= 1;
-                    generate_state <= GENERATE_IDLE;
-                end // GENERATE_UPDATE_CNT
-            endcase // case (generate_state)
-        end // if generating next and not doing a request
-    end
-
-
-
+		end else begin
+			if (do_sha_request) begin
+				do_sha;
+			end else if (!init_ready) begin
+				if (update && !begin_init) begin
+					// set the message for the next hash
+					do_sha_message = seed_material;
+					// prepare control signals for do_sha
+					do_sha_request = 1;
+					// set external state
+					init_ready_new = 0;
+					// set the next state
+					begin_init = 1;
+					init_state <= INIT_V_DONE;
+				end else if (begin_init) begin // if began init and not doing a request
+					do_init;
+				end
+			
+			end else if (!generate_next && next) begin // if (update) begin
+				// set the message for the next hash
+				do_sha_message = {v, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
+				// prepare control signals for do_sha
+				do_sha_request = 1;
+				// set external state
+				next_ready_new = 0;
+				// set the next state
+				generate_next = 1;
+				generate_state <= GENERATE_RETURN_BITS_DONE;
+			end else if (generate_next  && !next_ready) begin  // if generating next and not doing a request
+				do_next;
+				
+			end // else if (!init_ready) begin
+			
+		end // if (!reset_n) begin
+   end // always @ (posedge clk or negedge reset_n) begin
 
 endmodule

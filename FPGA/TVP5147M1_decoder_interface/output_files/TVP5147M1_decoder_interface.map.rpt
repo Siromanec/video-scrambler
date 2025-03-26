@@ -1,0 +1,1121 @@
+Analysis & Synthesis report for TVP5147M1_decoder_interface
+Wed Mar 26 15:19:45 2025
+Quartus Prime Version 23.1std.1 Build 993 05/14/2024 SC Lite Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Analysis & Synthesis Summary
+  3. Analysis & Synthesis Settings
+  4. Parallel Compilation
+  5. Analysis & Synthesis Source Files Read
+  6. Analysis & Synthesis Resource Usage Summary
+  7. Analysis & Synthesis Resource Utilization by Entity
+  8. State Machine - |double_hash_drbg|hash_drbg:inst2|generate_state
+  9. State Machine - |double_hash_drbg|hash_drbg:inst2|do_sha_state
+ 10. State Machine - |double_hash_drbg|hash_drbg:inst2|init_state
+ 11. State Machine - |double_hash_drbg|hash_drbg:inst1|generate_state
+ 12. State Machine - |double_hash_drbg|hash_drbg:inst1|do_sha_state
+ 13. State Machine - |double_hash_drbg|hash_drbg:inst1|init_state
+ 14. State Machine - |double_hash_drbg|sha256_core:inst5|sha256_ctrl_reg
+ 15. Registers Removed During Synthesis
+ 16. General Register Statistics
+ 17. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 18. Parameter Settings for User Entity Instance: hash_drbg:inst1
+ 19. Parameter Settings for User Entity Instance: posedge_to_pulse:inst13
+ 20. Parameter Settings for User Entity Instance: posedge_to_pulse:inst12
+ 21. Parameter Settings for User Entity Instance: hash_drbg:inst2
+ 22. Parameter Settings for User Entity Instance: LPM_CONSTANT:inst7
+ 23. Parameter Settings for User Entity Instance: LPM_CONSTANT:inst6
+ 24. Post-Synthesis Netlist Statistics for Top Partition
+ 25. Elapsed Time Per Partition
+ 26. Analysis & Synthesis Messages
+ 27. Analysis & Synthesis Suppressed Messages
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 2024  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
+
+
+
++----------------------------------------------------------------------------------+
+; Analysis & Synthesis Summary                                                     ;
++---------------------------------+------------------------------------------------+
+; Analysis & Synthesis Status     ; Successful - Wed Mar 26 15:19:45 2025          ;
+; Quartus Prime Version           ; 23.1std.1 Build 993 05/14/2024 SC Lite Edition ;
+; Revision Name                   ; TVP5147M1_decoder_interface                    ;
+; Top-level Entity Name           ; double_hash_drbg                               ;
+; Family                          ; Cyclone V                                      ;
+; Logic utilization (in ALMs)     ; N/A                                            ;
+; Total registers                 ; 3821                                           ;
+; Total pins                      ; 584                                            ;
+; Total virtual pins              ; 0                                              ;
+; Total block memory bits         ; 0                                              ;
+; Total DSP Blocks                ; 0                                              ;
+; Total HSSI RX PCSs              ; 0                                              ;
+; Total HSSI PMA RX Deserializers ; 0                                              ;
+; Total HSSI TX PCSs              ; 0                                              ;
+; Total HSSI PMA TX Serializers   ; 0                                              ;
+; Total PLLs                      ; 0                                              ;
+; Total DLLs                      ; 0                                              ;
++---------------------------------+------------------------------------------------+
+
+
++------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Settings                                                                                                      ;
++---------------------------------------------------------------------------------+--------------------+-----------------------------+
+; Option                                                                          ; Setting            ; Default Value               ;
++---------------------------------------------------------------------------------+--------------------+-----------------------------+
+; Device                                                                          ; 5CSEBA6U23I7       ;                             ;
+; Top-level entity name                                                           ; double_hash_drbg   ; TVP5147M1_decoder_interface ;
+; Family name                                                                     ; Cyclone V          ; Cyclone V                   ;
+; Use smart compilation                                                           ; Off                ; Off                         ;
+; Enable parallel Assembler and Timing Analyzer during compilation                ; On                 ; On                          ;
+; Enable compact report table                                                     ; Off                ; Off                         ;
+; Restructure Multiplexers                                                        ; Auto               ; Auto                        ;
+; MLAB Add Timing Constraints For Mixed-Port Feed-Through Mode Setting Don't Care ; Off                ; Off                         ;
+; Create Debugging Nodes for IP Cores                                             ; Off                ; Off                         ;
+; Preserve fewer node names                                                       ; On                 ; On                          ;
+; Intel FPGA IP Evaluation Mode                                                   ; Enable             ; Enable                      ;
+; Verilog Version                                                                 ; Verilog_2001       ; Verilog_2001                ;
+; VHDL Version                                                                    ; VHDL_1993          ; VHDL_1993                   ;
+; State Machine Processing                                                        ; Auto               ; Auto                        ;
+; Safe State Machine                                                              ; Off                ; Off                         ;
+; Extract Verilog State Machines                                                  ; On                 ; On                          ;
+; Extract VHDL State Machines                                                     ; On                 ; On                          ;
+; Ignore Verilog initial constructs                                               ; Off                ; Off                         ;
+; Iteration limit for constant Verilog loops                                      ; 5000               ; 5000                        ;
+; Iteration limit for non-constant Verilog loops                                  ; 250                ; 250                         ;
+; Add Pass-Through Logic to Inferred RAMs                                         ; On                 ; On                          ;
+; Infer RAMs from Raw Logic                                                       ; On                 ; On                          ;
+; Parallel Synthesis                                                              ; On                 ; On                          ;
+; DSP Block Balancing                                                             ; Auto               ; Auto                        ;
+; NOT Gate Push-Back                                                              ; On                 ; On                          ;
+; Power-Up Don't Care                                                             ; On                 ; On                          ;
+; Remove Redundant Logic Cells                                                    ; Off                ; Off                         ;
+; Remove Duplicate Registers                                                      ; On                 ; On                          ;
+; Ignore CARRY Buffers                                                            ; Off                ; Off                         ;
+; Ignore CASCADE Buffers                                                          ; Off                ; Off                         ;
+; Ignore GLOBAL Buffers                                                           ; Off                ; Off                         ;
+; Ignore ROW GLOBAL Buffers                                                       ; Off                ; Off                         ;
+; Ignore LCELL Buffers                                                            ; Off                ; Off                         ;
+; Ignore SOFT Buffers                                                             ; On                 ; On                          ;
+; Limit AHDL Integers to 32 Bits                                                  ; Off                ; Off                         ;
+; Optimization Technique                                                          ; Balanced           ; Balanced                    ;
+; Carry Chain Length                                                              ; 70                 ; 70                          ;
+; Auto Carry Chains                                                               ; On                 ; On                          ;
+; Auto Open-Drain Pins                                                            ; On                 ; On                          ;
+; Perform WYSIWYG Primitive Resynthesis                                           ; Off                ; Off                         ;
+; Auto ROM Replacement                                                            ; On                 ; On                          ;
+; Auto RAM Replacement                                                            ; On                 ; On                          ;
+; Auto DSP Block Replacement                                                      ; On                 ; On                          ;
+; Auto Shift Register Replacement                                                 ; Auto               ; Auto                        ;
+; Allow Shift Register Merging across Hierarchies                                 ; Auto               ; Auto                        ;
+; Auto Clock Enable Replacement                                                   ; On                 ; On                          ;
+; Strict RAM Replacement                                                          ; Off                ; Off                         ;
+; Allow Synchronous Control Signals                                               ; On                 ; On                          ;
+; Force Use of Synchronous Clear Signals                                          ; Off                ; Off                         ;
+; Auto Resource Sharing                                                           ; Off                ; Off                         ;
+; Allow Any RAM Size For Recognition                                              ; Off                ; Off                         ;
+; Allow Any ROM Size For Recognition                                              ; Off                ; Off                         ;
+; Allow Any Shift Register Size For Recognition                                   ; Off                ; Off                         ;
+; Use LogicLock Constraints during Resource Balancing                             ; On                 ; On                          ;
+; Ignore translate_off and synthesis_off directives                               ; Off                ; Off                         ;
+; Timing-Driven Synthesis                                                         ; On                 ; On                          ;
+; Report Parameter Settings                                                       ; On                 ; On                          ;
+; Report Source Assignments                                                       ; On                 ; On                          ;
+; Report Connectivity Checks                                                      ; On                 ; On                          ;
+; Ignore Maximum Fan-Out Assignments                                              ; Off                ; Off                         ;
+; Synchronization Register Chain Length                                           ; 3                  ; 3                           ;
+; Power Optimization During Synthesis                                             ; Normal compilation ; Normal compilation          ;
+; HDL message level                                                               ; Level2             ; Level2                      ;
+; Suppress Register Optimization Related Messages                                 ; Off                ; Off                         ;
+; Number of Removed Registers Reported in Synthesis Report                        ; 5000               ; 5000                        ;
+; Number of Swept Nodes Reported in Synthesis Report                              ; 5000               ; 5000                        ;
+; Number of Inverted Registers Reported in Synthesis Report                       ; 100                ; 100                         ;
+; Clock MUX Protection                                                            ; On                 ; On                          ;
+; Auto Gated Clock Conversion                                                     ; Off                ; Off                         ;
+; Block Design Naming                                                             ; Auto               ; Auto                        ;
+; SDC constraint protection                                                       ; Off                ; Off                         ;
+; Synthesis Effort                                                                ; Auto               ; Auto                        ;
+; Shift Register Replacement - Allow Asynchronous Clear Signal                    ; On                 ; On                          ;
+; Pre-Mapping Resynthesis Optimization                                            ; Off                ; Off                         ;
+; Analysis & Synthesis Message Level                                              ; Medium             ; Medium                      ;
+; Disable Register Merging Across Hierarchies                                     ; Auto               ; Auto                        ;
+; Resource Aware Inference For Block RAM                                          ; On                 ; On                          ;
+; Automatic Parallel Synthesis                                                    ; On                 ; On                          ;
+; Partial Reconfiguration Bitstream ID                                            ; Off                ; Off                         ;
++---------------------------------------------------------------------------------+--------------------+-----------------------------+
+
+
++------------------------------------------+
+; Parallel Compilation                     ;
++----------------------------+-------------+
+; Processors                 ; Number      ;
++----------------------------+-------------+
+; Number detected on machine ; 12          ;
+; Maximum allowed            ; 6           ;
+;                            ;             ;
+; Average used               ; 2.39        ;
+; Maximum used               ; 6           ;
+;                            ;             ;
+; Usage by Processor         ; % Time Used ;
+;     Processor 1            ; 100.0%      ;
+;     Processor 2            ;  28.2%      ;
+;     Processor 3            ;  28.2%      ;
+;     Processor 4            ;  28.2%      ;
+;     Processor 5            ;  27.3%      ;
+;     Processor 6            ;  27.3%      ;
++----------------------------+-------------+
+
+
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                                                                                                ;
++-------------------------------------+-----------------+------------------------------------+----------------------------------------------------------------------------------------------------------------+---------+
+; File Name with User-Entered Path    ; Used in Netlist ; File Type                          ; File Name with Absolute Path                                                                                   ; Library ;
++-------------------------------------+-----------------+------------------------------------+----------------------------------------------------------------------------------------------------------------+---------+
+; hash_drbg/rtl/double_hash_drbg.bdf  ; yes             ; User Block Diagram/Schematic File  ; C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/double_hash_drbg.bdf  ;         ;
+; hash_drbg/rtl/hash_drbg.v           ; yes             ; User Verilog HDL File              ; C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/hash_drbg.v           ;         ;
+; include/sha256/sha256_w_mem.v       ; yes             ; User Verilog HDL File              ; C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_w_mem.v       ;         ;
+; include/sha256/sha256_k_constants.v ; yes             ; User Verilog HDL File              ; C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_k_constants.v ;         ;
+; include/sha256/sha256_core.v        ; yes             ; User Verilog HDL File              ; C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_core.v        ;         ;
+; utils/posedge_to_pulse.v            ; yes             ; User Verilog HDL File              ; C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/utils/posedge_to_pulse.v            ;         ;
+; lpm_constant.tdf                    ; yes             ; Megafunction                       ; c:/intelfpga_lite/23.1std/quartus/libraries/megafunctions/lpm_constant.tdf                                     ;         ;
++-------------------------------------+-----------------+------------------------------------+----------------------------------------------------------------------------------------------------------------+---------+
+
+
++---------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary             ;
++---------------------------------------------+-----------+
+; Resource                                    ; Usage     ;
++---------------------------------------------+-----------+
+; Estimate of Logic utilization (ALMs needed) ; 2446      ;
+;                                             ;           ;
+; Combinational ALUT usage for logic          ; 3679      ;
+;     -- 7 input functions                    ; 0         ;
+;     -- 6 input functions                    ; 686       ;
+;     -- 5 input functions                    ; 112       ;
+;     -- 4 input functions                    ; 758       ;
+;     -- <=3 input functions                  ; 2123      ;
+;                                             ;           ;
+; Dedicated logic registers                   ; 3821      ;
+;                                             ;           ;
+; I/O pins                                    ; 584       ;
+;                                             ;           ;
+; Total DSP Blocks                            ; 0         ;
+;                                             ;           ;
+; Maximum fan-out node                        ; clk~input ;
+; Maximum fan-out                             ; 3821      ;
+; Total fan-out                               ; 31353     ;
+; Average fan-out                             ; 3.62      ;
++---------------------------------------------+-----------+
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                                                                                                ;
++---------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-------------------------------------------------------------------------+--------------------+--------------+
+; Compilation Hierarchy Node                  ; Combinational ALUTs ; Dedicated Logic Registers ; Block Memory Bits ; DSP Blocks ; Pins ; Virtual Pins ; Full Hierarchy Name                                                     ; Entity Name        ; Library Name ;
++---------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-------------------------------------------------------------------------+--------------------+--------------+
+; |double_hash_drbg                           ; 3679 (296)          ; 3821 (0)                  ; 0                 ; 0          ; 584  ; 0            ; |double_hash_drbg                                                       ; double_hash_drbg   ; work         ;
+;    |hash_drbg:inst1|                        ; 1139 (1139)         ; 1390 (1390)               ; 0                 ; 0          ; 0    ; 0            ; |double_hash_drbg|hash_drbg:inst1                                       ; hash_drbg          ; work         ;
+;    |hash_drbg:inst2|                        ; 1145 (1145)         ; 1390 (1390)               ; 0                 ; 0          ; 0    ; 0            ; |double_hash_drbg|hash_drbg:inst2                                       ; hash_drbg          ; work         ;
+;    |posedge_to_pulse:inst12|                ; 1 (1)               ; 4 (4)                     ; 0                 ; 0          ; 0    ; 0            ; |double_hash_drbg|posedge_to_pulse:inst12                               ; posedge_to_pulse   ; work         ;
+;    |posedge_to_pulse:inst13|                ; 1 (1)               ; 3 (3)                     ; 0                 ; 0          ; 0    ; 0            ; |double_hash_drbg|posedge_to_pulse:inst13                               ; posedge_to_pulse   ; work         ;
+;    |sha256_core:inst5|                      ; 1097 (753)          ; 1034 (522)                ; 0                 ; 0          ; 0    ; 0            ; |double_hash_drbg|sha256_core:inst5                                     ; sha256_core        ; work         ;
+;       |sha256_k_constants:k_constants_inst| ; 32 (32)             ; 0 (0)                     ; 0                 ; 0          ; 0    ; 0            ; |double_hash_drbg|sha256_core:inst5|sha256_k_constants:k_constants_inst ; sha256_k_constants ; work         ;
+;       |sha256_w_mem:w_mem_inst|             ; 312 (312)           ; 512 (512)                 ; 0                 ; 0          ; 0    ; 0            ; |double_hash_drbg|sha256_core:inst5|sha256_w_mem:w_mem_inst             ; sha256_w_mem       ; work         ;
++---------------------------------------------+---------------------+---------------------------+-------------------+------------+------+--------------+-------------------------------------------------------------------------+--------------------+--------------+
+Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
+
+
+Encoding Type:  One-Hot
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+; State Machine - |double_hash_drbg|hash_drbg:inst2|generate_state                                                                                        ;
++------------------------------------------+------------------------------------------+------------------------------------+------------------------------+
+; Name                                     ; generate_state.GENERATE_RETURN_BITS_DONE ; generate_state.GENERATE_UPDATE_CNT ; generate_state.GENERATE_IDLE ;
++------------------------------------------+------------------------------------------+------------------------------------+------------------------------+
+; generate_state.GENERATE_IDLE             ; 0                                        ; 0                                  ; 0                            ;
+; generate_state.GENERATE_RETURN_BITS_DONE ; 1                                        ; 0                                  ; 1                            ;
+; generate_state.GENERATE_UPDATE_CNT       ; 0                                        ; 1                                  ; 1                            ;
++------------------------------------------+------------------------------------------+------------------------------------+------------------------------+
+
+
+Encoding Type:  One-Hot
++----------------------------------------------------------------+
+; State Machine - |double_hash_drbg|hash_drbg:inst2|do_sha_state ;
++-----------------------+----------------------------------------+
+; Name                  ; do_sha_state.SHA_WAIT                  ;
++-----------------------+----------------------------------------+
+; do_sha_state.SHA_IDLE ; 0                                      ;
+; do_sha_state.SHA_WAIT ; 1                                      ;
++-----------------------+----------------------------------------+
+
+
+Encoding Type:  One-Hot
++-------------------------------------------------------------------------------------------------+
+; State Machine - |double_hash_drbg|hash_drbg:inst2|init_state                                    ;
++------------------------+----------------------+------------------------+------------------------+
+; Name                   ; init_state.INIT_IDLE ; init_state.INIT_C_DONE ; init_state.INIT_V_DONE ;
++------------------------+----------------------+------------------------+------------------------+
+; init_state.INIT_IDLE   ; 0                    ; 0                      ; 0                      ;
+; init_state.INIT_V_DONE ; 1                    ; 0                      ; 1                      ;
+; init_state.INIT_C_DONE ; 1                    ; 1                      ; 0                      ;
++------------------------+----------------------+------------------------+------------------------+
+
+
+Encoding Type:  One-Hot
++---------------------------------------------------------------------------------------------------------------------------------------------------------+
+; State Machine - |double_hash_drbg|hash_drbg:inst1|generate_state                                                                                        ;
++------------------------------------------+------------------------------------------+------------------------------------+------------------------------+
+; Name                                     ; generate_state.GENERATE_RETURN_BITS_DONE ; generate_state.GENERATE_UPDATE_CNT ; generate_state.GENERATE_IDLE ;
++------------------------------------------+------------------------------------------+------------------------------------+------------------------------+
+; generate_state.GENERATE_IDLE             ; 0                                        ; 0                                  ; 0                            ;
+; generate_state.GENERATE_RETURN_BITS_DONE ; 1                                        ; 0                                  ; 1                            ;
+; generate_state.GENERATE_UPDATE_CNT       ; 0                                        ; 1                                  ; 1                            ;
++------------------------------------------+------------------------------------------+------------------------------------+------------------------------+
+
+
+Encoding Type:  One-Hot
++----------------------------------------------------------------+
+; State Machine - |double_hash_drbg|hash_drbg:inst1|do_sha_state ;
++-----------------------+----------------------------------------+
+; Name                  ; do_sha_state.SHA_WAIT                  ;
++-----------------------+----------------------------------------+
+; do_sha_state.SHA_IDLE ; 0                                      ;
+; do_sha_state.SHA_WAIT ; 1                                      ;
++-----------------------+----------------------------------------+
+
+
+Encoding Type:  One-Hot
++-------------------------------------------------------------------------------------------------+
+; State Machine - |double_hash_drbg|hash_drbg:inst1|init_state                                    ;
++------------------------+----------------------+------------------------+------------------------+
+; Name                   ; init_state.INIT_IDLE ; init_state.INIT_C_DONE ; init_state.INIT_V_DONE ;
++------------------------+----------------------+------------------------+------------------------+
+; init_state.INIT_IDLE   ; 0                    ; 0                      ; 0                      ;
+; init_state.INIT_V_DONE ; 1                    ; 0                      ; 1                      ;
+; init_state.INIT_C_DONE ; 1                    ; 1                      ; 0                      ;
++------------------------+----------------------+------------------------+------------------------+
+
+
+Encoding Type:  One-Hot
++-------------------------------------------------------------------------------------------------------------------+
+; State Machine - |double_hash_drbg|sha256_core:inst5|sha256_ctrl_reg                                               ;
++-----------------------------+---------------------------+---------------------------+-----------------------------+
+; Name                        ; sha256_ctrl_reg.CTRL_IDLE ; sha256_ctrl_reg.CTRL_DONE ; sha256_ctrl_reg.CTRL_ROUNDS ;
++-----------------------------+---------------------------+---------------------------+-----------------------------+
+; sha256_ctrl_reg.CTRL_IDLE   ; 0                         ; 0                         ; 0                           ;
+; sha256_ctrl_reg.CTRL_ROUNDS ; 1                         ; 0                         ; 1                           ;
+; sha256_ctrl_reg.CTRL_DONE   ; 1                         ; 1                         ; 0                           ;
++-----------------------------+---------------------------+---------------------------+-----------------------------+
+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                                                                                                                                                                                                                                  ;
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------+
+; Register name                                                                                                                                                                                                                   ; Reason for Removal                                ;
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------+
+; hash_drbg:inst2|accuire_sha_bus                                                                                                                                                                                                 ; Merged with hash_drbg:inst2|do_sha_need_init_flag ;
+; hash_drbg:inst2|do_sha_reset_n_flag                                                                                                                                                                                             ; Merged with hash_drbg:inst2|do_sha_need_init_flag ;
+; hash_drbg:inst1|accuire_sha_bus                                                                                                                                                                                                 ; Merged with hash_drbg:inst1|do_sha_need_init_flag ;
+; hash_drbg:inst1|do_sha_reset_n_flag                                                                                                                                                                                             ; Merged with hash_drbg:inst1|do_sha_need_init_flag ;
+; hash_drbg:inst1|do_sha_message[6,9..31,33..63,66,67,70,81,84..87,89,91,93,94,96,97,99,106,108..111,114,117,119,121,124,128..130,132..134,140,142,144,148..150,154,155,157,158,160,163,166,168,170,171,173,178..223]             ; Merged with hash_drbg:inst1|do_sha_message[101]   ;
+; hash_drbg:inst2|do_sha_message[6,9..31,33..63,66,67,70,81,84..87,89,91,93,94,96,97,99,106,108..111,114,117,119,121,124,128..130,132..134,140,142,144,148..150,154,155,157,158,160,163,166,168,170,171,173,178..223]             ; Merged with hash_drbg:inst2|do_sha_message[101]   ;
+; hash_drbg:inst1|do_sha_message[1,2,4,5,7,64,65,68,69,71..80,82,83,88,90,92,95,98,100,102..105,107,112,113,115,116,118,120,122,123,125..127,131,135..139,141,143,145..147,151..153,156,159,161,162,164,165,167,169,172,174..177] ; Merged with hash_drbg:inst1|do_sha_message[0]     ;
+; hash_drbg:inst2|do_sha_message[1,2,4,5,7,64,65,68,69,71..80,82,83,88,90,92,95,98,100,102..105,107,112,113,115,116,118,120,122,123,125..127,131,135..139,141,143,145..147,151..153,156,159,161,162,164,165,167,169,172,174..177] ; Merged with hash_drbg:inst2|do_sha_message[0]     ;
+; hash_drbg:inst2|do_sha_message[101]                                                                                                                                                                                             ; Stuck at GND due to stuck port data_in            ;
+; hash_drbg:inst2|do_sha_message[8]                                                                                                                                                                                               ; Stuck at VCC due to stuck port data_in            ;
+; hash_drbg:inst1|do_sha_message[101]                                                                                                                                                                                             ; Stuck at GND due to stuck port data_in            ;
+; hash_drbg:inst1|do_sha_message[8]                                                                                                                                                                                               ; Stuck at VCC due to stuck port data_in            ;
+; hash_drbg:inst2|do_sha_state~6                                                                                                                                                                                                  ; Lost fanout                                       ;
+; hash_drbg:inst1|do_sha_state~6                                                                                                                                                                                                  ; Lost fanout                                       ;
+; hash_drbg:inst2|generate_state.GENERATE_IDLE                                                                                                                                                                                    ; Lost fanout                                       ;
+; hash_drbg:inst2|init_state.INIT_IDLE                                                                                                                                                                                            ; Lost fanout                                       ;
+; hash_drbg:inst1|generate_state.GENERATE_IDLE                                                                                                                                                                                    ; Lost fanout                                       ;
+; hash_drbg:inst1|init_state.INIT_IDLE                                                                                                                                                                                            ; Lost fanout                                       ;
+; Total Number of Removed Registers = 452                                                                                                                                                                                         ;                                                   ;
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------+
+
+
++------------------------------------------------------+
+; General Register Statistics                          ;
++----------------------------------------------+-------+
+; Statistic                                    ; Value ;
++----------------------------------------------+-------+
+; Total registers                              ; 3821  ;
+; Number of registers using Synchronous Clear  ; 494   ;
+; Number of registers using Synchronous Load   ; 1306  ;
+; Number of registers using Asynchronous Clear ; 2208  ;
+; Number of registers using Asynchronous Load  ; 0     ;
+; Number of registers using Clock Enable       ; 3342  ;
+; Number of registers using Preset             ; 0     ;
++----------------------------------------------+-------+
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                                                                        ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------------------------------------------------+
+; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output                                              ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------------------------------------------------+
+; 3:1                ; 64 bits   ; 128 LEs       ; 64 LEs               ; 64 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst2|reseed_counter[14]                    ;
+; 3:1                ; 256 bits  ; 512 LEs       ; 0 LEs                ; 512 LEs                ; Yes        ; |double_hash_drbg|hash_drbg:inst2|v[198]                                ;
+; 3:1                ; 64 bits   ; 128 LEs       ; 64 LEs               ; 64 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst1|reseed_counter[63]                    ;
+; 3:1                ; 256 bits  ; 512 LEs       ; 0 LEs                ; 512 LEs                ; Yes        ; |double_hash_drbg|hash_drbg:inst1|v[104]                                ;
+; 6:1                ; 5 bits    ; 20 LEs        ; 10 LEs               ; 10 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst2|do_sha_message[8]                     ;
+; 6:1                ; 8 bits    ; 32 LEs        ; 8 LEs                ; 24 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst2|do_sha_message[511]                   ;
+; 6:1                ; 24 bits   ; 96 LEs        ; 24 LEs               ; 72 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst2|do_sha_message[240]                   ;
+; 6:1                ; 24 bits   ; 96 LEs        ; 48 LEs               ; 48 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst2|do_sha_message[491]                   ;
+; 6:1                ; 8 bits    ; 32 LEs        ; 16 LEs               ; 16 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst2|do_sha_message[255]                   ;
+; 6:1                ; 224 bits  ; 896 LEs       ; 448 LEs              ; 448 LEs                ; Yes        ; |double_hash_drbg|hash_drbg:inst2|do_sha_message[344]                   ;
+; 6:1                ; 5 bits    ; 20 LEs        ; 10 LEs               ; 10 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst1|do_sha_message[0]                     ;
+; 6:1                ; 8 bits    ; 32 LEs        ; 8 LEs                ; 24 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst1|do_sha_message[506]                   ;
+; 6:1                ; 24 bits   ; 96 LEs        ; 24 LEs               ; 72 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst1|do_sha_message[244]                   ;
+; 6:1                ; 24 bits   ; 96 LEs        ; 48 LEs               ; 48 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst1|do_sha_message[481]                   ;
+; 6:1                ; 8 bits    ; 32 LEs        ; 16 LEs               ; 16 LEs                 ; Yes        ; |double_hash_drbg|hash_drbg:inst1|do_sha_message[252]                   ;
+; 6:1                ; 224 bits  ; 896 LEs       ; 448 LEs              ; 448 LEs                ; Yes        ; |double_hash_drbg|hash_drbg:inst1|do_sha_message[448]                   ;
+; 3:1                ; 512 bits  ; 1024 LEs      ; 0 LEs                ; 1024 LEs               ; Yes        ; |double_hash_drbg|sha256_core:inst5|sha256_w_mem:w_mem_inst|w_mem[9][1] ;
+; 4:1                ; 64 bits   ; 128 LEs       ; 128 LEs              ; 0 LEs                  ; Yes        ; |double_hash_drbg|sha256_core:inst5|a_reg[30]                           ;
+; 17:1               ; 32 bits   ; 352 LEs       ; 352 LEs              ; 0 LEs                  ; No         ; |double_hash_drbg|sha256_core:inst5|sha256_w_mem:w_mem_inst|w[1]        ;
+; 4:1                ; 160 bits  ; 320 LEs       ; 320 LEs              ; 0 LEs                  ; Yes        ; |double_hash_drbg|sha256_core:inst5|b_reg[31]                           ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+-------------------------------------------------------------------------+
+
+
++--------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: hash_drbg:inst1 ;
++-----------------+-------+------------------------------------+
+; Parameter Name  ; Value ; Type                               ;
++-----------------+-------+------------------------------------+
+; SEEDLEN         ; 256   ; Unsigned Integer                   ;
+; RESEED_INTERVAL ; 65536 ; Unsigned Integer                   ;
++-----------------+-------+------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++----------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: posedge_to_pulse:inst13 ;
++----------------+-------+---------------------------------------------+
+; Parameter Name ; Value ; Type                                        ;
++----------------+-------+---------------------------------------------+
+; WIDTH          ; 2     ; Unsigned Integer                            ;
++----------------+-------+---------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++----------------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: posedge_to_pulse:inst12 ;
++----------------+-------+---------------------------------------------+
+; Parameter Name ; Value ; Type                                        ;
++----------------+-------+---------------------------------------------+
+; WIDTH          ; 3     ; Unsigned Integer                            ;
++----------------+-------+---------------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++--------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: hash_drbg:inst2 ;
++-----------------+-------+------------------------------------+
+; Parameter Name  ; Value ; Type                               ;
++-----------------+-------+------------------------------------+
+; SEEDLEN         ; 256   ; Signed Integer                     ;
+; RESEED_INTERVAL ; 37500 ; Signed Integer                     ;
++-----------------+-------+------------------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: LPM_CONSTANT:inst7 ;
++--------------------+------------------+-------------------------+
+; Parameter Name     ; Value            ; Type                    ;
++--------------------+------------------+-------------------------+
+; LPM_WIDTH          ; 1                ; Untyped                 ;
+; LPM_CVALUE         ; 0                ; Untyped                 ;
+; ENABLE_RUNTIME_MOD ; NO               ; Untyped                 ;
+; CBXI_PARAMETER     ; lpm_constant_s64 ; Untyped                 ;
++--------------------+------------------+-------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------------------+
+; Parameter Settings for User Entity Instance: LPM_CONSTANT:inst6 ;
++--------------------+------------------+-------------------------+
+; Parameter Name     ; Value            ; Type                    ;
++--------------------+------------------+-------------------------+
+; LPM_WIDTH          ; 1                ; Untyped                 ;
+; LPM_CVALUE         ; 1                ; Untyped                 ;
+; ENABLE_RUNTIME_MOD ; NO               ; Untyped                 ;
+; CBXI_PARAMETER     ; lpm_constant_t64 ; Untyped                 ;
++--------------------+------------------+-------------------------+
+Note: In order to hide this table in the UI and the text report file, please set the "Show Parameter Settings in Synthesis Report" option in "Analysis and Synthesis Settings -> More Settings" to "Off".
+
+
++-----------------------------------------------------+
+; Post-Synthesis Netlist Statistics for Top Partition ;
++-----------------------+-----------------------------+
+; Type                  ; Count                       ;
++-----------------------+-----------------------------+
+; arriav_ff             ; 3821                        ;
+;     CLR               ; 22                          ;
+;     ENA               ; 1024                        ;
+;     ENA CLR           ; 518                         ;
+;     ENA CLR SCLR      ; 366                         ;
+;     ENA CLR SLD       ; 1302                        ;
+;     ENA SCLR          ; 128                         ;
+;     ENA SLD           ; 4                           ;
+;     plain             ; 457                         ;
+; arriav_lcell_comb     ; 3679                        ;
+;     arith             ; 960                         ;
+;         1 data inputs ; 128                         ;
+;         2 data inputs ; 822                         ;
+;         3 data inputs ; 10                          ;
+;     normal            ; 2079                        ;
+;         0 data inputs ; 1                           ;
+;         1 data inputs ; 3                           ;
+;         2 data inputs ; 32                          ;
+;         3 data inputs ; 487                         ;
+;         4 data inputs ; 758                         ;
+;         5 data inputs ; 112                         ;
+;         6 data inputs ; 686                         ;
+;     shared            ; 640                         ;
+;         2 data inputs ; 384                         ;
+;         3 data inputs ; 256                         ;
+; boundary_port         ; 584                         ;
+;                       ;                             ;
+; Max LUT depth         ; 27.50                       ;
+; Average LUT depth     ; 11.48                       ;
++-----------------------+-----------------------------+
+
+
++-------------------------------+
+; Elapsed Time Per Partition    ;
++----------------+--------------+
+; Partition Name ; Elapsed Time ;
++----------------+--------------+
+; Top            ; 00:00:09     ;
++----------------+--------------+
+
+
++-------------------------------+
+; Analysis & Synthesis Messages ;
++-------------------------------+
+Info: *******************************************************************
+Info: Running Quartus Prime Analysis & Synthesis
+    Info: Version 23.1std.1 Build 993 05/14/2024 SC Lite Edition
+    Info: Processing started: Wed Mar 26 15:19:28 2025
+Info: Command: quartus_map --read_settings_files=on --write_settings_files=off TVP5147M1_decoder_interface -c TVP5147M1_decoder_interface
+Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
+Info (20030): Parallel compilation is enabled and will use 6 of the 6 processors detected
+Info (12021): Found 1 design units, including 1 entities, in source file hash_drbg/rtl/double_hash_drbg.bdf
+    Info (12023): Found entity 1: double_hash_drbg
+Info (12021): Found 1 design units, including 1 entities, in source file hash_drbg/rtl/hash_drbg.v
+    Info (12023): Found entity 1: hash_drbg File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/hash_drbg.v Line: 3
+Info (12021): Found 1 design units, including 1 entities, in source file include/sha256/sha256_w_mem.v
+    Info (12023): Found entity 1: sha256_w_mem File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_w_mem.v Line: 42
+Info (12021): Found 1 design units, including 1 entities, in source file include/sha256/sha256_k_constants.v
+    Info (12023): Found entity 1: sha256_k_constants File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_k_constants.v Line: 41
+Info (12021): Found 1 design units, including 1 entities, in source file include/sha256/sha256_core.v
+    Info (12023): Found entity 1: sha256_core File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_core.v Line: 42
+Info (12021): Found 1 design units, including 1 entities, in source file include/sha256/sha256.v
+    Info (12023): Found entity 1: sha256 File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256.v Line: 42
+Info (12021): Found 1 design units, including 1 entities, in source file tvp5147m1_decoder_interface.bdf
+    Info (12023): Found entity 1: TVP5147M1_decoder_interface
+Info (12021): Found 1 design units, including 1 entities, in source file i2c_master_controller.v
+    Info (12023): Found entity 1: i2c_master_controller File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/i2c_master_controller.v Line: 2
+Info (12021): Found 1 design units, including 1 entities, in source file rom_1.v
+    Info (12023): Found entity 1: rom_1 File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/rom_1.v Line: 40
+Info (12021): Found 1 design units, including 1 entities, in source file i2c_master_controller_tb.v
+    Info (12023): Found entity 1: i2c_test_bench File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/i2c_master_controller_tb.v Line: 9
+Info (12021): Found 1 design units, including 1 entities, in source file i2c_master.v
+    Info (12023): Found entity 1: i2c_master File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/i2c_master.v Line: 28
+Info (12021): Found 1 design units, including 1 entities, in source file cfg_reader.v
+    Info (12023): Found entity 1: cfg_reader File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/cfg_reader.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file cfg_reader_tb.v
+    Info (12023): Found entity 1: cfg_reader_tb File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/cfg_reader_tb.v Line: 3
+Info (12021): Found 1 design units, including 1 entities, in source file tvp5147m1_decoder.v
+    Info (12023): Found entity 1: TVP5147M1_decoder File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/TVP5147M1_decoder.v Line: 1
+Info (12021): Found 1 design units, including 1 entities, in source file utils/posedge_to_pulse.v
+    Info (12023): Found entity 1: posedge_to_pulse File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/utils/posedge_to_pulse.v Line: 3
+Info (12127): Elaborating entity "double_hash_drbg" for the top level hierarchy
+Info (12128): Elaborating entity "hash_drbg" for hierarchy "hash_drbg:inst1"
+Warning (10230): Verilog HDL assignment warning at hash_drbg.v(35): truncated value with size 256 to match size of target (191) File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/hash_drbg.v Line: 35
+Info (10264): Verilog HDL Case Statement information at hash_drbg.v(148): all case item expressions in this case statement are onehot File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/hash_drbg.v Line: 148
+Info (10264): Verilog HDL Case Statement information at hash_drbg.v(184): all case item expressions in this case statement are onehot File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/hash_drbg.v Line: 184
+Info (12128): Elaborating entity "posedge_to_pulse" for hierarchy "posedge_to_pulse:inst13"
+Warning (10230): Verilog HDL assignment warning at posedge_to_pulse.v(16): truncated value with size 2 to match size of target (1) File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/utils/posedge_to_pulse.v Line: 16
+Info (12128): Elaborating entity "posedge_to_pulse" for hierarchy "posedge_to_pulse:inst12"
+Warning (10230): Verilog HDL assignment warning at posedge_to_pulse.v(16): truncated value with size 3 to match size of target (1) File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/utils/posedge_to_pulse.v Line: 16
+Info (12128): Elaborating entity "hash_drbg" for hierarchy "hash_drbg:inst2"
+Warning (10230): Verilog HDL assignment warning at hash_drbg.v(35): truncated value with size 256 to match size of target (191) File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/hash_drbg.v Line: 35
+Info (10264): Verilog HDL Case Statement information at hash_drbg.v(148): all case item expressions in this case statement are onehot File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/hash_drbg.v Line: 148
+Info (10264): Verilog HDL Case Statement information at hash_drbg.v(184): all case item expressions in this case statement are onehot File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/hash_drbg.v Line: 184
+Info (12128): Elaborating entity "sha256_core" for hierarchy "sha256_core:inst5"
+Info (12128): Elaborating entity "sha256_k_constants" for hierarchy "sha256_core:inst5|sha256_k_constants:k_constants_inst" File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_core.v Line: 170
+Info (12128): Elaborating entity "sha256_w_mem" for hierarchy "sha256_core:inst5|sha256_w_mem:w_mem_inst" File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_core.v Line: 183
+Info (12128): Elaborating entity "LPM_CONSTANT" for hierarchy "LPM_CONSTANT:inst7"
+Info (12130): Elaborated megafunction instantiation "LPM_CONSTANT:inst7"
+Info (12133): Instantiated megafunction "LPM_CONSTANT:inst7" with the following parameter:
+    Info (12134): Parameter "LPM_CVALUE" = "0"
+    Info (12134): Parameter "LPM_WIDTH" = "1"
+Info (12128): Elaborating entity "LPM_CONSTANT" for hierarchy "LPM_CONSTANT:inst6"
+Info (12130): Elaborated megafunction instantiation "LPM_CONSTANT:inst6"
+Info (12133): Instantiated megafunction "LPM_CONSTANT:inst6" with the following parameter:
+    Info (12134): Parameter "LPM_CVALUE" = "1"
+    Info (12134): Parameter "LPM_WIDTH" = "1"
+Info (276014): Found 1 instances of uninferred RAM logic
+    Info (276004): RAM logic "sha256_core:inst5|sha256_k_constants:k_constants_inst|Ram0" is uninferred due to inappropriate RAM size File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_k_constants.v Line: 63
+Warning (13046): Tri-state node(s) do not directly drive top-level pin(s)
+    Warning (13048): Converted tri-state node "SHA_INIT" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[511]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[510]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[509]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[508]" into a selector
+Warning (13046): Tri-state node(s) do not directly drive top-level pin(s)
+    Warning (13048): Converted tri-state node "SHA_BLOCK[177]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[176]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[175]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[174]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[172]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[169]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[167]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[165]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[164]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[162]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[161]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[159]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[156]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[153]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[152]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[151]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[147]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[146]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[145]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[143]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[141]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[139]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[138]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[137]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[136]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[135]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[131]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[127]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[126]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[125]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[123]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[122]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[120]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[118]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[116]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[115]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[113]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[112]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[107]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[105]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[104]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[103]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[102]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[100]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[98]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[95]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[92]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[90]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[88]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[83]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[82]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[80]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[79]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[78]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[77]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[76]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[75]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[74]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[73]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[72]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[71]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[69]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[68]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[65]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[64]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[7]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[5]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[4]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[2]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[1]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[0]" into a selector
+Warning (13046): Tri-state node(s) do not directly drive top-level pin(s)
+    Warning (13048): Converted tri-state node "SHA_BLOCK[255]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[254]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[253]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[252]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[251]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[250]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[249]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[248]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[247]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[246]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[245]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[244]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[243]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[242]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[241]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[240]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[239]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[238]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[237]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[236]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[235]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[234]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[233]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[232]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[231]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[230]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[229]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[228]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[227]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[226]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[225]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[224]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[223]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[222]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[221]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[220]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[219]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[218]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[217]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[216]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[215]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[214]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[213]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[212]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[211]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[210]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[209]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[208]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[207]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[206]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[205]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[204]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[203]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[202]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[201]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[200]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[199]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[198]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[197]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[196]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[195]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[194]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[193]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[192]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[191]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[190]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[189]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[188]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[187]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[186]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[185]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[184]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[183]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[182]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[181]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[180]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[179]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[178]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[173]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[171]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[170]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[168]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[166]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[163]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[160]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[158]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[157]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[155]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[154]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[150]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[149]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[148]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[144]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[142]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[140]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[134]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[133]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[132]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[130]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[129]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[128]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[124]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[121]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[119]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[117]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[114]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[111]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[110]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[109]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[108]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[106]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[101]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[99]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[97]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[96]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[94]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[93]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[91]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[89]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[87]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[86]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[85]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[84]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[81]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[70]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[67]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[66]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[63]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[62]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[61]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[60]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[59]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[58]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[57]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[56]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[55]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[54]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[53]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[52]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[51]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[50]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[49]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[48]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[47]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[46]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[45]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[44]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[43]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[42]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[41]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[40]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[39]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[38]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[37]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[36]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[35]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[34]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[33]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[32]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[31]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[30]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[29]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[28]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[27]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[26]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[25]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[24]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[23]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[22]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[21]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[20]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[19]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[18]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[17]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[16]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[15]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[14]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[13]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[12]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[11]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[10]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[9]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[8]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[6]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[3]" into a selector
+Warning (13046): Tri-state node(s) do not directly drive top-level pin(s)
+    Warning (13048): Converted tri-state node "SHA_BLOCK[507]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[506]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[505]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[504]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[503]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[502]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[501]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[500]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[499]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[498]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[497]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[496]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[495]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[494]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[493]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[492]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[491]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[490]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[489]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[488]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[487]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[486]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[485]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[484]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[483]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[482]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[481]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[480]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[479]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[478]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[477]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[476]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[475]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[474]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[473]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[472]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[471]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[470]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[469]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[468]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[467]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[466]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[465]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[464]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[463]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[462]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[461]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[460]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[459]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[458]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[457]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[456]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[455]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[454]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[453]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[452]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[451]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[450]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[449]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[448]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[447]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[446]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[445]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[444]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[443]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[442]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[441]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[440]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[439]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[438]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[437]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[436]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[435]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[434]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[433]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[432]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[431]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[430]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[429]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[428]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[427]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[426]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[425]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[424]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[423]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[422]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[421]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[420]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[419]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[418]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[417]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[416]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[415]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[414]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[413]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[412]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[411]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[410]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[409]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[408]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[407]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[406]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[405]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[404]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[403]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[402]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[401]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[400]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[399]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[398]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[397]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[396]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[395]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[394]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[393]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[392]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[391]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[390]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[389]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[388]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[387]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[386]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[385]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[384]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[383]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[382]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[381]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[380]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[379]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[378]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[377]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[376]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[375]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[374]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[373]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[372]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[371]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[370]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[369]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[368]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[367]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[366]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[365]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[364]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[363]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[362]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[361]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[360]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[359]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[358]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[357]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[356]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[355]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[354]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[353]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[352]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[351]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[350]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[349]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[348]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[347]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[346]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[345]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[344]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[343]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[342]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[341]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[340]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[339]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[338]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[337]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[336]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[335]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[334]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[333]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[332]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[331]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[330]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[329]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[328]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[327]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[326]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[325]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[324]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[323]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[322]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[321]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[320]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[319]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[318]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[317]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[316]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[315]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[314]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[313]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[312]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[311]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[310]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[309]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[308]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[307]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[306]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[305]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[304]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[303]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[302]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[301]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[300]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[299]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[298]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[297]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[296]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[295]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[294]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[293]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[292]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[291]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[290]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[289]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[288]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[287]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[286]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[285]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[284]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[283]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[282]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[281]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[280]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[279]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[278]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[277]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[276]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[275]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[274]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[273]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[272]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[271]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[270]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[269]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[268]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[267]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[266]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[265]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[264]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[263]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[262]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[261]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[260]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[259]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[258]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[257]" into a selector
+    Warning (13048): Converted tri-state node "SHA_BLOCK[256]" into a selector
+Info (286030): Timing-Driven Synthesis is running
+Info (17049): 6 registers lost all their fanouts during netlist optimizations.
+Info (144001): Generated suppressed messages file C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/output_files/TVP5147M1_decoder_interface.map.smsg
+Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
+    Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
+Info (21057): Implemented 6060 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 262 input pins
+    Info (21059): Implemented 322 output pins
+    Info (21061): Implemented 5476 logic cells
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 522 warnings
+    Info: Peak virtual memory: 4958 megabytes
+    Info: Processing ended: Wed Mar 26 15:19:45 2025
+    Info: Elapsed time: 00:00:17
+    Info: Total CPU time (on all processors): 00:00:38
+
+
++------------------------------------------+
+; Analysis & Synthesis Suppressed Messages ;
++------------------------------------------+
+The suppressed messages can be found in C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/output_files/TVP5147M1_decoder_interface.map.smsg.
+
+
