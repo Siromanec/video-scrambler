@@ -1,4 +1,4 @@
-
+// `define DEBUG;
 
 module hash_drbg #(parameter SEEDLEN = 256,
                     parameter RESEED_INTERVAL = 60 * 625) (
@@ -131,8 +131,9 @@ module hash_drbg #(parameter SEEDLEN = 256,
 							do_sha_reset_n_flag = 0;
 
 							do_sha_state <= SHA_IDLE;
-							$display("   hash=0x%0h", sha_digest[31:0]);
-
+							`ifdef DEBUG
+							    $display("   hash=0x%0h", sha_digest[31:0]);
+                            `endif
 					  end  // if (sha_digest_valid) begin
 				 end // SHA_WAIT
 
@@ -155,8 +156,9 @@ module hash_drbg #(parameter SEEDLEN = 256,
 						do_sha_request = 1;
 						// set the next state
 						init_state <= INIT_C_DONE;
-
-						$display("init_v=0x%0h", do_sha_digest[31:0]);
+						`ifdef DEBUG
+							$display("init_v=0x%0h", do_sha_digest[31:0]);
+						`endif
 				  end
 				  INIT_C_DONE: begin
 						// retrieve the the do_sha_digest
@@ -168,8 +170,9 @@ module hash_drbg #(parameter SEEDLEN = 256,
 						init_state <= INIT_IDLE; // skips INIT_IDLE because it is equivalent to begin_init
 						// reset the reseed counter
 						reseed_counter = 0;
-
-						$display("init_c=0x%0h", do_sha_digest[31:0]);
+						`ifdef DEBUG
+							$display("init_c=0x%0h", do_sha_digest[31:0]);
+						`endif
 				  end
 			 endcase // case (init_state)
 	   end // if began init and not doing a request
@@ -191,12 +194,16 @@ module hash_drbg #(parameter SEEDLEN = 256,
 					do_sha_request = 1;
 					// set the next state
 					generate_state <= GENERATE_UPDATE_CNT;
-					$display("old_v=0x%0h", v[31:0]);
+					`ifdef DEBUG
+						$display("old_v=0x%0h", v[31:0]);
+					`endif
 				end // GENERATE_RETURN_BITS_DONE
 				GENERATE_UPDATE_CNT: begin
 					// retrieve the the do_sha_digest and use it as intermideate instead of h
 					v = v + do_sha_digest + c + reseed_counter;
-					$display("new_v=0x%0h", v[31:0]);
+					`ifdef DEBUG
+						$display("new_v=0x%0h", v[31:0]);
+					`endif
 
 					// reset state
 					generate_next = 0;

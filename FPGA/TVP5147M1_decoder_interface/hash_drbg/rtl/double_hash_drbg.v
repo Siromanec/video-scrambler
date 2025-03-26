@@ -160,6 +160,8 @@ hash_drbg	b2v_inst2(
 
 assign	SHA_RESET_N = reset_n & _SHA_RESET_N;
 
+assign SHA_MODE = 1'b1;
+assign SHA_NEXT = 1'b0;
 
 sha256_core	b2v_inst5(
 	.clk(CLOCK),
@@ -172,13 +174,6 @@ sha256_core	b2v_inst5(
 	.digest_valid(SHA_DIGEST_VALID),
 	.digest(SHA_DIGEST));
 
-
-lpm_constant_0	b2v_inst6(
-	.result(SHA_MODE));
-
-
-lpm_constant_1	b2v_inst7(
-	.result(SHA_NEXT));
 
 assign	SLAVE_RESET_N = reset_n & MASTER_DRBG_NEXT_READY;
 
@@ -195,16 +190,3 @@ assign	reseed_counter = MASTER_RESEED_COUNTER;
 
 endmodule
 
-module lpm_constant_0(result);
-/* synthesis black_box */
-
-output [0:0] result;
-
-endmodule
-
-module lpm_constant_1(result);
-/* synthesis black_box */
-
-output [0:0] result;
-
-endmodule
