@@ -101,7 +101,18 @@ https://fpgasoftware.intel.com/eula.
 		(text "random_bits[255..0]" (rect 137 75 259 94)(font "Intel Clear" (font_size 8)))
 		(line (pt 280 80)(pt 264 80)(line_width 3))
 	)
+	(parameter
+		"SEED_GENERATOR_MAX_CYCLE"
+		"65536"
+		""
+	)
+	(parameter
+		"BITS_GENERATOR_MAX_CYCLE"
+		"37500"
+		""
+	)
 	(drawing
 		(rectangle (rect 16 16 264 144))
 	)
+	(annotation_block (parameter)(rect 296 -64 396 16))
 )

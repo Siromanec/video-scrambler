@@ -21,25 +21,25 @@ https://fpgasoftware.intel.com/eula.
 */
 (header "graphic" (version "1.4"))
 (global
-	(rect 168 928 456 968)
+	(rect 272 104 560 144)
 	(parameter)
 	(text "PARAM" (rect 3 -1 46 13)(font "Arial" (font_size 8)))
 	(text "DEFAULT VALUE" (rect 141 0 229 12)(font "Arial" ))
 	(text "SEED_GENERATOR_MAX_CYCLE" (rect 3 16 196 30)(font "Arial" (font_size 8)))
 	(text " NAME" (rect 108 0 142 12)(font "Arial" ))
-	(text "65536" (rect 141 16 176 30)(font "Arial" (font_size 8)))
+	(text "UD\"65536\"" (rect 141 16 176 30)(font "Arial" (font_size 8)))
 	(drawing
 		(line (pt 138 40)(pt 138 0))
 	)
 )
 (global
-	(rect 168 984 456 1024)
+	(rect 272 160 560 200)
 	(parameter)
 	(text "PARAM" (rect 3 -1 46 13)(font "Arial" (font_size 8)))
 	(text "DEFAULT VALUE" (rect 141 0 229 12)(font "Arial" ))
 	(text "BITS_GENERATOR_MAX_CYCLE" (rect 3 16 191 30)(font "Arial" (font_size 8)))
 	(text " NAME" (rect 108 0 142 12)(font "Arial" ))
-	(text "37500" (rect 141 16 176 30)(font "Arial" (font_size 8)))
+	(text "UD\"37500\"" (rect 141 16 176 30)(font "Arial" (font_size 8)))
 	(drawing
 		(line (pt 138 40)(pt 138 0))
 	)
@@ -158,7 +158,7 @@ https://fpgasoftware.intel.com/eula.
 )
 (pin
 	(output)
-	(rect 928 392 1104 408)
+	(rect 1104 392 1280 408)
 	(text "OUTPUT" (rect 1 0 39 10)(font "Arial" (font_size 6)))
 	(text "init_ready" (rect 90 0 137 17)(font "Intel Clear" ))
 	(pt 0 8)
@@ -386,41 +386,6 @@ https://fpgasoftware.intel.com/eula.
 	)
 )
 (symbol
-	(rect -312 848 -80 928)
-	(text "posedge_to_pulse" (rect 5 0 93 12)(font "Arial" ))
-	(text "inst12" (rect 8 64 37 76)(font "Arial" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "clk" (rect 0 0 14 12)(font "Arial" ))
-		(text "clk" (rect 21 27 35 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "signal_in[(WIDTH-1)..0]" (rect 0 0 115 12)(font "Arial" ))
-		(text "signal_in[(WIDTH-1)..0]" (rect 21 43 136 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48)(line_width 3))
-	)
-	(port
-		(pt 232 32)
-		(output)
-		(text "pulse_out" (rect 0 0 47 12)(font "Arial" ))
-		(text "pulse_out" (rect 172 27 219 39)(font "Arial" ))
-		(line (pt 232 32)(pt 216 32))
-	)
-	(parameter
-		"WIDTH"
-		"3"
-		""
-		(type "PARAMETER_UNSIGNED_DEC")	)
-	(drawing
-		(rectangle (rect 16 16 216 64))
-	)
-	(annotation_block (parameter)(rect -312 936 -130 974))
-)
-(symbol
 	(rect -376 984 -312 1032)
 	(text "AND2" (rect 1 0 25 10)(font "Arial" (font_size 6)))
 	(text "inst" (rect 3 37 20 49)(font "Arial" ))
@@ -451,41 +416,6 @@ https://fpgasoftware.intel.com/eula.
 		(line (pt 14 12)(pt 14 37))
 		(arc (pt 31 37)(pt 30 12)(rect 18 12 43 37))
 	)
-)
-(symbol
-	(rect -168 520 64 600)
-	(text "posedge_to_pulse" (rect 5 0 93 12)(font "Arial" ))
-	(text "inst13" (rect 8 64 36 81)(font "Intel Clear" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "clk" (rect 0 0 14 12)(font "Arial" ))
-		(text "clk" (rect 21 27 35 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "signal_in[(WIDTH-1)..0]" (rect 0 0 115 12)(font "Arial" ))
-		(text "signal_in[(WIDTH-1)..0]" (rect 21 43 136 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48)(line_width 3))
-	)
-	(port
-		(pt 232 32)
-		(output)
-		(text "pulse_out" (rect 0 0 47 12)(font "Arial" ))
-		(text "pulse_out" (rect 172 27 219 39)(font "Arial" ))
-		(line (pt 232 32)(pt 216 32))
-	)
-	(parameter
-		"WIDTH"
-		"2"
-		""
-		(type "PARAMETER_UNSIGNED_DEC")	)
-	(drawing
-		(rectangle (rect 16 16 216 64))
-	)
-	(annotation_block (parameter)(rect -168 480 14 518))
 )
 (symbol
 	(rect 1744 664 1808 712)
@@ -624,7 +554,7 @@ https://fpgasoftware.intel.com/eula.
 	)
 )
 (symbol
-	(rect -160 408 -112 440)
+	(rect -344 408 -296 440)
 	(text "WIRE" (rect 1 0 24 10)(font "Arial" (font_size 6)))
 	(text "inst15" (rect 3 21 31 38)(font "Intel Clear" ))
 	(port
@@ -648,7 +578,7 @@ https://fpgasoftware.intel.com/eula.
 	)
 )
 (symbol
-	(rect -160 440 -112 472)
+	(rect -344 440 -296 472)
 	(text "WIRE" (rect 1 0 24 10)(font "Arial" (font_size 6)))
 	(text "inst16" (rect 3 21 31 38)(font "Intel Clear" ))
 	(port
@@ -966,6 +896,90 @@ https://fpgasoftware.intel.com/eula.
 	)
 	(annotation_block (parameter)(rect 1056 904 1422 961))
 )
+(symbol
+	(rect -312 848 -80 960)
+	(text "posedge_to_pulse" (rect 5 0 93 12)(font "Arial" ))
+	(text "inst12" (rect 8 96 37 108)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "clk" (rect 0 0 14 12)(font "Arial" ))
+		(text "clk" (rect 21 27 35 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "signal_in[(WIDTH-1)..0]" (rect 0 0 115 12)(font "Arial" ))
+		(text "signal_in[(WIDTH-1)..0]" (rect 21 43 136 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48)(line_width 3))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "reset_n" (rect 0 0 36 12)(font "Arial" ))
+		(text "reset_n" (rect 21 59 57 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64))
+	)
+	(port
+		(pt 232 32)
+		(output)
+		(text "pulse_out" (rect 0 0 47 12)(font "Arial" ))
+		(text "pulse_out" (rect 172 27 211 39)(font "Arial" ))
+		(line (pt 232 32)(pt 216 32))
+	)
+	(parameter
+		"WIDTH"
+		"3"
+		""
+		(type "PARAMETER_UNSIGNED_DEC")	)
+	(drawing
+		(rectangle (rect 16 16 216 96))
+	)
+	(annotation_block (parameter)(rect -312 936 -130 974))
+)
+(symbol
+	(rect -352 520 -120 632)
+	(text "posedge_to_pulse" (rect 5 0 93 12)(font "Arial" ))
+	(text "inst13" (rect 8 96 37 108)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "clk" (rect 0 0 14 12)(font "Arial" ))
+		(text "clk" (rect 21 27 35 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "signal_in[(WIDTH-1)..0]" (rect 0 0 115 12)(font "Arial" ))
+		(text "signal_in[(WIDTH-1)..0]" (rect 21 43 136 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48)(line_width 3))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "reset_n" (rect 0 0 36 12)(font "Arial" ))
+		(text "reset_n" (rect 21 59 57 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64))
+	)
+	(port
+		(pt 232 32)
+		(output)
+		(text "pulse_out" (rect 0 0 47 12)(font "Arial" ))
+		(text "pulse_out" (rect 172 27 211 39)(font "Arial" ))
+		(line (pt 232 32)(pt 216 32))
+	)
+	(parameter
+		"WIDTH"
+		"2"
+		""
+		(type "PARAMETER_UNSIGNED_DEC")	)
+	(drawing
+		(rectangle (rect 16 16 216 96))
+	)
+	(annotation_block (parameter)(rect -352 480 -170 518))
+)
 (connector
 	(text "CLOCK" (rect 154 680 189 697)(font "Intel Clear" ))
 	(pt 304 696)
@@ -1097,19 +1111,9 @@ https://fpgasoftware.intel.com/eula.
 	(color 255 170 0)
 )
 (connector
-	(text "SHA_RESET_N" (rect 1658 680 1727 697)(font "Intel Clear" ))
-	(pt 1744 696)
-	(pt 1648 696)
-	(color 255 170 0)
-)
-(connector
 	(text "RESET_N" (rect 1658 664 1701 681)(font "Intel Clear" ))
 	(pt 1744 680)
 	(pt 1648 680)
-)
-(connector
-	(pt 1912 688)
-	(pt 1808 688)
 )
 (connector
 	(text "RESET_N" (rect 682 952 725 969)(font "Intel Clear" ))
@@ -1161,27 +1165,6 @@ https://fpgasoftware.intel.com/eula.
 	(pt 104 712)
 )
 (connector
-	(pt -192 520)
-	(pt -192 552)
-)
-(connector
-	(pt -192 552)
-	(pt -168 552)
-)
-(connector
-	(text "CLOCK" (rect -342 504 -307 521)(font "Intel Clear" ))
-	(pt -352 520)
-	(pt -192 520)
-)
-(connector
-	(pt 120 552)
-	(pt 64 552)
-)
-(connector
-	(pt 120 664)
-	(pt 120 552)
-)
-(connector
 	(text "CLOCK" (rect -486 832 -451 849)(font "Intel Clear" ))
 	(pt -496 848)
 	(pt -336 848)
@@ -1201,14 +1184,6 @@ https://fpgasoftware.intel.com/eula.
 	(bus)
 )
 (connector
-	(pt 104 712)
-	(pt 104 880)
-)
-(connector
-	(pt 104 880)
-	(pt -80 880)
-)
-(connector
 	(text "RESET_N" (rect -14 664 29 681)(font "Intel Clear" ))
 	(pt -24 680)
 	(pt 72 680)
@@ -1218,12 +1193,6 @@ https://fpgasoftware.intel.com/eula.
 	(pt 120 680)
 	(pt 304 680)
 	(color 0 170 0)
-)
-(connector
-	(text "MASTER_DRBG_UPDATE_IN[1..0]" (rect -312 552 -152 569)(font "Intel Clear" ))
-	(pt -304 568)
-	(pt -168 568)
-	(bus)
 )
 (connector
 	(text "MASTER_DRBG_NEXT_IN[2]" (rect -278 992 -143 1009)(font "Intel Clear" ))
@@ -1259,27 +1228,6 @@ https://fpgasoftware.intel.com/eula.
 	(text "MASTER_DRBG_NEXT" (rect -334 1064 -227 1081)(font "Intel Clear" ))
 	(pt -200 1080)
 	(pt -336 1080)
-)
-(connector
-	(text "MASTER_DRBG_UPDATE" (rect -294 440 -173 457)(font "Intel Clear" ))
-	(pt -160 456)
-	(pt -328 456)
-)
-(connector
-	(text "MASTER_DRBG_DO_RESEED" (rect -318 408 -178 425)(font "Intel Clear" ))
-	(pt -160 424)
-	(pt -336 424)
-	(color 0 170 0)
-)
-(connector
-	(text "MASTER_DRBG_UPDATE_IN[1]" (rect -110 408 39 425)(font "Intel Clear" ))
-	(pt -112 424)
-	(pt 40 424)
-)
-(connector
-	(text "MASTER_DRBG_UPDATE_IN[0]" (rect -110 440 39 457)(font "Intel Clear" ))
-	(pt -112 456)
-	(pt 40 456)
 )
 (connector
 	(text "MASTER_DRBG_NEXT_READY" (rect 634 632 781 649)(font "Intel Clear" ))
@@ -1372,10 +1320,6 @@ https://fpgasoftware.intel.com/eula.
 	(pt 1048 1040)
 )
 (connector
-	(pt 832 976)
-	(pt 1048 976)
-)
-(connector
 	(pt 1048 1040)
 	(pt 1056 1040)
 )
@@ -1437,4 +1381,93 @@ https://fpgasoftware.intel.com/eula.
 	(pt 1416 688)
 	(pt 1584 688)
 	(color 255 170 0)
+)
+(connector
+	(pt 104 712)
+	(pt 104 880)
+)
+(connector
+	(text "MASTER_DRBG_NEXT_OUT" (rect -78 864 56 881)(font "Intel Clear" ))
+	(pt -80 880)
+	(pt 104 880)
+)
+(connector
+	(pt -376 520)
+	(pt -376 552)
+)
+(connector
+	(pt -376 552)
+	(pt -352 552)
+)
+(connector
+	(text "CLOCK" (rect -526 504 -491 521)(font "Intel Clear" ))
+	(pt -536 520)
+	(pt -376 520)
+)
+(connector
+	(pt 120 664)
+	(pt 120 552)
+)
+(connector
+	(text "MASTER_DRBG_UPDATE_IN[1..0]" (rect -496 552 -336 569)(font "Intel Clear" ))
+	(pt -488 568)
+	(pt -352 568)
+	(bus)
+)
+(connector
+	(text "MASTER_DRBG_UPDATE" (rect -478 440 -357 457)(font "Intel Clear" ))
+	(pt -344 456)
+	(pt -512 456)
+)
+(connector
+	(text "MASTER_DRBG_DO_RESEED" (rect -502 408 -362 425)(font "Intel Clear" ))
+	(pt -344 424)
+	(pt -520 424)
+	(color 0 170 0)
+)
+(connector
+	(text "MASTER_DRBG_UPDATE_IN[1]" (rect -294 408 -145 425)(font "Intel Clear" ))
+	(pt -296 424)
+	(pt -144 424)
+)
+(connector
+	(text "MASTER_DRBG_UPDATE_IN[0]" (rect -294 440 -145 457)(font "Intel Clear" ))
+	(pt -296 456)
+	(pt -144 456)
+)
+(connector
+	(text "MASTER_DRBG_UPDATE_OUT" (rect -118 536 30 553)(font "Intel Clear" ))
+	(pt -120 552)
+	(pt 120 552)
+)
+(connector
+	(text "SLAVE_RESET_N" (rect 842 960 923 977)(font "Intel Clear" ))
+	(pt 832 976)
+	(pt 1048 976)
+)
+(connector
+	(text "INIT_READY" (rect 938 384 995 401)(font "Intel Clear" ))
+	(pt 928 400)
+	(pt 1104 400)
+)
+(connector
+	(text "SHA_RESET_N" (rect 1818 672 1887 689)(font "Intel Clear" ))
+	(pt 1912 688)
+	(pt 1808 688)
+)
+(connector
+	(text "_SHA_RESET_N" (rect 1658 680 1733 697)(font "Intel Clear" ))
+	(pt 1744 696)
+	(pt 1648 696)
+	(color 255 170 0)
+)
+(connector
+	(text "RESET_N" (rect -398 896 -355 913)(font "Intel Clear" ))
+	(pt -408 912)
+	(pt -312 912)
+)
+(connector
+	(text "RESET_N" (rect -438 568 -395 585)(font "Intel Clear" ))
+	(pt -448 584)
+	(pt -352 584)
 )

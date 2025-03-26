@@ -85,7 +85,7 @@ module hash_drbg #(parameter SEEDLEN = 256,
 
 
 
-    assign do_reseed = reseed_counter >= RESEED_INTERVAL;  // master will need to call reset, set new entropy and then call update
+    assign do_reseed = reseed_counter >= RESEED_INTERVAL + 1;  // master will need to call reset, set new entropy and then call update
 
     assign init_ready = init_ready_new && !do_reseed;
     assign next_ready = next_ready_new && !do_reseed;
@@ -131,7 +131,7 @@ module hash_drbg #(parameter SEEDLEN = 256,
 							do_sha_reset_n_flag = 0;
 
 							do_sha_state <= SHA_IDLE;
-							$display("hash=0x%0h", sha_digest[31:0]);
+							$display("   hash=0x%0h", sha_digest[31:0]);
 
 					  end  // if (sha_digest_valid) begin
 				 end // SHA_WAIT
@@ -167,7 +167,7 @@ module hash_drbg #(parameter SEEDLEN = 256,
 						begin_init = 0;
 						init_state <= INIT_IDLE; // skips INIT_IDLE because it is equivalent to begin_init
 						// reset the reseed counter
-						reseed_counter = 1;
+						reseed_counter = 0;
 
 						$display("init_c=0x%0h", do_sha_digest[31:0]);
 				  end
@@ -197,7 +197,7 @@ module hash_drbg #(parameter SEEDLEN = 256,
 					// retrieve the the do_sha_digest and use it as intermideate instead of h
 					v = v + do_sha_digest + c + reseed_counter;
 					$display("new_v=0x%0h", v[31:0]);
-					reseed_counter = reseed_counter + 1;
+
 					// reset state
 					generate_next = 0;
 					// set external state
@@ -261,15 +261,20 @@ module hash_drbg #(parameter SEEDLEN = 256,
 				end
 			
 			end else if (!generate_next && next) begin // if (update) begin
-				// set the message for the next hash
-				do_sha_message = {v, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
-				// prepare control signals for do_sha
-				do_sha_request = 1;
-				// set external state
-				next_ready_new = 0;
-				// set the next state
-				generate_next = 1;
-				generate_state <= GENERATE_RETURN_BITS_DONE;
+			    reseed_counter = reseed_counter + 1;
+
+			    if (reseed_counter <= RESEED_INTERVAL) begin
+
+                    // set the message for the next hash
+                    do_sha_message = {v, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
+                    // prepare control signals for do_sha
+                    do_sha_request = 1;
+                    // set external state
+                    next_ready_new = 0;
+                    // set the next state
+                    generate_next = 1;
+                    generate_state <= GENERATE_RETURN_BITS_DONE;
+				end
 			end else if (generate_next  && !next_ready) begin  // if generating next and not doing a request
 				do_next;
 				

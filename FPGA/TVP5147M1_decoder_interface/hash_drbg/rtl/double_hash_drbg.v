@@ -15,7 +15,7 @@
 
 // PROGRAM		"Quartus Prime"
 // VERSION		"Version 23.1std.1 Build 993 05/14/2024 SC Lite Edition"
-// CREATED		"Wed Mar 26 15:20:59 2025"
+// CREATED		"Wed Mar 26 18:02:51 2025"
 
 module double_hash_drbg(
 	is_master_mode,
@@ -46,17 +46,20 @@ output wire	next_bits_ready;
 output wire	[255:0] random_bits;
 output wire	[63:0] reseed_counter;
 
+wire	_SHA_RESET_N;
 wire	CLOCK;
 wire	MASTER_DRBG_DO_RESEED;
 wire	[255:0] MASTER_DRBG_ENTROPY;
 wire	MASTER_DRBG_INIT_READY;
 wire	MASTER_DRBG_NEXT;
 wire	[2:0] MASTER_DRBG_NEXT_IN;
+wire	MASTER_DRBG_NEXT_OUT;
 wire	MASTER_DRBG_NEXT_READY;
 wire	[255:0] MASTER_DRBG_RANDOM_BITS;
 wire	MASTER_DRBG_RESET_N;
 wire	MASTER_DRBG_UPDATE;
 wire	[1:0] MASTER_DRBG_UPDATE_IN;
+wire	MASTER_DRBG_UPDATE_OUT;
 wire	[63:0] MASTER_RESEED_COUNTER;
 wire	MASTER_SHA_RESET_N;
 wire	[511:0] SHA_BLOCK;
@@ -72,11 +75,8 @@ wire	SLAVE_DRBG_INIT_READY;
 wire	SLAVE_DRBG_NEXT;
 wire	SLAVE_DRBG_NEXT_READY;
 wire	[255:0] SLAVE_DRBG_RANDOM_BITS;
+wire	SLAVE_RESET_N;
 wire	SLAVE_SHA_RESET_N;
-wire	SYNTHESIZED_WIRE_0;
-wire	SYNTHESIZED_WIRE_1;
-wire	SYNTHESIZED_WIRE_2;
-wire	SYNTHESIZED_WIRE_3;
 
 
 
@@ -85,10 +85,10 @@ assign	MASTER_DRBG_NEXT_IN[2] = SLAVE_DRBG_DO_RESEED & is_master_mode;
 
 
 hash_drbg	b2v_inst1(
-	.update(SYNTHESIZED_WIRE_0),
+	.update(MASTER_DRBG_UPDATE_OUT),
 	.reset_n(MASTER_DRBG_RESET_N),
 	.clk(CLOCK),
-	.next(SYNTHESIZED_WIRE_1),
+	.next(MASTER_DRBG_NEXT_OUT),
 	.sha_ready(SHA_READY),
 	.sha_digest_valid(SHA_DIGEST_VALID),
 	.entropy(MASTER_DRBG_ENTROPY),
@@ -101,7 +101,7 @@ hash_drbg	b2v_inst1(
 	.random_bits(MASTER_DRBG_RANDOM_BITS),
 	.reseed_counter_out(MASTER_RESEED_COUNTER),
 	.sha_block(SHA_BLOCK));
-	defparam	b2v_inst1.RESEED_INTERVAL = 65536;
+	defparam	b2v_inst1.RESEED_INTERVAL = SEED_GENERATOR_MAX_CYCLE;
 	defparam	b2v_inst1.SEEDLEN = 256;
 
 assign	MASTER_DRBG_RESET_N = reset_n;
@@ -113,15 +113,17 @@ assign	MASTER_DRBG_NEXT_IN[1] = MASTER_DRBG_INIT_READY;
 
 posedge_to_pulse	b2v_inst12(
 	.clk(CLOCK),
+	.reset_n(reset_n),
 	.signal_in(MASTER_DRBG_NEXT_IN),
-	.pulse_out(SYNTHESIZED_WIRE_1));
+	.pulse_out(MASTER_DRBG_NEXT_OUT));
 	defparam	b2v_inst12.WIDTH = 3;
 
 
 posedge_to_pulse	b2v_inst13(
 	.clk(CLOCK),
+	.reset_n(reset_n),
 	.signal_in(MASTER_DRBG_UPDATE_IN),
-	.pulse_out(SYNTHESIZED_WIRE_0));
+	.pulse_out(MASTER_DRBG_UPDATE_OUT));
 	defparam	b2v_inst13.WIDTH = 2;
 
 assign	MASTER_DRBG_NEXT_IN[0] = MASTER_DRBG_NEXT;
@@ -133,12 +135,12 @@ assign	MASTER_DRBG_UPDATE_IN[1] = MASTER_DRBG_DO_RESEED;
 assign	MASTER_DRBG_UPDATE_IN[0] = MASTER_DRBG_UPDATE;
 
 
-assign	SHA_RESET_N = SLAVE_SHA_RESET_N | MASTER_SHA_RESET_N;
+assign	_SHA_RESET_N = SLAVE_SHA_RESET_N | MASTER_SHA_RESET_N;
 
 
 hash_drbg	b2v_inst2(
 	.update(MASTER_DRBG_NEXT_READY),
-	.reset_n(SYNTHESIZED_WIRE_2),
+	.reset_n(SLAVE_RESET_N),
 	.clk(CLOCK),
 	.next(SLAVE_DRBG_NEXT),
 	.sha_ready(SHA_READY),
@@ -153,15 +155,15 @@ hash_drbg	b2v_inst2(
 	.random_bits(SLAVE_DRBG_RANDOM_BITS),
 	
 	.sha_block(SHA_BLOCK));
-	defparam	b2v_inst2.RESEED_INTERVAL = 37500;
+	defparam	b2v_inst2.RESEED_INTERVAL = BITS_GENERATOR_MAX_CYCLE;
 	defparam	b2v_inst2.SEEDLEN = 256;
 
-assign	SYNTHESIZED_WIRE_3 = reset_n & SHA_RESET_N;
+assign	SHA_RESET_N = reset_n & _SHA_RESET_N;
 
 
 sha256_core	b2v_inst5(
 	.clk(CLOCK),
-	.reset_n(SYNTHESIZED_WIRE_3),
+	.reset_n(SHA_RESET_N),
 	.init(SHA_INIT),
 	.next(SHA_NEXT),
 	.mode(SHA_MODE),
@@ -178,7 +180,7 @@ lpm_constant_0	b2v_inst6(
 lpm_constant_1	b2v_inst7(
 	.result(SHA_NEXT));
 
-assign	SYNTHESIZED_WIRE_2 = reset_n & MASTER_DRBG_NEXT_READY;
+assign	SLAVE_RESET_N = reset_n & MASTER_DRBG_NEXT_READY;
 
 assign	init_ready = MASTER_DRBG_INIT_READY & SLAVE_DRBG_INIT_READY;
 
