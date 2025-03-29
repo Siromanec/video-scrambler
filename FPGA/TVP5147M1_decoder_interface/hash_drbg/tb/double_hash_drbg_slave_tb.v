@@ -1,5 +1,5 @@
 `timescale 1ns / 1ns
-module double_hash_drbg_tb;
+module double_hash_drbg_slave_tb;
 
 /*module double_hash_drbg(
 	is_master_mode,
@@ -31,7 +31,7 @@ localparam	SEED_GENERATOR_MAX_CYCLE = 3;
 localparam	BITS_GENERATOR_MAX_CYCLE = 3;
 
 localparam TOTAL_CYCLES = BITS_GENERATOR_MAX_CYCLE * SEED_GENERATOR_MAX_CYCLE;
-
+// external_sequence = [1, 2, 3, 5, 20, 4, 5]
 double_hash_drbg double_hash_drbg_0 (
     .is_master_mode(is_master_mode),
     .reset_n(reset_n),
@@ -61,7 +61,7 @@ time generated_counter;
 initial begin
     reseed_counter_out = 0;
     reset_n = 1'b0;
-    is_master_mode = 1'b1;
+    is_master_mode = 1'b0;
     init = 1'b0;
     next_seed = 1'b0;
     next_bits = 1'b0;
@@ -88,6 +88,7 @@ always @(posedge init_ready) begin
     end
 
 end
+
 always @(negedge init_ready) begin
     $display("\nInit reset\n");
 end
@@ -103,5 +104,9 @@ always @(posedge next_bits_ready) begin
         $display("\nTestbench finished\n");
         $stop;
     end
+end
+
+always @(posedge clk) begin
+//    if (reseed_counter == )
 end
 endmodule
