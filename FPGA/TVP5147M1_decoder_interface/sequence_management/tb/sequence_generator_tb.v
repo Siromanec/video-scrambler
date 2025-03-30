@@ -40,12 +40,7 @@ module sequence_generator_tb;
         expected_val = {identifier_const_id, sequence_sig};
 
         load_sig = 1;
-        for (j=0; j < 36; j = j + 1) begin
-            #1;
-            clock_sig = 1;
-            #1;
-            clock_sig = 0;
-        end
+
 
 
         for (i=0; i < 40; i=i+1) begin

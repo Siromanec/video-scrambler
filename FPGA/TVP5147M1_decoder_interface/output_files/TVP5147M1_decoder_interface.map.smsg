@@ -1,4 +1,0 @@
-Warning (10273): Verilog HDL warning at hash_drbg.v(101): extended using "x" or "z" File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/hash_drbg.v Line: 101
-Warning (10268): Verilog HDL information at hash_drbg.v(218): always construct contains both blocking and non-blocking assignments File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/hash_drbg.v Line: 218
-Info (10281): Verilog HDL Declaration information at hash_drbg.v(22): object "sha_init" differs only in case from object "SHA_INIT" in the same scope File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/hash_drbg/rtl/hash_drbg.v Line: 22
-Info (10281): Verilog HDL Declaration information at i2c_master.v(92): object "SUB_ADDR" differs only in case from object "sub_addr" in the same scope File: C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/i2c_master.v Line: 92

@@ -16,13 +16,13 @@ module clk_div36 (
                 counter <= 0;
                 clk_out <= ~clk_out;
             end else begin
-                counter <= counter + 1;
+                counter <= counter + 1'd1;
             end
         end
     end
 endmodule
 
-module sequence_generator #(parameter BLACK_LEVEL = 282, parameter WHITE_LEVEL = 966, parameter CHROMA_NEUTRAL = 512)(
+module sequence_generator #(parameter BLACK_LEVEL = 10'd282, parameter WHITE_LEVEL = 10'd966, parameter CHROMA_NEUTRAL = 10'd512)(
         input	  clock,
         input	[31:0]  sequence,
         input	  enable,
