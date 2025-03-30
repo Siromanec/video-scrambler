@@ -56,30 +56,40 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name VERILOG_FILE sequence_management/tb/sequence_generator_tb.v
-set_global_assignment -name VERILOG_FILE sequence_management/rtl/identifier_const.v
-set_global_assignment -name VERILOG_FILE sequence_management/rtl/sequence_generator.v
-set_global_assignment -name VERILOG_FILE sequence_management/rtl/sequence_detector.v
-set_global_assignment -name BDF_FILE hash_drbg/rtl/double_hash_drbg.bdf
-set_global_assignment -name VERILOG_FILE hash_drbg/rtl/hash_drbg.v
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name VERILOG_FILE src/utils/tb/posedge_to_pulse_tb.v
+set_global_assignment -name VERILOG_FILE src/utils/rtl/posedge_to_pulse.v
+set_global_assignment -name VERILOG_FILE src/sequence_management/tb/sequence_generator_tb.v
+set_global_assignment -name VERILOG_FILE src/sequence_management/tb/sequence_detector_tb.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/hash_drbg_tb.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/double_hash_drbg_tb.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/double_hash_drbg_slave_tb.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/double_hash_drbg_randomness_tb.v
+set_global_assignment -name VERILOG_FILE src/mem_config/tb/cfg_reader_tb.v
+set_global_assignment -name VERILOG_FILE include/i2c/i2c_master.v
+set_global_assignment -name VERILOG_FILE src/sequence_management/rtl/sequence_shiftreg_out.v
+set_global_assignment -name QIP_FILE src/sequence_management/rtl/sequence_shiftreg_out.qip
+set_global_assignment -name VERILOG_FILE src/sequence_management/rtl/sequence_shiftreg_in.v
+set_global_assignment -name QIP_FILE src/sequence_management/rtl/sequence_shiftreg_in.qip
+set_global_assignment -name VERILOG_FILE src/sequence_management/rtl/sequence_generator.v
+set_global_assignment -name VERILOG_FILE src/sequence_management/rtl/sequence_detector.v
+set_global_assignment -name VERILOG_FILE src/sequence_management/rtl/identifier_const.v
+set_global_assignment -name VERILOG_FILE src/mem_config/rtl/rom_1.v
+set_global_assignment -name QIP_FILE src/mem_config/rtl/rom_1.qip
+set_global_assignment -name VERILOG_FILE src/mem_config/rtl/i2c_master_controller.v
+set_global_assignment -name VERILOG_FILE src/mem_config/rtl/cfg_reader.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/lpm_constant_1.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/lpm_constant_0.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/hash_drbg.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/double_hash_drbg.v
+set_global_assignment -name BDF_FILE src/hash_drbg/rtl/double_hash_drbg.bdf
 set_global_assignment -name VERILOG_FILE include/sha256/sha256_w_mem.v
 set_global_assignment -name VERILOG_FILE include/sha256/sha256_k_constants.v
 set_global_assignment -name VERILOG_FILE include/sha256/sha256_core.v
 set_global_assignment -name VERILOG_FILE include/sha256/sha256.v
 set_global_assignment -name BDF_FILE TVP5147M1_decoder_interface.bdf
-set_global_assignment -name VERILOG_FILE i2c_master_controller.v
-set_global_assignment -name QIP_FILE rom_1.qip
-set_global_assignment -name VERILOG_FILE i2c_master_controller_tb.v
-set_global_assignment -name VERILOG_FILE i2c_master.v
-set_global_assignment -name VERILOG_FILE cfg_reader.v
-set_global_assignment -name VERILOG_FILE cfg_reader_tb.v
 set_global_assignment -name VERILOG_FILE TVP5147M1_decoder.v
 set_global_assignment -name VERILOG_FILE utils/posedge_to_pulse.v
-set_global_assignment -name QIP_FILE sequence_shiftreg.qip
-set_global_assignment -name QIP_FILE sequence_management/rtl/sequence_shiftreg.qip
-set_global_assignment -name QIP_FILE sequence_management/rtl/sequence_shiftreg_out.qip
-set_global_assignment -name QIP_FILE sequence_management/rtl/sequence_shiftreg_in.qip
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
