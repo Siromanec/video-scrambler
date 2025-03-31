@@ -1,6 +1,6 @@
 
 
-module sequence_detector#(parameter BLACK_LEVEL = 282, parameter WHITE_LEVEL = 966, parameter TRIGGER_WIDTH = 256)(
+module sequence_detector#(parameter BLACK_LEVEL = 10'h040, parameter WHITE_LEVEL = 10'h0AC, parameter TRIGGER_WIDTH = 10'h100)(
    input	          clock,
    input	  [9:0]   sequence_in,
    input           reset_n,

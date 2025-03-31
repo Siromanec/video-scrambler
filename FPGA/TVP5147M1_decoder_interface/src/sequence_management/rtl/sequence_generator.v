@@ -22,13 +22,15 @@ module clk_div36 (
     end
 endmodule
 
-module sequence_generator #(parameter BLACK_LEVEL = 10'd282, parameter WHITE_LEVEL = 10'd966, parameter CHROMA_NEUTRAL = 10'd512)(
-        input	  clock,
-        input	[31:0]  sequence,
-        input	  enable,
-        input	  load,
-        output	  [9:0] sequence_out
-    );
+module sequence_generator #(parameter BLACK_LEVEL = 10'h040,
+                            parameter WHITE_LEVEL = 10'h0AC,
+                            parameter CHROMA_NEUTRAL = 10'h200) // nominal range as specified by Rec. ITU-R BT.601-7, p. 17
+                            (
+                             input	  clock,
+                             input	[31:0]  sequence,
+                             input	  enable,
+                             input	  load,
+                             output	  [9:0] sequence_out);
 
     wire [7:0] id;
     wire [39:0] data_sig;
