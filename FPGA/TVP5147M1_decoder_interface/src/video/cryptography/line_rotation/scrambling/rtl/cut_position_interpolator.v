@@ -14,8 +14,8 @@ module cut_position_interpolator(
    // thus offset of 4 is added
    localparam SCALE = 14'b1011; // 1.011 = 1.375
 
-   localparam UPSAMPLE_SCALE = 14'd4;
-   localparam OFFSET = 14'd4;
+   localparam UPSAMPLE_SCALE = 11'd4;
+   localparam OFFSET = 11'd4;
 
 
    assign cut_position = ((((raw_cut_position * SCALE) >> 3) + OFFSET)) * UPSAMPLE_SCALE;
