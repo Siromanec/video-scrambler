@@ -18,12 +18,13 @@ module line_rotator #(parameter MODE = 0)(
 	// TODO: add data valid flag
     reg [9:0] line_buffer [0:1][0:MAX_BUFFER_SIZE-1];
 
-    wire [ADDRESS_BITS-1:0] cut_position;
+    wire [ADDRESS_BITS-1:0] cut_position_wire;
+    reg [ADDRESS_BITS-1:0] cut_position;
 
 
     cut_position_interpolator cut_position_interpolator_inst(
                .raw_cut_position(raw_cut_position),
-               .cut_position(cut_position)
+               .cut_position(cut_position_wire)
     );
 
 
@@ -47,6 +48,7 @@ module line_rotator #(parameter MODE = 0)(
 	 endfunction
 	 localparam GARBAGE_LINES = 2;
     reg [1:0] line_switch_count;
+
     always @(posedge clk or negedge reset_n) begin
         if (!reset_n) begin
 
@@ -63,11 +65,12 @@ module line_rotator #(parameter MODE = 0)(
 
         end else begin
             if (prev_H!=H && !H) begin // at negative edge reset counters. Has to be done on the same cloock tick
+
 					if (MODE == MODE_SCRAMBLER) begin
 						line_buffer[!switch_buffer][0] <= data_in;
-						data_out <= line_buffer[switch_buffer][get_read_idx(0, cut_position, H, V)];
+						data_out <= line_buffer[switch_buffer][get_read_idx(0, cut_position_wire, H, V)];
 					end else if (MODE == MODE_DESCRAMBLER) begin
-						line_buffer[!switch_buffer][get_read_idx(0, cut_position, H, V)] <= data_in;
+						line_buffer[!switch_buffer][get_read_idx(0, cut_position_wire, H, V)] <= data_in;
 						data_out <= line_buffer[switch_buffer][0];
 					end
 
@@ -75,7 +78,7 @@ module line_rotator #(parameter MODE = 0)(
 					   line_switch_count <= line_switch_count + 1;
 					else
 					   data_valid <= 0;
-
+               cut_position <= cut_position_wire;
 					switch_buffer <= !switch_buffer;
 					write_index <= 1;
 					prev_H <= H;
