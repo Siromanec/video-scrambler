@@ -1,3 +1,4 @@
+`define DEBUG
 module line_rotator #(parameter MODE = 0)(
     input wire clk,
     input wire reset_n,
@@ -13,9 +14,8 @@ module line_rotator #(parameter MODE = 0)(
 	 localparam MODE_SCRAMBLER = 0,
 				   MODE_DESCRAMBLER = 1;
 
-
+	// TODO: add data valid flag
     reg [9:0] line_buffer [0:1][0:MAX_BUFFER_SIZE-1];
-//    reg [9:0] line_buffer_1 [0:MAX_BUFFER_SIZE-1][];
 
     wire [ADDRESS_BITS-1:0] cut_position;
 
@@ -37,28 +37,29 @@ module line_rotator #(parameter MODE = 0)(
 		begin
 			if (write_index < ACTIVE_LINE_SIZE && !H && !V) begin
 				if (write_index + cut_position < ACTIVE_LINE_SIZE)
-					get_read_idx = (write_index + cut_position);
+					get_read_idx = write_index + cut_position;
 				else
-					get_read_idx = (write_index + cut_position - ACTIVE_LINE_SIZE);
+					get_read_idx = write_index + cut_position - ACTIVE_LINE_SIZE;
 			end else
 				get_read_idx = write_index;
 		end
 	 endfunction
 	 
-	 
+
     always @(posedge clk or negedge reset_n) begin
         if (!reset_n) begin
 
             switch_buffer <= 0;
             data_out <= 0;
-            prev_H <= 0;
+            prev_H <= H;
 
-            write_index <= 0;
+				if (!H)
+					write_index <= 0;
+				else
+					write_index <= ACTIVE_LINE_SIZE;
 
         end else begin
-				// todo something here does not allow the design to fit
-            if (prev_H!=H && H == 0 || write_index >= 2**ADDRESS_BITS) begin // at negative edge reset counters. Has to be done on the same cloock tick
-				
+            if (prev_H!=H && !H) begin // at negative edge reset counters. Has to be done on the same cloock tick
 					if (MODE == MODE_SCRAMBLER) begin
 						line_buffer[!switch_buffer][0] <= data_in;
 						data_out <= line_buffer[switch_buffer][get_read_idx(0, cut_position, H, V)];

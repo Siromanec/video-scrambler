@@ -10,7 +10,7 @@ module cut_position_interpolator_tb;
    initial begin
        raw_cut_position_sig = 69;
        #1;
-       $display("Expected %d, actual %d", 392, cut_position_sig);
+       $display("Expected %d, actual %d", 392 , cut_position_sig);
        raw_cut_position_sig = 255;
        #1;
        $display("Expected %d, actual %d", 1416, cut_position_sig);

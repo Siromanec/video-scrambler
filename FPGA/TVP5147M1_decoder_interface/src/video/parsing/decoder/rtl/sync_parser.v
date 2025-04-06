@@ -19,9 +19,9 @@ module sync_parser (
    always @(posedge clk or negedge reset_n) begin
       if (!reset_n) begin
          state <= PREAMBLE_0_STATE;
-         F <= 0;
-         V <= 0;
-         H <= 0;
+         F <= 1;
+         V <= 1;
+         H <= 1; // one because followinfg modules react to the negative edge 
       end else begin
          if (bt_656[9:2] == PREAMBLE_0) begin
             state <= PREAMBLE_1_STATE;

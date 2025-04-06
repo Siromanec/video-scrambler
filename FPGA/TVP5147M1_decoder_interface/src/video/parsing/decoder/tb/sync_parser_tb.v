@@ -1,6 +1,8 @@
 `timescale 10ns / 1ns
 module sync_parser_tb;
-   localparam VIDEO_FILE_LOCATION = "video_f60.bin";
+//   localparam VIDEO_FILE_LOCATION = "video_f60.bin";
+// localparam VIDEO_FILE_LOCATION = "video_f60_scrambled.bin";
+ localparam VIDEO_FILE_LOCATION = "video_f60_descrambled.bin";
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
@@ -69,9 +71,10 @@ module sync_parser_tb;
          $fgets(video_value, fd);
          bt_656_sig = {video_value, 2'b00};
          #1;
-         clk_sig = 1;
-         #1;
          clk_sig = 0;
+         #1;
+         clk_sig = 1;
+
          if (H_sig != H_prev) begin
             if (H_sig == 1) begin
                H_count = H_count + 1;

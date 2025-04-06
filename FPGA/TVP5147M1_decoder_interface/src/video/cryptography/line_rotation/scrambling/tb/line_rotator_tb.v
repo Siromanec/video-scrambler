@@ -79,6 +79,9 @@ module line_rotator_tb;
       bt_656_sig = 0;
 
       #1;
+      clk_sig = 0;
+      #1;
+      clk_sig = 1;
       reset_n_sig = 1;
 
 
@@ -89,20 +92,20 @@ module line_rotator_tb;
             line_store[j] = video_value;
 //            line_store_out[j] = 0;
          end
-//         if (!V_sig) begin
-//            seed = ;
+         if (!V_sig) begin
             cut_position = {$random(seed)} % 256;
-//         end
-         for (j= 0; j != (LINE_SIZE - 1); j = j + 1) begin
+         end
+         for (j= 0; j < LINE_SIZE; j = j + 1) begin
 
 //            $display("cut_position: %d", cut_position);
             video_value = line_store[j];
 
             bt_656_sig = {video_value, 2'b00};
-            #1;
-            clk_sig = 1;
+
             #1;
             clk_sig = 0;
+            #1;
+            clk_sig = 1;
             // resulting video will be shifted by one line
             // because the initial output is an empty line
             // but i don't care because it will be a part of a stream
