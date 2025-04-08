@@ -104,6 +104,7 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
 		LOGIC CONTROL
 	-----------------------------------
 	*/
+	reg do_write_lock;
 	reg prev_write_done, prev_read_done, prev_V, prev_H;
 	wire write_done_rise =  write_done && !prev_write_done;
 	wire read_done_rise  =  read_done  && !prev_read_done;
@@ -119,6 +120,7 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
 			do_read <= 0;
 			do_write <= 1;
 			current_write_buffer <= 0;
+			do_write_lock <= 0;
 		end else begin
 			prev_write_done <= write_done;
 			prev_read_done <= read_done;
@@ -126,13 +128,19 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
 			prev_H <= H;
 			if (write_done_rise || read_done_rise || first_write_iteration || H_rise || V_fall) begin
 				if (write_done && (read_done || first_write_iteration)) begin
-
+               // todo: lock do write until next hsync
 					first_write_iteration <= 0;
 					do_read <= 1;
-					if (H_rise || V_fall) begin
-				      current_write_buffer <= ~current_write_buffer;
-					   do_write <= 1;
-					end
+
+				      if (H && !do_write_lock) begin
+				         // lock until hsync is done
+				         current_write_buffer <= ~current_write_buffer;
+				         do_write_lock <= 1;
+				         do_write <= 1;
+				      end else if (!H) begin
+				         do_write_lock <= 0;
+				      end
+
 				end else begin
 					if (read_done)
 						do_read <= 0;

@@ -4,11 +4,12 @@ module hash_drbg_consumer_tb;
 
 
    localparam VIDEO_FILE_LOCATION = "video_f60.bin";
+   localparam NUMBERS_FILE = "hash_drbg_consumer_numbers.bin";
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
-//   localparam TOTAL_FRAMES = 60;
-   localparam TOTAL_FRAMES = 10;
+   localparam TOTAL_FRAMES = 60;
+//   localparam TOTAL_FRAMES = 10;
    localparam TOTAL_LINES = LINE_COUNT * TOTAL_FRAMES;
    localparam TOTAL_BYTES = LINE_SIZE * TOTAL_LINES;
 
@@ -96,6 +97,14 @@ module hash_drbg_consumer_tb;
          $finish;
       end
 
+      fd_out = $fopen(NUMBERS_FILE, "wb");
+      if (fd_out == 0) begin
+         $display("Error: Could not open file %s", NUMBERS_FILE);
+         $display("fd_out = %d", fd_out);
+         $finish;
+      end
+
+
       clk_sig = 0;
       reset_n_sig = 0;
       reset_n_drbg_sig = 0;
@@ -122,10 +131,6 @@ module hash_drbg_consumer_tb;
       $display("\nInit ready");
       reset_n_sig = 1;
 
-
-
-
-
       for (i = 0; i < TOTAL_BYTES / LINE_SIZE; i = i + 1) begin
          for (j= 0; j < LINE_SIZE; j = j + 1) begin
             $fgets(video_value, fd);
@@ -135,6 +140,9 @@ module hash_drbg_consumer_tb;
             cut_position = {$random(seed)} % 256;
          end*/
          cut_position = random_bits_serial;
+         if (!V_sig) begin
+            $fwrite(fd_out, "%c", cut_position);
+         end
 
          $display("cut_position: %d", cut_position);
          for (j= 0; j < LINE_SIZE; j = j + 1) begin
@@ -152,6 +160,7 @@ module hash_drbg_consumer_tb;
 
       end
       $fclose(fd);
+      $fclose(fd_out);
       $stop;
 
    end
