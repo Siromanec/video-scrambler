@@ -222,7 +222,7 @@ module hash_drbg #(parameter SEEDLEN = 256,
     // ------------------------------------------------------------
     // function selection/ dispatch
     // ------------------------------------------------------------
-   assign busy = begin_init | generate_next;
+   assign busy = begin_init | generate_next | !init_ready;
     always @ (posedge clk or 
 				  negedge reset_n) begin
         if (!reset_n) begin

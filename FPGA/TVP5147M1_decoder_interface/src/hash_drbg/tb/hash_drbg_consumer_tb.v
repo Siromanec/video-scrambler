@@ -8,8 +8,8 @@ module hash_drbg_consumer_tb;
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
-   localparam TOTAL_FRAMES = 60;
-//   localparam TOTAL_FRAMES = 10;
+//   localparam TOTAL_FRAMES = 60;
+   localparam TOTAL_FRAMES = 10;
    localparam TOTAL_LINES = LINE_COUNT * TOTAL_FRAMES;
    localparam TOTAL_BYTES = LINE_SIZE * TOTAL_LINES;
 
@@ -23,7 +23,7 @@ module hash_drbg_consumer_tb;
    wire F_sig;
    reg [7:0] cut_position;
 
-   reg next_seed;
+   wire next_seed = V_sig;
    wire next_bits;
    reg init;
    reg [255:0] entropy;
@@ -34,12 +34,14 @@ module hash_drbg_consumer_tb;
    wire random_bits_serial_valid;
    wire [63:0] reseed_counter;
    wire generator_busy;
+   reg prev_V;
+   wire V_rising = V_sig && !prev_V;
 
    double_hash_drbg double_hash_drbg_0 (
        .is_master_mode(0),
        .reset_n(reset_n_drbg_sig),
        .clk(clk_sig),
-       .next_seed(V_sig),
+       .next_seed(next_seed),
        .next_bits(next_bits),
        .init(init),
        .entropy(entropy),
@@ -60,13 +62,14 @@ module hash_drbg_consumer_tb;
       .V(V_sig),
       .F(F_sig)
    );
+   wire reset_n_consumer = !V_rising;
 
    hash_drbg_consumer hash_drbg_consumer_inst
    (
       .H(H_sig) ,	// input  H_sig
       .V(V_sig) ,	// input  V_sig
       .clk(clk_sig) ,	// input  clk_sig
-      .reset_n(reset_n_sig) ,	// input  reset_n_sig
+      .reset_n(reset_n_consumer) ,	// input  reset_n_sig
       .data_in(random_bits) ,	// input [(DATA_WIDTH_IN-1):0] data_in_sig
       .data_in_valid(next_bits_ready) ,	// input  data_in_valid_sig
       .generator_busy(generator_busy),
@@ -111,7 +114,7 @@ module hash_drbg_consumer_tb;
       bt_656_sig = 0;
 
        init = 1'b0;
-       next_seed = 1'b0;
+
        entropy = 256'h0;
 
 
@@ -139,6 +142,7 @@ module hash_drbg_consumer_tb;
 /*         if (!V_sig) begin // potential bug if it is vsync at the beginning of read line
             cut_position = {$random(seed)} % 256;
          end*/
+
          cut_position = random_bits_serial;
          if (!V_sig) begin
             $fwrite(fd_out, "%c", cut_position);
@@ -146,6 +150,7 @@ module hash_drbg_consumer_tb;
 
          $display("cut_position: %d", cut_position);
          for (j= 0; j < LINE_SIZE; j = j + 1) begin
+            prev_V = V_sig;
 
 //            $display("cut_position: %d", cut_position);
             video_value = line_store[j];

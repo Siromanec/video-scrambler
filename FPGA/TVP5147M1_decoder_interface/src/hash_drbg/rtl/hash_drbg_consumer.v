@@ -33,6 +33,9 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
 
    reg do_read;
    reg do_write;
+
+
+   reg [3:0] not_busy_cnt_after_do_write;
 	/*
 	-----------------------------------
 		WRITE CONTROL
@@ -46,14 +49,27 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
          need_next <= 0;
          wa <= 0;
          write_done <= 0;
+         not_busy_cnt_after_do_write <= 0;
       end else begin
          case (get_new_data_state)
             GET_NEW_DATA_IDLE: begin
-               if(do_write && !generator_busy) begin
+
+               if(do_write) begin
                   write_done <= 0;
+                  get_new_data_state <= GET_NEW_DATA_NEXT;
+                  not_busy_cnt_after_do_write <= 0;
+               end
+            end
+            GET_NEW_DATA_NEXT: begin
+                  if(!generator_busy && not_busy_cnt_after_do_write < 8) begin
+                  not_busy_cnt_after_do_write <= not_busy_cnt_after_do_write + 1;
+                end else if (generator_busy) begin
+                  not_busy_cnt_after_do_write <= 0;
+                end else begin
                   need_next <= 1;
                   get_new_data_state <= GET_NEW_DATA_WAIT;
-               end
+                end
+
             end
             GET_NEW_DATA_WAIT: begin
                need_next <= 0;
@@ -126,11 +142,12 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
 			prev_read_done <= read_done;
 			prev_V <= V;
 			prev_H <= H;
-			if (write_done_rise || read_done_rise || first_write_iteration || H_rise || V_fall) begin
+//			if (write_done_rise || read_done_rise || first_write_iteration || H_rise || V_fall) begin
 				if (write_done && (read_done || first_write_iteration)) begin
                // todo: lock do write until next hsync
-					first_write_iteration <= 0;
-					do_read <= 1;
+                     do_read <= 1;
+                     first_write_iteration <= 0;
+
 
 				      if (H && !do_write_lock) begin
 				         // lock until hsync is done
@@ -139,15 +156,15 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
 				         do_write <= 1;
 				      end else if (!H) begin
 				         do_write_lock <= 0;
+				         do_write <= 0;
 				      end
 
 				end else begin
 					if (read_done)
 						do_read <= 0;
-					if (write_done)
-						do_write <= 0;
+               do_write <= 0;
 				end
-			end
+//			end
 		end
    end
 
