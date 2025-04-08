@@ -28,7 +28,8 @@ module double_hash_drbg(
 	init_ready,
 	next_bits_ready,
 	random_bits,
-	reseed_counter
+	reseed_counter,
+	busy
 );
 
 parameter	BITS_GENERATOR_MAX_CYCLE = 37500;
@@ -45,6 +46,13 @@ output wire	init_ready;
 output wire	next_bits_ready;
 output wire	[255:0] random_bits;
 output wire	[63:0] reseed_counter;
+output wire busy;
+
+
+wire  MASTER_BUSY;
+wire  SLAVE_BUSY;
+
+assign busy = MASTER_BUSY | SLAVE_BUSY; // in master mode is always busy
 
 wire	_SHA_RESET_N;
 wire	CLOCK;
@@ -77,6 +85,7 @@ wire	SLAVE_DRBG_NEXT_READY;
 wire	[255:0] SLAVE_DRBG_RANDOM_BITS;
 wire	SLAVE_RESET_N;
 wire	SLAVE_SHA_RESET_N;
+wire next_seed_pulse_out;
 
 
 
@@ -84,7 +93,7 @@ wire	SLAVE_SHA_RESET_N;
 assign	MASTER_DRBG_NEXT_IN[2] = SLAVE_DRBG_DO_RESEED & is_master_mode;
 
 
-hash_drbg	b2v_inst1(
+hash_drbg	master_drbg(
 	.update(MASTER_DRBG_UPDATE_OUT),
 	.reset_n(MASTER_DRBG_RESET_N),
 	.clk(CLOCK),
@@ -96,13 +105,14 @@ hash_drbg	b2v_inst1(
 	.next_ready(MASTER_DRBG_NEXT_READY),
 	.init_ready(MASTER_DRBG_INIT_READY),
 	.do_reseed(MASTER_DRBG_DO_RESEED),
+	.busy(MASTER_BUSY),
 	.sha_init(SHA_INIT),
 	.sha_reset_n(MASTER_SHA_RESET_N),
 	.random_bits(MASTER_DRBG_RANDOM_BITS),
 	.reseed_counter_out(MASTER_RESEED_COUNTER),
 	.sha_block(SHA_BLOCK));
-	defparam	b2v_inst1.RESEED_INTERVAL = SEED_GENERATOR_MAX_CYCLE;
-	defparam	b2v_inst1.SEEDLEN = 256;
+	defparam	master_drbg.RESEED_INTERVAL = SEED_GENERATOR_MAX_CYCLE;
+	defparam	master_drbg.SEEDLEN = 256;
 
 assign	MASTER_DRBG_RESET_N = reset_n;
 
@@ -138,7 +148,7 @@ assign	MASTER_DRBG_UPDATE_IN[0] = MASTER_DRBG_UPDATE;
 assign	_SHA_RESET_N = SLAVE_SHA_RESET_N | MASTER_SHA_RESET_N;
 
 
-hash_drbg	b2v_inst2(
+hash_drbg	slave_drbg(
 	.update(MASTER_DRBG_NEXT_READY),
 	.reset_n(SLAVE_RESET_N),
 	.clk(CLOCK),
@@ -150,13 +160,14 @@ hash_drbg	b2v_inst2(
 	.next_ready(SLAVE_DRBG_NEXT_READY),
 	.init_ready(SLAVE_DRBG_INIT_READY),
 	.do_reseed(SLAVE_DRBG_DO_RESEED),
+	.busy(SLAVE_BUSY),
 	.sha_init(SHA_INIT),
 	.sha_reset_n(SLAVE_SHA_RESET_N),
 	.random_bits(SLAVE_DRBG_RANDOM_BITS),
 	
 	.sha_block(SHA_BLOCK));
-	defparam	b2v_inst2.RESEED_INTERVAL = BITS_GENERATOR_MAX_CYCLE;
-	defparam	b2v_inst2.SEEDLEN = 256;
+	defparam	slave_drbg.RESEED_INTERVAL = BITS_GENERATOR_MAX_CYCLE;
+	defparam	slave_drbg.SEEDLEN = 256;
 
 assign	SHA_RESET_N = reset_n & _SHA_RESET_N;
 
@@ -175,7 +186,14 @@ sha256_core	b2v_inst5(
 	.digest(SHA_DIGEST));
 
 
-assign	SLAVE_RESET_N = reset_n & MASTER_DRBG_NEXT_READY;
+posedge_to_pulse	b2v_inst14(
+	.clk(CLOCK),
+	.reset_n(reset_n),
+	.signal_in(next_seed),
+	.pulse_out(next_seed_pulse_out));
+	defparam	b2v_inst14.WIDTH = 1;
+
+assign	SLAVE_RESET_N = reset_n & MASTER_DRBG_NEXT_READY & !next_seed_pulse_out;
 
 assign	init_ready = MASTER_DRBG_INIT_READY & SLAVE_DRBG_INIT_READY;
 
