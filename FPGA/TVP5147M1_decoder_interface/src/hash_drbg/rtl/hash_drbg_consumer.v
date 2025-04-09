@@ -15,7 +15,6 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
    localparam BUFFER_SIZE = DATA_WIDTH_IN/DATA_WIDTH_OUT;
    localparam BUFFER_ADDRESS_BITS = $clog2(BUFFER_SIZE);
    reg [DATA_WIDTH_OUT-1:0] data_buffer [0:0][0:BUFFER_SIZE - 1];
-   reg current_write_buffer;
 
    reg [BUFFER_ADDRESS_BITS-1:0] wa;
    reg [BUFFER_ADDRESS_BITS-1:0] ra;
@@ -124,7 +123,6 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
 		LOGIC CONTROL
 	-----------------------------------
 	*/
-	reg do_write_lock;
 	reg prev_write_done, prev_read_done, prev_V, prev_H;
 	wire write_done_rise =  write_done && !prev_write_done;
 	wire read_done_rise  =  read_done  && !prev_read_done;
@@ -139,36 +137,21 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
 			first_write_iteration <= 1;
 			do_read <= 0;
 			do_write <= 1;
-			current_write_buffer <= 0;
-			do_write_lock <= 0;
 		end else begin
 			prev_write_done <= write_done;
 			prev_read_done <= read_done;
 			prev_V <= V;
 			prev_H <= H;
-//			if (write_done_rise || read_done_rise || first_write_iteration || H_rise || V_fall) begin
-				if (write_done && (read_done || first_write_iteration)) begin
-               // todo: lock do write until next hsync
-                     do_read <= 1;
-                     first_write_iteration <= 0;
-
-
-				      if (H && !do_write_lock) begin
-				         // lock until hsync is done
-				         current_write_buffer <= ~current_write_buffer;
-				         do_write_lock <= 1;
-				         do_write <= 1;
-				      end else if (!H) begin
-				         do_write_lock <= 0;
-				         do_write <= 0;
-				      end
-
-				end else begin
-					if (read_done)
-						do_read <= 0;
-               do_write <= 0;
-				end
-//			end
+			if (read_done_rise || first_write_iteration) begin
+			   do_write <= 1;
+			   first_write_iteration <= 0;
+			end else if (prev_write_done) begin
+			   do_read <= 1;
+			end else begin
+            if (read_done)
+               do_read <= 0;
+            do_write <= 0;
+			end
 		end
    end
 

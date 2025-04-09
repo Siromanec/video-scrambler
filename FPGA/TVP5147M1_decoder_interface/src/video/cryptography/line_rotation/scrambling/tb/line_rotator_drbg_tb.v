@@ -1,13 +1,13 @@
 `timescale 10ns / 1ns
 /*
 modelsim wave
-sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/first_read_iteration sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/first_write_iteration sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/read_done sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/write_done sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/do_read sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/do_write sim:/hash_drbg_consumer_tb/clk_sig sim:/hash_drbg_consumer_tb/reset_n_sig sim:/hash_drbg_consumer_tb/H_sig sim:/hash_drbg_consumer_tb/V_sig sim:/hash_drbg_consumer_tb/V_rising sim:/hash_drbg_consumer_tb/bt_656_sig sim:/hash_drbg_consumer_tb/next_bits sim:/hash_drbg_consumer_tb/generator_busy sim:/hash_drbg_consumer_tb/init_ready sim:/hash_drbg_consumer_tb/next_bits_ready sim:/hash_drbg_consumer_tb/next_seed sim:/hash_drbg_consumer_tb/init sim:/hash_drbg_consumer_tb/entropy sim:/hash_drbg_consumer_tb/random_bits sim:/hash_drbg_consumer_tb/random_bits_serial sim:/hash_drbg_consumer_tb/random_bits_serial_valid sim:/hash_drbg_consumer_tb/reseed_counter sim:/hash_drbg_consumer_tb/i
+sim:/line_rotator_drbg_tb/clk_sig sim:/line_rotator_drbg_tb/reset_n_sig sim:/line_rotator_drbg_tb/reset_n_drbg_sig sim:/line_rotator_drbg_tb/bt_656_sig sim:/line_rotator_drbg_tb/bt_656_scramled sim:/line_rotator_drbg_tb/H_sig sim:/line_rotator_drbg_tb/V_sig sim:/line_rotator_drbg_tb/F_sig sim:/line_rotator_drbg_tb/cut_position sim:/line_rotator_drbg_tb/next_seed sim:/line_rotator_drbg_tb/next_bits sim:/line_rotator_drbg_tb/init sim:/line_rotator_drbg_tb/entropy sim:/line_rotator_drbg_tb/init_ready sim:/line_rotator_drbg_tb/next_bits_ready sim:/line_rotator_drbg_tb/random_bits sim:/line_rotator_drbg_tb/random_bits_serial sim:/line_rotator_drbg_tb/random_bits_serial_valid sim:/line_rotator_drbg_tb/reseed_counter sim:/line_rotator_drbg_tb/generator_busy sim:/line_rotator_drbg_tb/prev_V sim:/line_rotator_drbg_tb/V_rising sim:/line_rotator_drbg_tb/reset_n_consumer sim:/line_rotator_drbg_tb/video_value sim:/line_rotator_drbg_tb/i sim:/line_rotator_drbg_tb/j
 */
-module hash_drbg_consumer_tb;
+module line_rotator_drbg_tb;
 
 
    localparam VIDEO_FILE_LOCATION = "video_f60.bin";
-   localparam NUMBERS_FILE = "hash_drbg_consumer_numbers.bin";
+   localparam SCRAMBLED_VIDEO_FILE_LOCATION = "video_f60_scrambled_drbg.bin";
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
@@ -21,6 +21,7 @@ module hash_drbg_consumer_tb;
    reg reset_n_sig;
    reg reset_n_drbg_sig;
    reg [9:0] bt_656_sig;
+   wire [9:0] bt_656_scramled;
    wire H_sig;
    wire V_sig;
    wire F_sig;
@@ -39,7 +40,10 @@ module hash_drbg_consumer_tb;
    wire generator_busy;
    reg prev_V;
    wire V_rising = V_sig && !prev_V;
+   reg first_iter;
+   wire data_valid;
 
+   wire reset_n_consumer = !V_rising && first_iter;
    double_hash_drbg double_hash_drbg_0 (
        .is_master_mode(0),
        .reset_n(reset_n_drbg_sig),
@@ -65,7 +69,7 @@ module hash_drbg_consumer_tb;
       .V(V_sig),
       .F(F_sig)
    );
-   wire reset_n_consumer = !V_rising;
+
 
    hash_drbg_consumer hash_drbg_consumer_inst
    (
@@ -81,6 +85,18 @@ module hash_drbg_consumer_tb;
       .need_next(next_bits) 	// output  need_next_sig
    );
 
+   line_rotator line_rotator_inst
+   (
+   	.clk(clk_sig) ,	// input  clk_sig
+   	.reset_n(reset_n_sig) ,	// input  reset_n_sig
+   	.data_in(bt_656_sig) ,	// input [9:0] data_in_sig
+   	.raw_cut_position(random_bits_serial) ,	// input [7:0] raw_cut_position_sig
+   	.V(V_sig) ,	// input  V_sig
+   	.H(H_sig) ,	// input  H_sig
+   	.data_out(bt_656_scramled), 	// output [9:0] data_out_sig
+   	.data_valid(data_valid)
+   );
+
    defparam hash_drbg_consumer_inst.DATA_WIDTH_IN = 256;
    defparam hash_drbg_consumer_inst.DATA_WIDTH_OUT = 8;
 
@@ -91,11 +107,11 @@ module hash_drbg_consumer_tb;
 
    time i;
    time j;
-   reg [31:0] seed;
 
    reg [7:0] line_store [0:(LINE_SIZE - 1)];
+   reg [7:0] line_store_out [0:(LINE_SIZE - 1)];
+
    initial begin
-//      cut_position = $random(seed) % 256;
       fd = $fopen(VIDEO_FILE_LOCATION, "rb");
       if (fd == 0) begin
          $display("Error: Could not open file %s", VIDEO_FILE_LOCATION);
@@ -103,14 +119,14 @@ module hash_drbg_consumer_tb;
          $finish;
       end
 
-      fd_out = $fopen(NUMBERS_FILE, "wb");
+      fd_out = $fopen(SCRAMBLED_VIDEO_FILE_LOCATION, "wb");
       if (fd_out == 0) begin
-         $display("Error: Could not open file %s", NUMBERS_FILE);
+         $display("Error: Could not open file %s", SCRAMBLED_VIDEO_FILE_LOCATION);
          $display("fd_out = %d", fd_out);
          $finish;
       end
 
-
+      first_iter = 0;
       clk_sig = 0;
       reset_n_sig = 0;
       reset_n_drbg_sig = 0;
@@ -135,6 +151,7 @@ module hash_drbg_consumer_tb;
       end
       init = 1'b0;
       $display("\nInit ready");
+      first_iter = 1;
       reset_n_sig = 1;
 
       for (i = 0; i < TOTAL_BYTES / LINE_SIZE; i = i + 1) begin
@@ -142,20 +159,12 @@ module hash_drbg_consumer_tb;
             $fgets(video_value, fd);
             line_store[j] = video_value;
          end
-/*         if (!V_sig) begin // potential bug if it is vsync at the beginning of read line
-            cut_position = {$random(seed)} % 256;
-         end*/
 
-         cut_position = random_bits_serial;
-         if (!V_sig) begin
-            $fwrite(fd_out, "%c", cut_position);
-         end
+         $display("line: %d  cut_position: %d", i, random_bits_serial);
 
-         $display("cut_position: %d", cut_position);
          for (j= 0; j < LINE_SIZE; j = j + 1) begin
             prev_V = V_sig;
 
-//            $display("cut_position: %d", cut_position);
             video_value = line_store[j];
 
             bt_656_sig = {video_value, 2'b00};
@@ -164,6 +173,14 @@ module hash_drbg_consumer_tb;
             clk_sig = 0;
             #1;
             clk_sig = 1;
+            if (data_valid)
+               line_store_out[j] = bt_656_scramled[9:2];
+         end
+         for (j= 0; j < LINE_SIZE; j = j + 1) begin
+            video_value = line_store_out[j];
+
+            $fwrite(fd_out, "%c", video_value);
+
          end
 
       end
