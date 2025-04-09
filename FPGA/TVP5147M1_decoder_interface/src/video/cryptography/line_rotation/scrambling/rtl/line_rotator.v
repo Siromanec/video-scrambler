@@ -49,7 +49,7 @@ module line_rotator #(parameter MODE = 0)(
 	 localparam GARBAGE_LINES = 1;
     reg [1:0] line_switch_count;
     wire H_fall = prev_H & !H;
-
+    reg [ADDRESS_BITS-1:0] cut_position_prev;
     always @(posedge clk or negedge reset_n) begin
          // todo begin working only after posedge V
         if (!reset_n) begin
@@ -58,7 +58,9 @@ module line_rotator #(parameter MODE = 0)(
             data_out <= 0;
             prev_H <= H;
             data_valid <= 0;
-            line_switch_count <=0;
+            line_switch_count <= 0;
+            cut_position_prev <= 0;
+            cut_position <= 0;
 
 				if (!H)
 					write_index <= 0;
@@ -70,7 +72,7 @@ module line_rotator #(parameter MODE = 0)(
 
 					if (MODE == MODE_SCRAMBLER) begin
 						line_buffer[!switch_buffer][0] <= data_in;
-						data_out <= line_buffer[switch_buffer][get_read_idx(0, cut_position_wire, H, V)];
+						data_out <= line_buffer[switch_buffer][get_read_idx(0, cut_position_prev, H, V)];
 					end else if (MODE == MODE_DESCRAMBLER) begin
 						line_buffer[!switch_buffer][get_read_idx(0, cut_position_wire, H, V)] <= data_in;
 						data_out <= line_buffer[switch_buffer][0];
@@ -80,13 +82,16 @@ module line_rotator #(parameter MODE = 0)(
 					   line_switch_count <= line_switch_count + 1;
 					else
 					   data_valid <= 1;
+					if (MODE == MODE_SCRAMBLER) begin
+					   cut_position_prev <= cut_position;
+					end
                cut_position <= cut_position_wire;
 					switch_buffer <= !switch_buffer;
 					write_index <= 1;
             end else begin
 					if (MODE == MODE_SCRAMBLER) begin
 						line_buffer[switch_buffer][write_index] <= data_in;
-						data_out <= line_buffer[!switch_buffer][get_read_idx(write_index, cut_position, H, V)];
+						data_out <= line_buffer[!switch_buffer][get_read_idx(write_index, cut_position_prev, H, V)];
 					end else if (MODE == MODE_DESCRAMBLER) begin
 						line_buffer[switch_buffer][get_read_idx(write_index, cut_position, H, V)] <= data_in;
 						data_out <= line_buffer[!switch_buffer][write_index];

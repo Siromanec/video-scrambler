@@ -14,16 +14,17 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
 
    localparam BUFFER_SIZE = DATA_WIDTH_IN/DATA_WIDTH_OUT;
    localparam BUFFER_ADDRESS_BITS = $clog2(BUFFER_SIZE);
-   reg [DATA_WIDTH_OUT-1:0] data_buffer [0:1][0:BUFFER_SIZE - 1];
+   reg [DATA_WIDTH_OUT-1:0] data_buffer [0:0][0:BUFFER_SIZE - 1];
    reg current_write_buffer;
 
    reg [BUFFER_ADDRESS_BITS-1:0] wa;
    reg [BUFFER_ADDRESS_BITS-1:0] ra;
    localparam GET_NEW_DATA_IDLE = 0,
               GET_NEW_DATA_NEXT = 1,
-              GET_NEW_DATA_WAIT = 2,
-              GET_NEW_DATA_FILL = 3;
-   reg [$clog2(4) - 1:0] get_new_data_state;
+              GET_NEW_DATA_WAIT1 = 2,
+              GET_NEW_DATA_WAIT2 = 3,
+              GET_NEW_DATA_FILL = 4;
+   reg [$clog2(5) - 1:0] get_new_data_state;
 
    reg first_read_iteration;
    reg first_write_iteration;
@@ -61,23 +62,26 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
                end
             end
             GET_NEW_DATA_NEXT: begin
-                  if(!generator_busy && not_busy_cnt_after_do_write < 8) begin
+                if(!generator_busy && not_busy_cnt_after_do_write < 8) begin
                   not_busy_cnt_after_do_write <= not_busy_cnt_after_do_write + 1;
                 end else if (generator_busy) begin
                   not_busy_cnt_after_do_write <= 0;
                 end else begin
                   need_next <= 1;
-                  get_new_data_state <= GET_NEW_DATA_WAIT;
+                  get_new_data_state <= GET_NEW_DATA_WAIT1;
                 end
 
             end
-            GET_NEW_DATA_WAIT: begin
+            GET_NEW_DATA_WAIT1: begin // wait for a reaction
                need_next <= 0;
+               get_new_data_state <= GET_NEW_DATA_WAIT2;
+            end
+            GET_NEW_DATA_WAIT2: begin // wait for a valid data
                if (data_in_valid)
                   get_new_data_state <= GET_NEW_DATA_FILL;
             end
             GET_NEW_DATA_FILL: begin
-               data_buffer[current_write_buffer][wa] <= data_in[wa * DATA_WIDTH_OUT +: DATA_WIDTH_OUT];
+               data_buffer[0][wa] <= data_in[wa * DATA_WIDTH_OUT +: DATA_WIDTH_OUT];
                if (wa != BUFFER_SIZE - 1)
                   wa <= wa + 1;
                else begin
@@ -101,7 +105,7 @@ module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
          read_done <= 0;
       end else if (!V && do_read) begin
          data_out_valid <= 1;
-         data_out <= data_buffer[!current_write_buffer][ra];
+         data_out <= data_buffer[0][ra];
          if (ra != BUFFER_SIZE - 1) begin
             ra <= ra + 1;
             read_done <= 0;

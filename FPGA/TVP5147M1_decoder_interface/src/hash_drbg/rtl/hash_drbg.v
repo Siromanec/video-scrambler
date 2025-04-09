@@ -8,8 +8,8 @@ module hash_drbg #(parameter SEEDLEN = 256,
 
     input clk,
     input next,
-    output next_ready,
-    output init_ready,
+    output reg next_ready,
+    output reg init_ready,
 
 
     output do_reseed,
@@ -70,8 +70,6 @@ module hash_drbg #(parameter SEEDLEN = 256,
                GENERATE_UPDATE_CNT = 3;
 
 
-    reg next_ready_new;
-    reg init_ready_new;
     localparam  INIT_IDLE = 0,
                 INIT_V_DONE = 1,
                 INIT_C_DONE = 2;
@@ -88,8 +86,6 @@ module hash_drbg #(parameter SEEDLEN = 256,
 
     assign do_reseed = reseed_counter >= RESEED_INTERVAL + 1;  // master will need to call reset, set new entropy and then call update
 
-    assign init_ready = init_ready_new && !do_reseed;
-    assign next_ready = next_ready_new && !do_reseed;
 
     reg do_sha_request;
 
@@ -165,7 +161,7 @@ module hash_drbg #(parameter SEEDLEN = 256,
 						// retrieve the the do_sha_digest
 						c <= do_sha_digest;
 						// indicate that the init is done
-						init_ready_new <= 1;
+						init_ready <= 1;
 						// reset the state
 						begin_init <= 0;
 						init_state <= INIT_IDLE; // skips INIT_IDLE because it is equivalent to begin_init
@@ -209,7 +205,7 @@ module hash_drbg #(parameter SEEDLEN = 256,
 					// reset state
 					generate_next <= 0;
 					// set external state
-					next_ready_new <= 1;
+					next_ready <= 1;
 					generate_state <= GENERATE_IDLE;
 				end // GENERATE_UPDATE_CNT
          endcase // case (generate_state)
@@ -239,18 +235,18 @@ module hash_drbg #(parameter SEEDLEN = 256,
             reseed_counter <= 0;
 				
 				// reset external state
-            init_ready_new <= 0;
+            init_ready <= 0;
 
             // reset internal state
             begin_init <= 0;
             init_state <= INIT_IDLE;
 				
             // reset external state
-            next_ready_new <= 0;
+            next_ready <= 0;
             // reset internal state
             generate_next <= 0;
             generate_state <= GENERATE_IDLE;
-		end else begin
+		end else if (!do_reseed) begin
 			if (do_sha_request) begin
 				do_sha;
 			end else if (!init_ready) begin
@@ -260,8 +256,8 @@ module hash_drbg #(parameter SEEDLEN = 256,
 					// prepare control signals for do_sha
 					do_sha_request <= 1;
 					// set external state
-					init_ready_new <= 0;
-					next_ready_new <= 0;
+					init_ready <= 0;
+					next_ready <= 0;
 					// set the next state
 					begin_init <= 1;
 					init_state <= INIT_V_DONE;
@@ -270,7 +266,6 @@ module hash_drbg #(parameter SEEDLEN = 256,
 				end
 			
 			end else if (!generate_next && next) begin // if (update) begin
-			    reseed_counter <= reseed_counter + 1;
 
 			    if (reseed_counter <= RESEED_INTERVAL) begin
 
@@ -279,16 +274,21 @@ module hash_drbg #(parameter SEEDLEN = 256,
                     // prepare control signals for do_sha
                     do_sha_request <= 1;
                     // set external state
-                    next_ready_new <= 0;
+                    next_ready <= 0;
                     // set the next state
                     generate_next <= 1;
                     generate_state <= GENERATE_RETURN_BITS_DONE;
 				end
+			    reseed_counter <= reseed_counter + 1;
+				
 			end else if (generate_next  && !next_ready) begin  // if generating next and not doing a request
 				do_next;
 				
 			end // else if (!init_ready) begin
 			
+		end else begin
+         init_ready <= 0;
+         next_ready <= 0;
 		end // if (!reset_n) begin
    end // always @ (posedge clk or negedge reset_n) begin
 

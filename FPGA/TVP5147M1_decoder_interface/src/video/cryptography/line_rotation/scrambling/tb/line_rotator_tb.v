@@ -82,7 +82,7 @@ module line_rotator_tb;
          $display("fd_out = %d", fd_out);
          $finish;
       end
-
+      cut_position = {$random(seed)} % 256;
       clk_sig = 0;
       reset_n_sig = 0;
       bt_656_sig = 0;
