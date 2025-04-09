@@ -6,3 +6,5 @@
 
 /FPGA/TVP5147M1_decoder_interface/output_files/
 *.mp4
+*wlf*
+*.bin
