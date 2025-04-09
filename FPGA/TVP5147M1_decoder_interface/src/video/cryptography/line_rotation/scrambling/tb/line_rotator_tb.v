@@ -1,5 +1,9 @@
 `timescale 10ns / 1ns;
 
+/*
+modelsim wave
+sim:/line_rotator_tb/clk_sig sim:/line_rotator_tb/reset_n_sig sim:/line_rotator_tb/bt_656_sig sim:/line_rotator_tb/bt_656_scramled sim:/line_rotator_tb/H_sig sim:/line_rotator_tb/V_sig sim:/line_rotator_tb/F_sig sim:/line_rotator_tb/data_valid sim:/line_rotator_tb/line_rotator_inst/write_index sim:/line_rotator_tb/cut_position sim:/line_rotator_tb/i sim:/line_rotator_tb/j
+*/
 module line_rotator_tb;
 
 
@@ -22,6 +26,7 @@ module line_rotator_tb;
    wire V_sig;
    wire F_sig;
    reg [7:0] cut_position;
+   wire data_valid;
 
    localparam CUT_POSITION = 128;
 //   localparam CUT_POSITION = 0;
@@ -42,7 +47,8 @@ module line_rotator_tb;
    	.raw_cut_position(cut_position) ,	// input [7:0] raw_cut_position_sig
    	.V(V_sig) ,	// input  V_sig
    	.H(H_sig) ,	// input  H_sig
-   	.data_out(bt_656_scramled) 	// output [9:0] data_out_sig
+   	.data_out(bt_656_scramled), 	// output [9:0] data_out_sig
+   	.data_valid(data_valid)
    );
 
 
@@ -51,9 +57,12 @@ module line_rotator_tb;
    integer fd;
    integer fd_out;
 
+   reg prev_H;
    time i;
    time j;
    reg [31:0] seed;
+   wire H_rise;
+   assign H_rise = !prev_H & H_sig;
 
    reg [7:0] line_store [0:(LINE_SIZE - 1)];
    reg [7:0] line_store_out [0:(LINE_SIZE - 1)];
@@ -92,10 +101,11 @@ module line_rotator_tb;
             line_store[j] = video_value;
 //            line_store_out[j] = 0;
          end
-         if (!V_sig) begin
-            cut_position = {$random(seed)} % 256;
-         end
+
          for (j= 0; j < LINE_SIZE; j = j + 1) begin
+            if (H_rise && !V_sig)
+               cut_position = {$random(seed)} % 256;
+
 
 //            $display("cut_position: %d", cut_position);
             video_value = line_store[j];
@@ -111,13 +121,14 @@ module line_rotator_tb;
             // but i don't care because it will be a part of a stream
             // and happens only once and is solved by iterating further
             // the only consideration is when the encoder receives zeros and has to do something with it
-            line_store_out[j] = bt_656_scramled[9:2];
+            if (data_valid)
+               line_store_out[j] = bt_656_scramled[9:2];
+            prev_H <= H_sig;
          end
          for (j= 0; j < LINE_SIZE; j = j + 1) begin
             video_value = line_store_out[j];
 
             $fwrite(fd_out, "%c", video_value);
-//            line_store[j] = 0;
 
          end
 

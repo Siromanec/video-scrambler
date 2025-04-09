@@ -22,6 +22,10 @@ module line_rotator_descrambler_tb;
    wire V_sig;
    wire F_sig;
    reg [7:0] cut_position;
+   wire data_valid;
+   reg prev_H;
+   wire H_rise;
+   assign H_rise = !prev_H & H_sig;
 
    localparam CUT_POSITION = 128;
 //   localparam CUT_POSITION = 0;
@@ -42,7 +46,8 @@ module line_rotator_descrambler_tb;
    	.raw_cut_position(cut_position) ,	// input [7:0] raw_cut_position_sig
    	.V(V_sig) ,	// input  V_sig
    	.H(H_sig) ,	// input  H_sig
-   	.data_out(bt_656_scramled) 	// output [9:0] data_out_sig
+   	.data_out(bt_656_scramled), 	// output [9:0] data_out_sig
+   	.data_valid(data_valid)
    );
    defparam line_rotator_inst.MODE = 1;
 
@@ -78,8 +83,7 @@ module line_rotator_descrambler_tb;
       clk_sig = 0;
       reset_n_sig = 0;
       bt_656_sig = 0;
-      cut_position = 0;
-
+      cut_position = {$random(seed)} % 256;
       #1;
       clk_sig = 0;
       #1;
@@ -95,12 +99,10 @@ module line_rotator_descrambler_tb;
             line_store[j] = video_value;
 //            line_store_out[j] = 0;
          end
-         if (!V_sig) begin
-            cut_position = {$random(seed)} % 256;
-         end
-         for (j= 0; j != (LINE_SIZE - 1); j = j + 1) begin
 
-//            $display("cut_position: %d", cut_position);
+         for (j= 0; j != (LINE_SIZE - 1); j = j + 1) begin
+            if (H_rise && !V_sig)
+               cut_position = {$random(seed)} % 256;
             video_value = line_store[j];
 
             bt_656_sig = {video_value, 2'b00};
@@ -114,7 +116,9 @@ module line_rotator_descrambler_tb;
             // but i don't care because it will be a part of a stream
             // and happens only once and is solved by iterating further
             // the only consideration is when the encoder receives zeros and has to do something with it
-            line_store_out[j] = bt_656_scramled[9:2];
+            if (data_valid)
+               line_store_out[j] = bt_656_scramled[9:2];
+            prev_H = H_sig;
          end
          for (j= 0; j < LINE_SIZE; j = j + 1) begin
             video_value = line_store_out[j];

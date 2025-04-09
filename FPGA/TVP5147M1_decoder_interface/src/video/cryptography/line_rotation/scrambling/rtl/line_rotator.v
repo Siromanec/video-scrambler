@@ -36,7 +36,7 @@ module line_rotator #(parameter MODE = 0)(
 															 input [ADDRESS_BITS-1:0] cut_position,
 															 input H,
 															 input V);
-		begin
+		begin // something wrong here
 			if (write_index < ACTIVE_LINE_SIZE && !H && !V) begin
 				if (write_index + cut_position < ACTIVE_LINE_SIZE)
 					get_read_idx = write_index + cut_position;
@@ -46,10 +46,12 @@ module line_rotator #(parameter MODE = 0)(
 				get_read_idx = write_index;
 		end
 	 endfunction
-	 localparam GARBAGE_LINES = 2;
+	 localparam GARBAGE_LINES = 1;
     reg [1:0] line_switch_count;
+    wire H_fall = prev_H & !H;
 
     always @(posedge clk or negedge reset_n) begin
+         // todo begin working only after posedge V
         if (!reset_n) begin
 
             switch_buffer <= 0;
@@ -64,7 +66,7 @@ module line_rotator #(parameter MODE = 0)(
 					write_index <= ACTIVE_LINE_SIZE;
 
         end else begin
-            if (prev_H!=H && !H) begin // at negative edge reset counters. Has to be done on the same cloock tick
+            if (H_fall) begin // at negative edge reset counters. Has to be done on the same clock tick
 
 					if (MODE == MODE_SCRAMBLER) begin
 						line_buffer[!switch_buffer][0] <= data_in;
@@ -77,11 +79,10 @@ module line_rotator #(parameter MODE = 0)(
 					if (line_switch_count < GARBAGE_LINES)
 					   line_switch_count <= line_switch_count + 1;
 					else
-					   data_valid <= 0;
+					   data_valid <= 1;
                cut_position <= cut_position_wire;
 					switch_buffer <= !switch_buffer;
 					write_index <= 1;
-					prev_H <= H;
             end else begin
 					if (MODE == MODE_SCRAMBLER) begin
 						line_buffer[switch_buffer][write_index] <= data_in;
@@ -92,8 +93,9 @@ module line_rotator #(parameter MODE = 0)(
 					end
 
 					write_index <= write_index + 1;
-					prev_H <= H;
 				end
+				prev_H <= H;
+
         end
     end
 
