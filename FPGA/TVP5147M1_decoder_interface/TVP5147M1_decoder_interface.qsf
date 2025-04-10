@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CSEBA6U23I7
-set_global_assignment -name TOP_LEVEL_ENTITY sha256_core
+set_global_assignment -name TOP_LEVEL_ENTITY sequence_generator_switch
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 23.1STD.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:58:50  MARCH 03, 2025"
 set_global_assignment -name LAST_QUARTUS_VERSION "23.1std.1 Lite Edition"
@@ -59,6 +59,7 @@ set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
 set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name NUM_PARALLEL_PROCESSORS 6
+set_global_assignment -name VERILOG_FILE src/sequence_management/rtl/sequence_generator_switch.v
 set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/hash_drbg_consumer.v
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/scrambling/rtl/line_rotator.v
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/scrambling/rtl/line_rotation_scrambler.v

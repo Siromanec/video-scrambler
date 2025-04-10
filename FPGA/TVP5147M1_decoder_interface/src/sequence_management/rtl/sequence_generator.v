@@ -23,7 +23,7 @@ module clk_div36 (
 endmodule
 
 module sequence_generator #(parameter BLACK_LEVEL = 10'h040,
-                            parameter WHITE_LEVEL = 10'h0AC,
+                            parameter WHITE_LEVEL = 10'h3AC,
                             parameter CHROMA_NEUTRAL = 10'h200) // nominal range as specified by Rec. ITU-R BT.601-7, p. 17
                             (
                              input	  clock,
@@ -64,7 +64,7 @@ module sequence_generator #(parameter BLACK_LEVEL = 10'h040,
 // wow another keybord layout`   `
     always @(posedge clock or negedge enable) begin
         if (!enable)
-            chroma_flag <= 1; // Cr Y Cb Y Cr Y Cb Y
+            chroma_flag <= 0; // Cr Y Cb Y Cr Y Cb Y, but reacts at Y,
         else
             chroma_flag <= !chroma_flag;
     end
