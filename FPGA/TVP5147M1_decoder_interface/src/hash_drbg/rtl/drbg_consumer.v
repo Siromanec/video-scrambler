@@ -36,7 +36,6 @@ module drbg_consumer #(
    reg do_read;
    reg do_write;
 
-
    reg [3:0] not_busy_cnt_after_do_write;
    /*
 	-----------------------------------

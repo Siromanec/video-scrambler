@@ -50,7 +50,6 @@ module line_rotator_drbg_tb;
       .clk(clk_sig),
       .next_seed(next_seed),
       .next_bits(next_bits),
-      .init(init),
       .entropy(entropy),
       .init_ready(init_ready),
       .next_bits_ready(next_bits_ready),

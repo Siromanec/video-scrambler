@@ -46,7 +46,6 @@ module drbg_consumer_tb;
       .clk(clk_sig),
       .next_seed(next_seed),
       .next_bits(next_bits),
-      .init(init),
       .entropy(entropy),
       .init_ready(init_ready),
       .next_bits_ready(next_bits_ready),
@@ -114,7 +113,6 @@ module drbg_consumer_tb;
       reset_n_drbg_sig = 0;
       bt_656_sig = 0;
 
-      init = 1'b0;
 
       entropy = 256'h0;
 
@@ -124,14 +122,13 @@ module drbg_consumer_tb;
       #1;
       clk_sig = 1;
       reset_n_drbg_sig = 1;
-      init = 1'b1;
       while (!init_ready) begin
          #1;
          clk_sig = 0;
          #1;
          clk_sig = 1;
       end
-      init = 1'b0;
+      
       $display("\nInit ready");
       reset_n_sig = 1;
 

@@ -73,7 +73,6 @@ module hash_drbg #(
    reg [1:0] init_state;
    reg [1:0] generate_state;
 
-   reg begin_init;
    reg generate_next;
    reg [63:0] reseed_counter;
 
@@ -81,7 +80,7 @@ module hash_drbg #(
 
 
 
-   assign do_reseed = reseed_counter >= RESEED_INTERVAL + 1;  // master will need to call reset, set new entropy and then call update
+   assign do_reseed = reseed_counter >= RESEED_INTERVAL + 1;  // master will need to reset reset, set new entropy , set reset
 
 
    reg do_sha_request;
@@ -157,8 +156,7 @@ module hash_drbg #(
                // indicate that the init is done
                init_ready <= 1;
                // reset the state
-               begin_init <= 0;
-               init_state <= INIT_IDLE;  // skips INIT_IDLE because it is equivalent to begin_init
+               init_state <= INIT_IDLE;
                // reset the reseed counter
                reseed_counter <= 0;
 `ifdef DEBUG
@@ -212,12 +210,11 @@ module hash_drbg #(
    // ------------------------------------------------------------
    // function selection/ dispatch
    // ------------------------------------------------------------
-   assign busy = begin_init | generate_next | !init_ready;
+   assign busy =  generate_next | !init_ready;
    always @(posedge clk or negedge reset_n) begin
       if (!reset_n) begin
          // reset do_sha
          do_sha_state <= SHA_IDLE;
-         do_sha_request <= 0;
          do_sha_need_init_flag <= 0;
          accuire_sha_bus <= 0;
          do_sha_reset_n_flag <= 1'b0;
@@ -227,38 +224,26 @@ module hash_drbg #(
          c <= 0;
          reseed_counter <= 0;
 
-         // reset external state
-         init_ready <= 0;
-
-         // reset internal state
-         begin_init <= 0;
-         init_state <= INIT_IDLE;
-
-         // reset external state
-         next_ready <= 0;
          // reset internal state
          generate_next <= 0;
          generate_state <= GENERATE_IDLE;
+
+         // set the message for the next hash
+         do_sha_message <= seed_material;
+         // prepare control signals for do_sha
+         do_sha_request <= 1;
+         // set external state
+         init_ready <= 0;
+         next_ready <= 0;
+         // set the next state
+         init_state <= INIT_V_DONE;
+
       end else if (!do_reseed) begin
          if (do_sha_request) begin
             do_sha;
          end else if (!init_ready) begin
-            if (update && !begin_init) begin
-               // set the message for the next hash
-               do_sha_message <= seed_material;
-               // prepare control signals for do_sha
-               do_sha_request <= 1;
-               // set external state
-               init_ready <= 0;
-               next_ready <= 0;
-               // set the next state
-               begin_init <= 1;
-               init_state <= INIT_V_DONE;
-            end else if (begin_init) begin  // if began init and not doing a request
-               do_init;
-            end
-
-         end else if (!generate_next && next) begin  // if (update) begin
+            do_init;
+         end else if (!generate_next && next) begin 
 
             if (reseed_counter <= RESEED_INTERVAL) begin
 

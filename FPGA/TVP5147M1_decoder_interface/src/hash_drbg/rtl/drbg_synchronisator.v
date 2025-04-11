@@ -46,7 +46,13 @@ module drbg_synchronisator (
          reset_n_drbg_command <= 1;
          do_init <= 0;
          sync_state <= SYNC_STATE_IDLE;
+         catch_up_mode <= 0;
+         get_next_seed <= 0;
+         block_drbg_reseed <= 0;
+         sequence_external_valid_prev <= 0;
+
       end else begin
+         sequence_external_valid_prev <= sequence_external_valid
          if (allow_compare) begin
             if (sequence_internal < sequence_external_store) begin
                sync_state <= SYNC_STATE_CATCH_UP;

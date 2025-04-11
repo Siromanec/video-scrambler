@@ -23,7 +23,6 @@ module master_hash_slave_hash_drbg (
    clk,
    next_seed,
    next_bits,
-   init,
    entropy,
    catch_up_mode,
    init_ready,
@@ -41,7 +40,6 @@ module master_hash_slave_hash_drbg (
    input wire clk;
    input wire next_seed;
    input wire next_bits;
-   input wire init;
    input wire [255:0] entropy;
    input wire catch_up_mode;
    output wire init_ready;
@@ -68,9 +66,6 @@ module master_hash_slave_hash_drbg (
    wire MASTER_DRBG_NEXT_READY;
    wire [255:0] MASTER_DRBG_RANDOM_BITS;
    wire MASTER_DRBG_RESET_N;
-   wire MASTER_DRBG_UPDATE;
-   wire [1:0] MASTER_DRBG_UPDATE_IN;
-   wire MASTER_DRBG_UPDATE_OUT;
    wire [63:0] MASTER_RESEED_COUNTER;
    wire MASTER_SHA_RESET_N;
    wire [511:0] SHA_BLOCK;
@@ -97,7 +92,6 @@ module master_hash_slave_hash_drbg (
 
 
    hash_drbg master_drbg (
-      .update(MASTER_DRBG_UPDATE_OUT),
       .reset_n(MASTER_DRBG_RESET_N),
       .clk(CLOCK),
       .next(MASTER_DRBG_NEXT_FINAL),
@@ -133,28 +127,16 @@ module master_hash_slave_hash_drbg (
    defparam b2v_inst12.WIDTH = 3;
 
 
-   posedge_to_pulse b2v_inst13 (
-      .clk(CLOCK),
-      .reset_n(reset_n),
-      .signal_in(MASTER_DRBG_UPDATE_IN),
-      .pulse_out(MASTER_DRBG_UPDATE_OUT)
-   );
    defparam b2v_inst13.WIDTH = 2;
 
    assign MASTER_DRBG_NEXT_IN[0] = MASTER_DRBG_NEXT;
 
-
-   assign MASTER_DRBG_UPDATE_IN[1] = MASTER_DRBG_DO_RESEED;
-
-
-   assign MASTER_DRBG_UPDATE_IN[0] = MASTER_DRBG_UPDATE;
 
 
    assign _SHA_RESET_N = SLAVE_SHA_RESET_N | MASTER_SHA_RESET_N;
 
 
    hash_drbg slave_drbg (
-      .update(MASTER_DRBG_NEXT_READY),
       .reset_n(SLAVE_RESET_N),
       .clk(CLOCK),
       .next(SLAVE_DRBG_NEXT),
@@ -169,7 +151,6 @@ module master_hash_slave_hash_drbg (
       .sha_init(SHA_INIT),
       .sha_reset_n(SLAVE_SHA_RESET_N),
       .random_bits(SLAVE_DRBG_RANDOM_BITS),
-
       .sha_block(SHA_BLOCK)
    );
    defparam slave_drbg.RESEED_INTERVAL = BITS_GENERATOR_MAX_CYCLE; defparam slave_drbg.SEEDLEN = 256;
@@ -205,7 +186,6 @@ module master_hash_slave_hash_drbg (
    assign init_ready = MASTER_DRBG_INIT_READY & SLAVE_DRBG_INIT_READY;
 
    assign CLOCK = clk;
-   assign MASTER_DRBG_UPDATE = init;
    assign SLAVE_DRBG_NEXT = next_bits;
    assign MASTER_DRBG_NEXT = next_seed;
    assign MASTER_DRBG_ENTROPY = entropy;
