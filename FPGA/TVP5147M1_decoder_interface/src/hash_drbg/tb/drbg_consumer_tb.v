@@ -6,8 +6,8 @@ sim:/drbg_consumer_tb/drbg_consumer_inst/first_read_iteration sim:/drbg_consumer
 module drbg_consumer_tb;
 
 
-   localparam VIDEO_FILE_LOCATION = "video_f60.bin";
-   localparam NUMBERS_FILE = "drbg_consumer_numbers.bin";
+   localparam VIDEO_FILE_LOCATION = "data/video_f60.bin";
+   localparam NUMBERS_FILE = "data/drbg_consumer_numbers.bin";
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
@@ -128,7 +128,7 @@ module drbg_consumer_tb;
          #1;
          clk_sig = 1;
       end
-      
+
       $display("\nInit ready");
       reset_n_sig = 1;
 

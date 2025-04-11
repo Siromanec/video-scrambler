@@ -34,7 +34,7 @@ module master_hash_slave_hash_drbg_randomness_tb;
 
    localparam SEED_GENERATOR_MAX_CYCLE = 1;
    localparam BITS_GENERATOR_MAX_CYCLE = 128 * 8;  // 128 256-bit random numbers or 4096 random bytes
-   localparam FILENAME = "random_output_hash_drbg.txt";
+   localparam FILENAME = "data/random_output_hash_drbg.txt";
 
    localparam TOTAL_CYCLES = BITS_GENERATOR_MAX_CYCLE * SEED_GENERATOR_MAX_CYCLE;
 

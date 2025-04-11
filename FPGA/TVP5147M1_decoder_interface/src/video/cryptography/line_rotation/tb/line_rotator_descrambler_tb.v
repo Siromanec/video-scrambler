@@ -3,8 +3,8 @@
 module line_rotator_descrambler_tb;
 
 
-   localparam VIDEO_FILE_LOCATION = "video_f60_scrambled.bin";
-   localparam SCRAMBLED_VIDEO_FILE_LOCATION = "video_f60_descrambled.bin";
+   localparam VIDEO_FILE_LOCATION = "data/video_f60_scrambled.bin";
+   localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/video_f60_descrambled.bin";
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;

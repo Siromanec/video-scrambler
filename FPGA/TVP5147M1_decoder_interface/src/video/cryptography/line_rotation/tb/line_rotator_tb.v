@@ -7,8 +7,8 @@ sim:/line_rotator_tb/clk_sig sim:/line_rotator_tb/reset_n_sig sim:/line_rotator_
 module line_rotator_tb;
 
 
-   localparam VIDEO_FILE_LOCATION = "video_f60.bin";
-   localparam SCRAMBLED_VIDEO_FILE_LOCATION = "video_f60_scrambled.bin";
+   localparam VIDEO_FILE_LOCATION = "data/video_f60.bin";
+   localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/video_f60_scrambled.bin";
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;

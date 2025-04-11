@@ -1,8 +1,8 @@
 `timescale 10ns / 1ns
 module sync_parser_tb;
-   //   localparam VIDEO_FILE_LOCATION = "video_f60.bin";
-   // localparam VIDEO_FILE_LOCATION = "video_f60_scrambled.bin";
-   localparam VIDEO_FILE_LOCATION = "video_f60_descrambled.bin";
+   //   localparam VIDEO_FILE_LOCATION = "data/video_f60.bin";
+   // localparam VIDEO_FILE_LOCATION = "data/video_f60_scrambled.bin";
+   localparam VIDEO_FILE_LOCATION = "data/video_f60_descrambled.bin";
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
