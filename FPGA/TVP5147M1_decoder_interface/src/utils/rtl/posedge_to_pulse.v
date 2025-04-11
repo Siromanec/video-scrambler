@@ -7,7 +7,7 @@ module posedge_to_pulse #(parameter WIDTH=1) (
     output wire pulse_out   // Single-clock pulse output
 );
 
-    reg [WIDTH-1:0] signal_d;  // Delayed version of input signal
+   reg [WIDTH-1:0] signal_d;  // Delayed version of input signal
 	reg [WIDTH-1:0] mult_pulse_out;
 	
 	assign pulse_out = |mult_pulse_out;
