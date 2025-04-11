@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CSEBA6U23I7
-set_global_assignment -name TOP_LEVEL_ENTITY sequence_generator_switch
+set_global_assignment -name TOP_LEVEL_ENTITY master_hash_slave_hash_drbg
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 23.1STD.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:58:50  MARCH 03, 2025"
 set_global_assignment -name LAST_QUARTUS_VERSION "23.1std.1 Lite Edition"
@@ -60,7 +60,7 @@ set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
 set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name NUM_PARALLEL_PROCESSORS 6
 set_global_assignment -name VERILOG_FILE src/sequence_management/rtl/sequence_generator_switch.v
-set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/hash_drbg_consumer.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/drbg_consumer.v
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/scrambling/rtl/line_rotator.v
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/scrambling/rtl/line_rotation_scrambler.v
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/scrambling/rtl/cut_position_interpolator.v
@@ -69,9 +69,9 @@ set_global_assignment -name VERILOG_FILE src/utils/rtl/posedge_to_pulse.v
 set_global_assignment -name VERILOG_FILE src/sequence_management/tb/sequence_generator_tb.v
 set_global_assignment -name VERILOG_FILE src/sequence_management/tb/sequence_detector_tb.v
 set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/hash_drbg_tb.v
-set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/double_hash_drbg_tb.v
-set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/double_hash_drbg_slave_tb.v
-set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/double_hash_drbg_randomness_tb.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/master_hash_slave_hash_drbg_tb.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/master_hash_slave_hash_drbg_slave_tb.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/master_hash_slave_hash_drbg_randomness_tb.v
 set_global_assignment -name VERILOG_FILE src/mem_config/tb/cfg_reader_tb.v
 set_global_assignment -name VERILOG_FILE include/i2c/i2c_master.v
 set_global_assignment -name VERILOG_FILE src/sequence_management/rtl/sequence_shiftreg_out.v
@@ -88,7 +88,7 @@ set_global_assignment -name VERILOG_FILE src/mem_config/rtl/cfg_reader.v
 set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/lpm_constant_1.v
 set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/lpm_constant_0.v
 set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/hash_drbg.v
-set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/double_hash_drbg.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/master_hash_slave_hash_drbg.v
 set_global_assignment -name VERILOG_FILE include/sha256/sha256_w_mem.v
 set_global_assignment -name VERILOG_FILE include/sha256/sha256_k_constants.v
 set_global_assignment -name VERILOG_FILE include/sha256/sha256_core.v

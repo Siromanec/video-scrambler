@@ -329,7 +329,7 @@ https://fpgasoftware.intel.com/eula.
 )
 (symbol
 	(rect 536 528 816 688)
-	(text "double_hash_drbg" (rect 5 0 115 19)(font "Intel Clear" (font_size 8)))
+	(text "master_hash_slave_hash_drbg" (rect 5 0 115 19)(font "Intel Clear" (font_size 8)))
 	(text "inst2" (rect 8 139 30 156)(font "Intel Clear" ))
 	(port
 		(pt 0 32)

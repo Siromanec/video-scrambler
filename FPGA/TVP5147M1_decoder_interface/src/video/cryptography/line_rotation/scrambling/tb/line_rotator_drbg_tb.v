@@ -44,7 +44,7 @@ module line_rotator_drbg_tb;
    wire data_valid;
 
    wire reset_n_consumer = !V_rising && first_iter;
-   double_hash_drbg double_hash_drbg_0 (
+   master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
        .is_master_mode(0),
        .reset_n(reset_n_drbg_sig),
        .clk(clk_sig),
@@ -56,10 +56,11 @@ module line_rotator_drbg_tb;
        .next_bits_ready(next_bits_ready),
        .random_bits(random_bits),
        .reseed_counter(reseed_counter),
-       .busy(generator_busy)
+       .busy(generator_busy),
+       .catch_up_mode(0)
        );
-//    defparam double_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE; // irrelevant
-    ///defparam double_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = 2;
+//    defparam master_hash_slave_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE; // irrelevant
+    ///defparam master_hash_slave_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = 2;
 
    sync_parser sync_parser_inst (
       .clk(clk_sig),
@@ -71,7 +72,7 @@ module line_rotator_drbg_tb;
    );
 
 
-   hash_drbg_consumer hash_drbg_consumer_inst
+   drbg_consumer drbg_consumer_inst
    (
       .H(H_sig) ,	// input  H_sig
       .V(V_sig) ,	// input  V_sig
@@ -97,8 +98,8 @@ module line_rotator_drbg_tb;
    	.data_valid(data_valid)
    );
 
-   defparam hash_drbg_consumer_inst.DATA_WIDTH_IN = 256;
-   defparam hash_drbg_consumer_inst.DATA_WIDTH_OUT = 8;
+   defparam drbg_consumer_inst.DATA_WIDTH_IN = 256;
+   defparam drbg_consumer_inst.DATA_WIDTH_OUT = 8;
 
 //   reg [7:0] video_data [0:TOTAL_LINES-1];
    reg [7:0] video_value;

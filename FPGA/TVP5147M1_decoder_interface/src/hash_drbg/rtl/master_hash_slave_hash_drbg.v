@@ -17,7 +17,7 @@
 // VERSION		"Version 23.1std.1 Build 993 05/14/2024 SC Lite Edition"
 // CREATED		"Wed Mar 26 18:02:51 2025"
 
-module double_hash_drbg(
+module master_hash_slave_hash_drbg(
 	is_master_mode,
 	reset_n,
 	clk,
@@ -25,6 +25,7 @@ module double_hash_drbg(
 	next_bits,
 	init,
 	entropy,
+	catch_up_mode,
 	init_ready,
 	next_bits_ready,
 	random_bits,
@@ -42,6 +43,7 @@ input wire	next_seed;
 input wire	next_bits;
 input wire	init;
 input wire	[255:0] entropy;
+input wire  catch_up_mode;
 output wire	init_ready;
 output wire	next_bits_ready;
 output wire	[255:0] random_bits;
@@ -62,6 +64,7 @@ wire	MASTER_DRBG_INIT_READY;
 wire	MASTER_DRBG_NEXT;
 wire	[2:0] MASTER_DRBG_NEXT_IN;
 wire	MASTER_DRBG_NEXT_OUT;
+wire	MASTER_DRBG_NEXT_FINAL;
 wire	MASTER_DRBG_NEXT_READY;
 wire	[255:0] MASTER_DRBG_RANDOM_BITS;
 wire	MASTER_DRBG_RESET_N;
@@ -97,7 +100,7 @@ hash_drbg	master_drbg(
 	.update(MASTER_DRBG_UPDATE_OUT),
 	.reset_n(MASTER_DRBG_RESET_N),
 	.clk(CLOCK),
-	.next(MASTER_DRBG_NEXT_OUT),
+	.next(MASTER_DRBG_NEXT_FINAL),
 	.sha_ready(SHA_READY),
 	.sha_digest_valid(SHA_DIGEST_VALID),
 	.entropy(MASTER_DRBG_ENTROPY),
@@ -119,7 +122,7 @@ assign	MASTER_DRBG_RESET_N = reset_n;
 
 assign	MASTER_DRBG_NEXT_IN[1] = MASTER_DRBG_INIT_READY;
 
-
+assign MASTER_DRBG_NEXT_FINAL = MASTER_DRBG_NEXT_OUT | (next_seed & catch_up_mode);
 
 posedge_to_pulse	b2v_inst12(
 	.clk(CLOCK),

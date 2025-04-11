@@ -1,4 +1,4 @@
-module hash_drbg_consumer #(parameter DATA_WIDTH_IN = 256,
+module drbg_consumer #(parameter DATA_WIDTH_IN = 256,
                             parameter DATA_WIDTH_OUT = 8)
                            (input wire H,
                             input wire V,

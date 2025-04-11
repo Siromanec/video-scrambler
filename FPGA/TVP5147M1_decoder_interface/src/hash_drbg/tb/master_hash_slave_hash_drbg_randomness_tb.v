@@ -1,7 +1,7 @@
 `timescale 1ns / 1ns
-module double_hash_drbg_randomness_tb;
+module master_hash_slave_hash_drbg_randomness_tb;
 
-/*module double_hash_drbg(
+/*module master_hash_slave_hash_drbg(
 	is_master_mode,
 	reset_n,
 	clk,
@@ -30,7 +30,7 @@ integer file;
 
 //localparam	SEED_GENERATOR_MAX_CYCLE = 8;
 //localparam	BITS_GENERATOR_MAX_CYCLE = 128; // 128 256-bit random numbers or 4096 random bytes
-//localparam  FILENAME = "random_output_double_hash_drbg.txt";
+//localparam  FILENAME = "random_output_master_hash_slave_hash_drbg.txt";
 
 localparam	SEED_GENERATOR_MAX_CYCLE = 1;
 localparam	BITS_GENERATOR_MAX_CYCLE = 128 * 8; // 128 256-bit random numbers or 4096 random bytes
@@ -38,7 +38,7 @@ localparam  FILENAME = "random_output_hash_drbg.txt";
 
 localparam TOTAL_CYCLES = BITS_GENERATOR_MAX_CYCLE * SEED_GENERATOR_MAX_CYCLE;
 
-double_hash_drbg double_hash_drbg_0 (
+master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
     .is_master_mode(is_master_mode),
     .reset_n(reset_n),
     .clk(clk),
@@ -49,10 +49,11 @@ double_hash_drbg double_hash_drbg_0 (
     .init_ready(init_ready),
     .next_bits_ready(next_bits_ready),
     .random_bits(random_bits),
-    .reseed_counter(reseed_counter)
+    .reseed_counter(reseed_counter),
+    .catch_up_mode(0)
     );
-    defparam double_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE;
-    defparam double_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = SEED_GENERATOR_MAX_CYCLE;
+    defparam master_hash_slave_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE;
+    defparam master_hash_slave_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = SEED_GENERATOR_MAX_CYCLE;
 
 
 always begin

@@ -1,7 +1,7 @@
 `timescale 1ns / 1ns
-module double_hash_drbg_slave_tb;
+module master_hash_slave_hash_drbg_slave_tb;
 
-/*module double_hash_drbg(
+/*module master_hash_slave_hash_drbg(
 	is_master_mode,
 	reset_n,
 	clk,
@@ -32,7 +32,7 @@ localparam	BITS_GENERATOR_MAX_CYCLE = 3;
 
 localparam TOTAL_CYCLES = BITS_GENERATOR_MAX_CYCLE * SEED_GENERATOR_MAX_CYCLE;
 // external_sequence = [1, 2, 3, 5, 20, 4, 5]
-double_hash_drbg double_hash_drbg_0 (
+master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
     .is_master_mode(is_master_mode),
     .reset_n(reset_n),
     .clk(clk),
@@ -43,10 +43,11 @@ double_hash_drbg double_hash_drbg_0 (
     .init_ready(init_ready),
     .next_bits_ready(next_bits_ready),
     .random_bits(random_bits),
-    .reseed_counter(reseed_counter)
+    .reseed_counter(reseed_counter),
+    .catch_up_mode(0)
     );
-    defparam double_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE;
-    defparam double_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = SEED_GENERATOR_MAX_CYCLE;
+    defparam master_hash_slave_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE;
+    defparam master_hash_slave_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = SEED_GENERATOR_MAX_CYCLE;
 
 always begin
     clk = 1'b0;

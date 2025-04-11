@@ -22,7 +22,7 @@ https://fpgasoftware.intel.com/eula.
 (header "symbol" (version "1.2"))
 (symbol
 	(rect 16 16 296 176)
-	(text "double_hash_drbg" (rect 5 0 115 19)(font "Intel Clear" (font_size 8)))
+	(text "master_hash_slave_hash_drbg" (rect 5 0 115 19)(font "Intel Clear" (font_size 8)))
 	(text "inst" (rect 8 139 24 156)(font "Intel Clear" ))
 	(port
 		(pt 0 32)

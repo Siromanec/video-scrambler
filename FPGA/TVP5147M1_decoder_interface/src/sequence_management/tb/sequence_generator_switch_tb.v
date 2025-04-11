@@ -1,4 +1,8 @@
 `timescale 1ps / 1ps
+/*
+modelsim wave
+sim:/sequence_generator_switch_tb/generator_sequence_sig sim:/sequence_generator_switch_tb/enable_generator_sig sim:/sequence_generator_switch_tb/load_generator_sig sim:/sequence_generator_switch_tb/generator_sequence_out_sig sim:/sequence_generator_switch_tb/sequence_generator_inst/data_sig sim:/sequence_generator_switch_tb/sequence_generator_inst/shiftout_sig sim:/sequence_generator_switch_tb/clk_sig sim:/sequence_generator_switch_tb/reset_n_sig sim:/sequence_generator_switch_tb/bt_656_sig sim:/sequence_generator_switch_tb/bt_656_scramled sim:/sequence_generator_switch_tb/H_sig sim:/sequence_generator_switch_tb/V_out_sig sim:/sequence_generator_switch_tb/V_sig sim:/sequence_generator_switch_tb/cut_position sim:/sequence_generator_switch_tb/data_valid sim:/sequence_generator_switch_tb/prev_H sim:/sequence_generator_switch_tb/i sim:/sequence_generator_switch_tb/j sim:/sequence_generator_switch_tb/seed sim:/sequence_generator_switch_tb/H_rise
+*/
 module sequence_generator_switch_tb;
 
    localparam VIDEO_FILE_LOCATION = "video_f60.bin";
@@ -117,7 +121,7 @@ module sequence_generator_switch_tb;
          clk_sig = 0;
          reset_n_sig = 0;
          bt_656_sig = 0;
-         generator_sequence_sig = 6;
+         generator_sequence_sig = 0;
          #1;
          clk_sig = 0;
          #1;
@@ -132,6 +136,8 @@ module sequence_generator_switch_tb;
                line_store[j] = video_value;
    //            line_store_out[j] = 0;
             end
+
+            generator_sequence_sig = generator_sequence_sig + 1;
 
             for (j= 0; j < LINE_SIZE; j = j + 1) begin
                if (H_rise && !V_sig)

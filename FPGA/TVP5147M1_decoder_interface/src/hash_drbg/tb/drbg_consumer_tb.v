@@ -1,13 +1,13 @@
 `timescale 10ns / 1ns
 /*
 modelsim wave
-sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/first_read_iteration sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/first_write_iteration sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/read_done sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/write_done sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/do_read sim:/hash_drbg_consumer_tb/hash_drbg_consumer_inst/do_write sim:/hash_drbg_consumer_tb/clk_sig sim:/hash_drbg_consumer_tb/reset_n_sig sim:/hash_drbg_consumer_tb/H_sig sim:/hash_drbg_consumer_tb/V_sig sim:/hash_drbg_consumer_tb/V_rising sim:/hash_drbg_consumer_tb/bt_656_sig sim:/hash_drbg_consumer_tb/next_bits sim:/hash_drbg_consumer_tb/generator_busy sim:/hash_drbg_consumer_tb/init_ready sim:/hash_drbg_consumer_tb/next_bits_ready sim:/hash_drbg_consumer_tb/next_seed sim:/hash_drbg_consumer_tb/init sim:/hash_drbg_consumer_tb/entropy sim:/hash_drbg_consumer_tb/random_bits sim:/hash_drbg_consumer_tb/random_bits_serial sim:/hash_drbg_consumer_tb/random_bits_serial_valid sim:/hash_drbg_consumer_tb/reseed_counter sim:/hash_drbg_consumer_tb/i
+sim:/drbg_consumer_tb/drbg_consumer_inst/first_read_iteration sim:/drbg_consumer_tb/drbg_consumer_inst/first_write_iteration sim:/drbg_consumer_tb/drbg_consumer_inst/read_done sim:/drbg_consumer_tb/drbg_consumer_inst/write_done sim:/drbg_consumer_tb/drbg_consumer_inst/do_read sim:/drbg_consumer_tb/drbg_consumer_inst/do_write sim:/drbg_consumer_tb/clk_sig sim:/drbg_consumer_tb/reset_n_sig sim:/drbg_consumer_tb/H_sig sim:/drbg_consumer_tb/V_sig sim:/drbg_consumer_tb/V_rising sim:/drbg_consumer_tb/bt_656_sig sim:/drbg_consumer_tb/next_bits sim:/drbg_consumer_tb/generator_busy sim:/drbg_consumer_tb/init_ready sim:/drbg_consumer_tb/next_bits_ready sim:/drbg_consumer_tb/next_seed sim:/drbg_consumer_tb/init sim:/drbg_consumer_tb/entropy sim:/drbg_consumer_tb/random_bits sim:/drbg_consumer_tb/random_bits_serial sim:/drbg_consumer_tb/random_bits_serial_valid sim:/drbg_consumer_tb/reseed_counter sim:/drbg_consumer_tb/i
 */
-module hash_drbg_consumer_tb;
+module drbg_consumer_tb;
 
 
    localparam VIDEO_FILE_LOCATION = "video_f60.bin";
-   localparam NUMBERS_FILE = "hash_drbg_consumer_numbers.bin";
+   localparam NUMBERS_FILE = "drbg_consumer_numbers.bin";
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
@@ -40,7 +40,7 @@ module hash_drbg_consumer_tb;
    reg prev_V;
    wire V_rising = V_sig && !prev_V;
 
-   double_hash_drbg double_hash_drbg_0 (
+   master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
        .is_master_mode(0),
        .reset_n(reset_n_drbg_sig),
        .clk(clk_sig),
@@ -54,8 +54,8 @@ module hash_drbg_consumer_tb;
        .reseed_counter(reseed_counter),
        .busy(generator_busy)
        );
-//    defparam double_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE; // irrelevant
-    ///defparam double_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = 2;
+//    defparam master_hash_slave_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE; // irrelevant
+    ///defparam master_hash_slave_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = 2;
 
    sync_parser sync_parser_inst (
       .clk(clk_sig),
@@ -67,7 +67,7 @@ module hash_drbg_consumer_tb;
    );
    wire reset_n_consumer = !V_rising;
 
-   hash_drbg_consumer hash_drbg_consumer_inst
+   drbg_consumer drbg_consumer_inst
    (
       .H(H_sig) ,	// input  H_sig
       .V(V_sig) ,	// input  V_sig
@@ -81,8 +81,8 @@ module hash_drbg_consumer_tb;
       .need_next(next_bits) 	// output  need_next_sig
    );
 
-   defparam hash_drbg_consumer_inst.DATA_WIDTH_IN = 256;
-   defparam hash_drbg_consumer_inst.DATA_WIDTH_OUT = 8;
+   defparam drbg_consumer_inst.DATA_WIDTH_IN = 256;
+   defparam drbg_consumer_inst.DATA_WIDTH_OUT = 8;
 
 //   reg [7:0] video_data [0:TOTAL_LINES-1];
    reg [7:0] video_value;
