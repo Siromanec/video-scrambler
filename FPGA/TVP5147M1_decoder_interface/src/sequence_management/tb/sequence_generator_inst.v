@@ -20,7 +20,7 @@
 sequence_generator sequence_generator_inst
 (
 	.clock(clock_sig) ,	// input  clock_sig
-	.sequence(sequence_sig) ,	// input [31:0] sequence_sig
+	.reseed_count(sequence_sig) ,	// input [31:0] sequence_sig
 	.enable(enable_sig) ,	// input  enable_sig
 	.load(load_sig) ,	// input  load_sig
 	.sequence_out(sequence_out_sig) 	// output [9:0] sequence_out_sig

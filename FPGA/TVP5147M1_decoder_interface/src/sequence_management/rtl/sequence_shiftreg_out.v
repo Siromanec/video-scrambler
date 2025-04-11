@@ -38,41 +38,39 @@
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 module sequence_shiftreg_out (
-	clock,
-	data,
-	enable,
-	load,
-	shiftout);
+   clock,
+   data,
+   enable,
+   load,
+   shiftout
+);
 
-	input	  clock;
-	input	[39:0]  data;
-	input	  enable;
-	input	  load;
-	output	  shiftout;
+   input clock;
+   input [39:0] data;
+   input enable;
+   input load;
+   output shiftout;
 
-	wire  sub_wire0;
-	wire  shiftout = sub_wire0;
+   wire sub_wire0;
+   wire shiftout = sub_wire0;
 
-	lpm_shiftreg	LPM_SHIFTREG_component (
-				.clock (clock),
-				.data (data),
-				.enable (enable),
-				.load (load),
-				.shiftout (sub_wire0)
-				// synopsys translate_off
-				,
-				.aclr (),
-				.aset (),
-				.q (),
-				.sclr (),
-				.shiftin (),
-				.sset ()
-				// synopsys translate_on
-				);
-	defparam
-		LPM_SHIFTREG_component.lpm_direction = "LEFT",
-		LPM_SHIFTREG_component.lpm_type = "LPM_SHIFTREG",
-		LPM_SHIFTREG_component.lpm_width = 40;
+   lpm_shiftreg LPM_SHIFTREG_component (
+      .clock(clock),
+      .data(data),
+      .enable(enable),
+      .load(load),
+      .shiftout(sub_wire0)
+      // synopsys translate_off
+      , .aclr(),
+      .aset(),
+      .q(),
+      .sclr(),
+      .shiftin(),
+      .sset()
+      // synopsys translate_on
+   );
+   defparam LPM_SHIFTREG_component.lpm_direction = "LEFT", LPM_SHIFTREG_component.lpm_type = "LPM_SHIFTREG",
+       LPM_SHIFTREG_component.lpm_width = 40;
 
 
 endmodule

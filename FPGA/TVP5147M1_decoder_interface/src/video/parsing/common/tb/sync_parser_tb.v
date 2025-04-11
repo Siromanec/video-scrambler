@@ -1,12 +1,12 @@
 `timescale 10ns / 1ns
 module sync_parser_tb;
-//   localparam VIDEO_FILE_LOCATION = "video_f60.bin";
-// localparam VIDEO_FILE_LOCATION = "video_f60_scrambled.bin";
- localparam VIDEO_FILE_LOCATION = "video_f60_descrambled.bin";
+   //   localparam VIDEO_FILE_LOCATION = "video_f60.bin";
+   // localparam VIDEO_FILE_LOCATION = "video_f60_scrambled.bin";
+   localparam VIDEO_FILE_LOCATION = "video_f60_descrambled.bin";
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
-//   localparam TOTAL_FRAMES = 60;
+   //   localparam TOTAL_FRAMES = 60;
    localparam TOTAL_FRAMES = 10;
    localparam TOTAL_LINES = LINE_COUNT * TOTAL_FRAMES;
    localparam TOTAL_BYTES = LINE_SIZE * TOTAL_LINES;
@@ -30,13 +30,13 @@ module sync_parser_tb;
    sync_parser sync_parser_inst (
       .clk(clk_sig),
       .reset_n(reset_n_sig),
-      .bt_656 (bt_656_sig),
+      .bt_656(bt_656_sig),
       .H(H_sig),
       .V(V_sig),
       .F(F_sig)
    );
 
-//   reg [7:0] video_data [0:TOTAL_LINES-1];
+   //   reg [7:0] video_data [0:TOTAL_LINES-1];
    reg [7:0] video_value;
    integer fd;
 

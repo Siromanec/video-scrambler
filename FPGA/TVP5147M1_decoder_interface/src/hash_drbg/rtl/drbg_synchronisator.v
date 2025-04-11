@@ -1,7 +1,7 @@
 module drbg_synchronisator (
    input wire clk,
    input wire reset_n,
-   
+
    input wire init_done,
 
    input wire [31:0] sequence_internal,
@@ -12,15 +12,15 @@ module drbg_synchronisator (
    output reg catch_up_mode,
    output reg get_next_seed,
    output reg do_init,
-   
-   output wire reset_n_drbg,
-   output reg block_drbg_reseed
-   );
 
-//   localparam RESEED_EXECUTTION_TIME = 139;
-//   localparam ACTIVE_LINES = 480;
-//   localparam SAMPLES_BEFORE_RESEED = 
-//   localparam MAX_ALLOWED_LEADING_RESEED = 139;
+   output wire reset_n_drbg,
+   output reg  block_drbg_reseed
+);
+
+   //   localparam RESEED_EXECUTTION_TIME = 139;
+   //   localparam ACTIVE_LINES = 480;
+   //   localparam SAMPLES_BEFORE_RESEED = 
+   //   localparam MAX_ALLOWED_LEADING_RESEED = 139;
    localparam MAX_ALLOWED_INTERNAL_LEADING_RESEED = 60;
    reg [31:0] sequence_external_store;
    reg allow_compare;
@@ -29,16 +29,16 @@ module drbg_synchronisator (
    wire sequence_external_valid_rise = !sequence_external_valid_prev & sequence_external_valid;
    wire sequence_external_valid_fall = sequence_external_valid_prev & !sequence_external_valid;
    assign reset_n_drbg = reset_n & reset_n_drbg_command;
-   
-   
+
+
    localparam SYNC_STATE_IDLE = 0,
               SYNC_STATE_CATCH_UP = 1,
               SYNC_STATE_RESET = 2,
               SYNC_STATE_RESET_DO_INIT = 3,
               SYNC_STATE_WAIT = 4;
-               
+
    reg [$clog2(5) - 1:0] sync_state;
-   
+
    always @(posedge clk or negedge reset_n) begin
       if (!reset_n) begin
          sequence_external_store <= 0;
@@ -81,16 +81,16 @@ module drbg_synchronisator (
                   end
                end
                SYNC_STATE_RESET: begin
-                  reset_n_drbg_command <= 0; // it also needs to do init and all that stuff
+                  reset_n_drbg_command <= 0;  // it also needs to do init and all that stuff
                   sync_state <= SYNC_STATE_RESET_DO_INIT;
                end
                SYNC_STATE_RESET_DO_INIT: begin
                   if (init_done) begin
                      sync_state <= SYNC_STATE_IDLE;
                      do_init <= 0;
-                  end else begin 
-                    reset_n_drbg_command <= 1;
-                    do_init <= 1;
+                  end else begin
+                     reset_n_drbg_command <= 1;
+                     do_init <= 1;
                   end
                end
                SYNC_STATE_WAIT: begin
@@ -102,7 +102,7 @@ module drbg_synchronisator (
                      block_drbg_reseed <= 0;
                   end
                end
-                                             
+
             endcase
          end
       end

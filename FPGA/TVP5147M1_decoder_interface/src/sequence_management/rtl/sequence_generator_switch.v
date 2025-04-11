@@ -1,15 +1,15 @@
-module sequence_generator_switch(
-      input wire clk,
-      input wire reset_n,
-      input wire H,
-      input wire V,
-      input wire [9:0] bt656_stream_in,
-      input wire [9:0] sequence_in,
-      output wire [9:0] bt656_stream_out,
-      output wire V_out,
-      output reg enable_generator,
-      output reg load_generator
-   );
+module sequence_generator_switch (
+   input wire clk,
+   input wire reset_n,
+   input wire H,
+   input wire V,
+   input wire [9:0] bt656_stream_in,
+   input wire [9:0] sequence_in,
+   output wire [9:0] bt656_stream_out,
+   output wire V_out,
+   output reg enable_generator,
+   output reg load_generator
+);
    localparam ACTIVE_VIDEO_PIXELS = 2 * 720;
    reg prev_V, prev_H;
    wire V_fall = prev_V && !V;
@@ -17,7 +17,7 @@ module sequence_generator_switch(
    wire V_rise = !prev_V && V;
    wire H_rise = !prev_H && H;
 
-   reg V_internal;
+   reg  V_internal;
    // does not actually change the vsync in the stream, it is a trick for line rotator to not do encryption
    assign V_out = V || V_internal;
 
@@ -44,15 +44,13 @@ module sequence_generator_switch(
 
          prev_V <= V;
          prev_H <= H;
-   
+
          if (V) begin
             V_internal <= 1;
             sequence_done <= 0;
          end else if (H_rise && V_fall) begin
-            load_generator <= 1;
+            load_generator   <= 1;
             enable_generator <= 1;
-//         end else if (H_rise && !sequence_done) begin
-
          end else if (H_fall && !sequence_done) begin
             load_generator <= 0;
             allow_counter <= 1;

@@ -12,7 +12,7 @@ module line_rotator_tb;
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
-//   localparam TOTAL_FRAMES = 60;
+   //   localparam TOTAL_FRAMES = 60;
    localparam TOTAL_FRAMES = 10;
    localparam TOTAL_LINES = LINE_COUNT * TOTAL_FRAMES;
    localparam TOTAL_BYTES = LINE_SIZE * TOTAL_LINES;
@@ -29,30 +29,29 @@ module line_rotator_tb;
    wire data_valid;
 
    localparam CUT_POSITION = 128;
-//   localparam CUT_POSITION = 0;
+   //   localparam CUT_POSITION = 0;
    sync_parser sync_parser_inst (
       .clk(clk_sig),
       .reset_n(reset_n_sig),
-      .bt_656 (bt_656_sig),
+      .bt_656(bt_656_sig),
       .H(H_sig),
       .V(V_sig),
       .F(F_sig)
    );
 
-   line_rotator line_rotator_inst
-   (
-   	.clk(clk_sig) ,	// input  clk_sig
-   	.reset_n(reset_n_sig) ,	// input  reset_n_sig
-   	.data_in(bt_656_sig) ,	// input [9:0] data_in_sig
-   	.raw_cut_position(cut_position) ,	// input [7:0] raw_cut_position_sig
-   	.V(V_sig) ,	// input  V_sig
-   	.H(H_sig) ,	// input  H_sig
-   	.data_out(bt_656_scramled), 	// output [9:0] data_out_sig
-   	.data_valid(data_valid)
+   line_rotator line_rotator_inst (
+      .clk(clk_sig),  // input  clk_sig
+      .reset_n(reset_n_sig),  // input  reset_n_sig
+      .data_in(bt_656_sig),  // input [9:0] data_in_sig
+      .raw_cut_position(cut_position),  // input [7:0] raw_cut_position_sig
+      .V(V_sig),  // input  V_sig
+      .H(H_sig),  // input  H_sig
+      .data_out(bt_656_scramled),  // output [9:0] data_out_sig
+      .data_valid(data_valid)
    );
 
 
-//   reg [7:0] video_data [0:TOTAL_LINES-1];
+   //   reg [7:0] video_data [0:TOTAL_LINES-1];
    reg [7:0] video_value;
    integer fd;
    integer fd_out;
@@ -64,12 +63,12 @@ module line_rotator_tb;
    wire H_rise;
    assign H_rise = !prev_H & H_sig;
 
-   reg [7:0] line_store [0:(LINE_SIZE - 1)];
-   reg [7:0] line_store_out [0:(LINE_SIZE - 1)];
+   reg [7:0] line_store[0:(LINE_SIZE - 1)];
+   reg [7:0] line_store_out[0:(LINE_SIZE - 1)];
    initial begin
-//      cut_position = $random(seed) % 256;
+      //      cut_position = $random(seed) % 256;
       seed = 42;
-      fd = $fopen(VIDEO_FILE_LOCATION, "rb");
+      fd   = $fopen(VIDEO_FILE_LOCATION, "rb");
       if (fd == 0) begin
          $display("Error: Could not open file %s", VIDEO_FILE_LOCATION);
          $display("fd = %d", fd);
@@ -96,21 +95,20 @@ module line_rotator_tb;
 
 
       for (i = 0; i < TOTAL_BYTES / LINE_SIZE; i = i + 1) begin
-         for (j= 0; j < LINE_SIZE; j = j + 1) begin
+         for (j = 0; j < LINE_SIZE; j = j + 1) begin
             $fgets(video_value, fd);
             line_store[j] = video_value;
-//            line_store_out[j] = 0;
+            //            line_store_out[j] = 0;
          end
 
-         for (j= 0; j < LINE_SIZE; j = j + 1) begin
-            if (H_rise && !V_sig)
-               cut_position = {$random(seed)} % 256;
+         for (j = 0; j < LINE_SIZE; j = j + 1) begin
+            if (H_rise && !V_sig) cut_position = {$random(seed)} % 256;
 
 
-//            $display("cut_position: %d", cut_position);
+            //            $display("cut_position: %d", cut_position);
             video_value = line_store[j];
 
-            bt_656_sig = {video_value, 2'b00};
+            bt_656_sig  = {video_value, 2'b00};
 
             #1;
             clk_sig = 0;
@@ -121,11 +119,10 @@ module line_rotator_tb;
             // but i don't care because it will be a part of a stream
             // and happens only once and is solved by iterating further
             // the only consideration is when the encoder receives zeros and has to do something with it
-            if (data_valid)
-               line_store_out[j] = bt_656_scramled[9:2];
+            if (data_valid) line_store_out[j] = bt_656_scramled[9:2];
             prev_H <= H_sig;
          end
-         for (j= 0; j < LINE_SIZE; j = j + 1) begin
+         for (j = 0; j < LINE_SIZE; j = j + 1) begin
             video_value = line_store_out[j];
 
             $fwrite(fd_out, "%c", video_value);

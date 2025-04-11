@@ -11,7 +11,7 @@ module drbg_consumer_tb;
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
-//   localparam TOTAL_FRAMES = 60;
+   //   localparam TOTAL_FRAMES = 60;
    localparam TOTAL_FRAMES = 10;
    localparam TOTAL_LINES = LINE_COUNT * TOTAL_FRAMES;
    localparam TOTAL_BYTES = LINE_SIZE * TOTAL_LINES;
@@ -41,50 +41,48 @@ module drbg_consumer_tb;
    wire V_rising = V_sig && !prev_V;
 
    master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
-       .is_master_mode(0),
-       .reset_n(reset_n_drbg_sig),
-       .clk(clk_sig),
-       .next_seed(next_seed),
-       .next_bits(next_bits),
-       .init(init),
-       .entropy(entropy),
-       .init_ready(init_ready),
-       .next_bits_ready(next_bits_ready),
-       .random_bits(random_bits),
-       .reseed_counter(reseed_counter),
-       .busy(generator_busy)
-       );
-//    defparam master_hash_slave_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE; // irrelevant
-    ///defparam master_hash_slave_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = 2;
+      .is_master_mode(0),
+      .reset_n(reset_n_drbg_sig),
+      .clk(clk_sig),
+      .next_seed(next_seed),
+      .next_bits(next_bits),
+      .init(init),
+      .entropy(entropy),
+      .init_ready(init_ready),
+      .next_bits_ready(next_bits_ready),
+      .random_bits(random_bits),
+      .reseed_counter(reseed_counter),
+      .busy(generator_busy)
+   );
+   //    defparam master_hash_slave_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE; // irrelevant
+   ///defparam master_hash_slave_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = 2;
 
    sync_parser sync_parser_inst (
       .clk(clk_sig),
       .reset_n(reset_n_sig),
-      .bt_656 (bt_656_sig),
+      .bt_656(bt_656_sig),
       .H(H_sig),
       .V(V_sig),
       .F(F_sig)
    );
    wire reset_n_consumer = !V_rising;
 
-   drbg_consumer drbg_consumer_inst
-   (
-      .H(H_sig) ,	// input  H_sig
-      .V(V_sig) ,	// input  V_sig
-      .clk(clk_sig) ,	// input  clk_sig
-      .reset_n(reset_n_consumer) ,	// input  reset_n_sig
-      .data_in(random_bits) ,	// input [(DATA_WIDTH_IN-1):0] data_in_sig
-      .data_in_valid(next_bits_ready) ,	// input  data_in_valid_sig
+   drbg_consumer drbg_consumer_inst (
+      .H(H_sig),  // input  H_sig
+      .V(V_sig),  // input  V_sig
+      .clk(clk_sig),  // input  clk_sig
+      .reset_n(reset_n_consumer),  // input  reset_n_sig
+      .data_in(random_bits),  // input [(DATA_WIDTH_IN-1):0] data_in_sig
+      .data_in_valid(next_bits_ready),  // input  data_in_valid_sig
       .generator_busy(generator_busy),
-      .data_out(random_bits_serial) ,	// output [(DATA_WIDTH_OUT-1):0] data_out_sig
-      .data_out_valid(random_bits_serial_valid) ,	// output  data_out_valid_sig
-      .need_next(next_bits) 	// output  need_next_sig
+      .data_out(random_bits_serial),  // output [(DATA_WIDTH_OUT-1):0] data_out_sig
+      .data_out_valid(random_bits_serial_valid),  // output  data_out_valid_sig
+      .need_next(next_bits)  // output  need_next_sig
    );
 
-   defparam drbg_consumer_inst.DATA_WIDTH_IN = 256;
-   defparam drbg_consumer_inst.DATA_WIDTH_OUT = 8;
+   defparam drbg_consumer_inst.DATA_WIDTH_IN = 256; defparam drbg_consumer_inst.DATA_WIDTH_OUT = 8;
 
-//   reg [7:0] video_data [0:TOTAL_LINES-1];
+   //   reg [7:0] video_data [0:TOTAL_LINES-1];
    reg [7:0] video_value;
    integer fd;
    integer fd_out;
@@ -93,9 +91,9 @@ module drbg_consumer_tb;
    time j;
    reg [31:0] seed;
 
-   reg [7:0] line_store [0:(LINE_SIZE - 1)];
+   reg [7:0] line_store[0:(LINE_SIZE - 1)];
    initial begin
-//      cut_position = $random(seed) % 256;
+      //      cut_position = $random(seed) % 256;
       fd = $fopen(VIDEO_FILE_LOCATION, "rb");
       if (fd == 0) begin
          $display("Error: Could not open file %s", VIDEO_FILE_LOCATION);
@@ -116,9 +114,9 @@ module drbg_consumer_tb;
       reset_n_drbg_sig = 0;
       bt_656_sig = 0;
 
-       init = 1'b0;
+      init = 1'b0;
 
-       entropy = 256'h0;
+      entropy = 256'h0;
 
 
       #1;
@@ -138,11 +136,11 @@ module drbg_consumer_tb;
       reset_n_sig = 1;
 
       for (i = 0; i < TOTAL_BYTES / LINE_SIZE; i = i + 1) begin
-         for (j= 0; j < LINE_SIZE; j = j + 1) begin
+         for (j = 0; j < LINE_SIZE; j = j + 1) begin
             $fgets(video_value, fd);
             line_store[j] = video_value;
          end
-/*         if (!V_sig) begin // potential bug if it is vsync at the beginning of read line
+         /*         if (!V_sig) begin // potential bug if it is vsync at the beginning of read line
             cut_position = {$random(seed)} % 256;
          end*/
 
@@ -152,10 +150,10 @@ module drbg_consumer_tb;
          end
 
          $display("cut_position: %d", cut_position);
-         for (j= 0; j < LINE_SIZE; j = j + 1) begin
+         for (j = 0; j < LINE_SIZE; j = j + 1) begin
             prev_V = V_sig;
 
-//            $display("cut_position: %d", cut_position);
+            //            $display("cut_position: %d", cut_position);
             video_value = line_store[j];
 
             bt_656_sig = {video_value, 2'b00};

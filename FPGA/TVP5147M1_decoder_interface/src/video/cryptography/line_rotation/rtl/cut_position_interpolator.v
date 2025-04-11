@@ -1,7 +1,7 @@
-module cut_position_interpolator(
-   input [7:0] raw_cut_position,
+module cut_position_interpolator (
+   input  [ 7:0] raw_cut_position,
    output [10:0] cut_position
-   );
+);
    // 360 is number of chroma samles
    // there are 4 values per point in 360
    // the resulting split must not break up CrYCbY
@@ -12,7 +12,7 @@ module cut_position_interpolator(
    // 1.375 * 256 = 352
    // it is not split at 0 position and a last 8 samples
    // thus offset of 4 is added
-   localparam SCALE = 14'b1011; // 1.011 = 1.375
+   localparam SCALE = 14'b1011;  // 1.011 = 1.375
 
    localparam UPSAMPLE_SCALE = 11'd4;
    localparam OFFSET = 11'd4;
