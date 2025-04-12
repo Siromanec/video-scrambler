@@ -89,11 +89,8 @@ module drbg_synchronisator (
                   sync_state <= SYNC_STATE_RESET_DO_INIT;
                end
                SYNC_STATE_RESET_DO_INIT: begin
-                  if (init_done) begin
-                     sync_state <= SYNC_STATE_CATCH_UP; // needs to catch up if external is ahead
-                  end else begin
-                     reset_n_drbg_command <= 1;
-                  end
+                  sync_state <= SYNC_STATE_CATCH_UP; // needs to catch up if external is ahead
+                  reset_n_drbg_command <= 1;
                end
                SYNC_STATE_WAIT: begin
                   if (((sequence_internal == sequence_external_store) && V) || 

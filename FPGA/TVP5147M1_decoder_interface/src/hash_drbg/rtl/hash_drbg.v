@@ -182,6 +182,9 @@ module hash_drbg #(
                do_sha_request <= 1;
                // set the next state
                generate_state <= GENERATE_UPDATE_CNT;
+               next_ready <= 1;
+
+               reseed_counter <= reseed_counter + 1;
 `ifdef DEBUG
                $display("old_v=0x%0h", v[31:0]);
 `endif
@@ -196,7 +199,6 @@ module hash_drbg #(
                // reset state
                generate_next <= 0;
                // set external state
-               next_ready <= 1;
                generate_state <= GENERATE_IDLE;
             end  // GENERATE_UPDATE_CNT
          endcase  // case (generate_state)
@@ -256,11 +258,9 @@ module hash_drbg #(
                generate_next <= 1;
                generate_state <= GENERATE_RETURN_BITS_DONE;
             end
-            reseed_counter <= reseed_counter + 1;
 
-         end else if (generate_next && !next_ready) begin  // if generating next and not doing a request
+         end else if (generate_next) begin  // if generating next and not doing a request
             do_next;
-
          end  // else if (!init_ready) begin
 
       end else begin

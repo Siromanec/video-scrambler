@@ -55,7 +55,6 @@ module drbg_synchronisator_tb;
     end
 
     // Test stimulus
-    // Test stimulus
     initial begin
         // Initialize inputs
         reset_n = 0;

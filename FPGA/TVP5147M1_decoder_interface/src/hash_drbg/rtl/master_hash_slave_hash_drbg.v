@@ -179,7 +179,7 @@ module master_hash_slave_hash_drbg (
    );
    defparam b2v_inst14.WIDTH = 1;
 
-   assign SLAVE_RESET_N = reset_n & MASTER_DRBG_NEXT_READY & !next_seed_pulse_out;
+   assign SLAVE_RESET_N = reset_n & !MASTER_BUSY & !next_seed_pulse_out;
 
    assign init_ready = MASTER_DRBG_INIT_READY & SLAVE_DRBG_INIT_READY;
 
