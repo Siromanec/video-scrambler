@@ -32,8 +32,10 @@ module master_hash_slave_hash_drbg (
    busy
 );
 
-   parameter BITS_GENERATOR_MAX_CYCLE = 37500;
-   parameter SEED_GENERATOR_MAX_CYCLE = 65536;
+   parameter BITS_GENERATOR_MAX_CYCLE = 2**32 - 1;
+   parameter SEED_GENERATOR_MAX_CYCLE = 2**32 - 1;
+   //parameter BITS_GENERATOR_MAX_CYCLE = 37500;
+   //parameter SEED_GENERATOR_MAX_CYCLE = 65536;
 
    input wire is_master_mode;
    input wire reset_n;
@@ -45,7 +47,7 @@ module master_hash_slave_hash_drbg (
    output wire init_ready;
    output wire next_bits_ready;
    output wire [255:0] random_bits;
-   output wire [63:0] reseed_counter;
+   output wire [31:0] reseed_counter;
    output wire busy;
 
 
@@ -66,7 +68,7 @@ module master_hash_slave_hash_drbg (
    wire MASTER_DRBG_NEXT_READY;
    wire [255:0] MASTER_DRBG_RANDOM_BITS;
    wire MASTER_DRBG_RESET_N;
-   wire [63:0] MASTER_RESEED_COUNTER;
+   wire [31:0] MASTER_RESEED_COUNTER;
    wire MASTER_SHA_RESET_N;
    wire [511:0] SHA_BLOCK;
    wire [255:0] SHA_DIGEST;

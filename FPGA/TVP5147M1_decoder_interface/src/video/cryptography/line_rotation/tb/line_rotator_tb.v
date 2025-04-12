@@ -2,7 +2,7 @@
 
 /*
 modelsim wave
-sim:/line_rotator_tb/clk_sig sim:/line_rotator_tb/reset_n_sig sim:/line_rotator_tb/bt_656_sig sim:/line_rotator_tb/bt_656_scramled sim:/line_rotator_tb/H_sig sim:/line_rotator_tb/V_sig sim:/line_rotator_tb/F_sig sim:/line_rotator_tb/data_valid sim:/line_rotator_tb/line_rotator_inst/write_index sim:/line_rotator_tb/cut_position sim:/line_rotator_tb/i sim:/line_rotator_tb/j
+sim:/line_rotator_tb/clk_sig sim:/line_rotator_tb/reset_n_sig sim:/line_rotator_tb/bt656_sig sim:/line_rotator_tb/bt656_scramled sim:/line_rotator_tb/H_sig sim:/line_rotator_tb/V_sig sim:/line_rotator_tb/F_sig sim:/line_rotator_tb/data_valid sim:/line_rotator_tb/line_rotator_inst/write_index sim:/line_rotator_tb/cut_position sim:/line_rotator_tb/i sim:/line_rotator_tb/j
 */
 module line_rotator_tb;
 
@@ -20,8 +20,8 @@ module line_rotator_tb;
 
    reg clk_sig;
    reg reset_n_sig;
-   reg [9:0] bt_656_sig;
-   wire [9:0] bt_656_scramled;
+   reg [9:0] bt656_sig;
+   wire [9:0] bt656_scramled;
    wire H_sig;
    wire V_sig;
    wire F_sig;
@@ -33,7 +33,7 @@ module line_rotator_tb;
    sync_parser sync_parser_inst (
       .clk(clk_sig),
       .reset_n(reset_n_sig),
-      .bt_656(bt_656_sig),
+      .bt656(bt656_sig),
       .H(H_sig),
       .V(V_sig),
       .F(F_sig)
@@ -42,11 +42,11 @@ module line_rotator_tb;
    line_rotator line_rotator_inst (
       .clk(clk_sig),  // input  clk_sig
       .reset_n(reset_n_sig),  // input  reset_n_sig
-      .data_in(bt_656_sig),  // input [9:0] data_in_sig
+      .data_in(bt656_sig),  // input [9:0] data_in_sig
       .raw_cut_position(cut_position),  // input [7:0] raw_cut_position_sig
       .V(V_sig),  // input  V_sig
       .H(H_sig),  // input  H_sig
-      .data_out(bt_656_scramled),  // output [9:0] data_out_sig
+      .data_out(bt656_scramled),  // output [9:0] data_out_sig
       .data_valid(data_valid)
    );
 
@@ -84,7 +84,7 @@ module line_rotator_tb;
       cut_position = {$random(seed)} % 256;
       clk_sig = 0;
       reset_n_sig = 0;
-      bt_656_sig = 0;
+      bt656_sig = 0;
 
       #1;
       clk_sig = 0;
@@ -108,7 +108,7 @@ module line_rotator_tb;
             //            $display("cut_position: %d", cut_position);
             video_value = line_store[j];
 
-            bt_656_sig  = {video_value, 2'b00};
+            bt656_sig  = {video_value, 2'b00};
 
             #1;
             clk_sig = 0;
@@ -119,7 +119,7 @@ module line_rotator_tb;
             // but i don't care because it will be a part of a stream
             // and happens only once and is solved by iterating further
             // the only consideration is when the encoder receives zeros and has to do something with it
-            if (data_valid) line_store_out[j] = bt_656_scramled[9:2];
+            if (data_valid) line_store_out[j] = bt656_scramled[9:2];
             prev_H <= H_sig;
          end
          for (j = 0; j < LINE_SIZE; j = j + 1) begin

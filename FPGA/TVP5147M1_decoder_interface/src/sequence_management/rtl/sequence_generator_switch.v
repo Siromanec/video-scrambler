@@ -19,7 +19,7 @@ module sequence_generator_switch (
 
    reg  V_internal;
    // does not actually change the vsync in the stream, it is a trick for line rotator to not do encryption
-   assign V_out = V || V_internal;
+   assign V_out = V | V_internal;
 
    reg line_cnt;
    reg [$clog2(ACTIVE_VIDEO_PIXELS)-1:0] pixel_cnt;

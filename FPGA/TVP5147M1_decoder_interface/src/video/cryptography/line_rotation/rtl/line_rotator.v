@@ -44,7 +44,13 @@ module line_rotator #(
    endfunction
    localparam GARBAGE_LINES = 1;
    reg [1:0] line_switch_count;
-   wire H_fall = prev_H & !H;
+   wire V_fall = prev_V && !V;
+   wire H_fall = prev_H && !H;
+   wire V_rise = !prev_V && V;
+   wire H_rise = !prev_H && H;
+   reg V_internal;
+   wire V_lag = V | V_internal;
+   
    reg [ADDRESS_BITS-1:0] cut_position_prev;
    always @(posedge clk or negedge reset_n) begin
       // todo begin working only after posedge V
@@ -53,11 +59,12 @@ module line_rotator #(
          switch_buffer <= 0;
          data_out <= 0;
          prev_H <= H;
+         prev_V <= V;
          data_valid <= 0;
          line_switch_count <= 0;
          cut_position_prev <= 0;
          cut_position <= 0;
-
+         V_lag < V;
          if (!H) write_index <= 0;
          else write_index <= ACTIVE_LINE_SIZE;
 
@@ -92,7 +99,7 @@ module line_rotator #(
             write_index <= write_index + 1;
          end
          prev_H <= H;
-
+         prev_V <= V;
       end
    end
 

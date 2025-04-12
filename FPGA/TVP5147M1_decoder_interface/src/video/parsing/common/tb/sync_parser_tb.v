@@ -14,7 +14,7 @@ module sync_parser_tb;
 
    reg clk_sig;
    reg reset_n_sig;
-   reg [9:0] bt_656_sig;
+   reg [9:0] bt656_sig;
    wire H_sig;
    wire V_sig;
    wire F_sig;
@@ -30,7 +30,7 @@ module sync_parser_tb;
    sync_parser sync_parser_inst (
       .clk(clk_sig),
       .reset_n(reset_n_sig),
-      .bt_656(bt_656_sig),
+      .bt656(bt656_sig),
       .H(H_sig),
       .V(V_sig),
       .F(F_sig)
@@ -60,7 +60,7 @@ module sync_parser_tb;
 
       clk_sig = 0;
       reset_n_sig = 0;
-      bt_656_sig = 0;
+      bt656_sig = 0;
 
       #1;
       reset_n_sig = 1;
@@ -69,7 +69,7 @@ module sync_parser_tb;
 
       for (i = 0; i < TOTAL_BYTES; i = i + 1) begin
          $fgets(video_value, fd);
-         bt_656_sig = {video_value, 2'b00};
+         bt656_sig = {video_value, 2'b00};
          #1;
          clk_sig = 0;
          #1;

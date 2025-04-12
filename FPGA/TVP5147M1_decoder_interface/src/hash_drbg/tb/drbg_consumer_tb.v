@@ -1,7 +1,7 @@
 `timescale 10ns / 1ns
 /*
 modelsim wave
-sim:/drbg_consumer_tb/drbg_consumer_inst/first_read_iteration sim:/drbg_consumer_tb/drbg_consumer_inst/first_write_iteration sim:/drbg_consumer_tb/drbg_consumer_inst/read_done sim:/drbg_consumer_tb/drbg_consumer_inst/write_done sim:/drbg_consumer_tb/drbg_consumer_inst/do_read sim:/drbg_consumer_tb/drbg_consumer_inst/do_write sim:/drbg_consumer_tb/clk_sig sim:/drbg_consumer_tb/reset_n_sig sim:/drbg_consumer_tb/H_sig sim:/drbg_consumer_tb/V_sig sim:/drbg_consumer_tb/V_rising sim:/drbg_consumer_tb/bt_656_sig sim:/drbg_consumer_tb/next_bits sim:/drbg_consumer_tb/generator_busy sim:/drbg_consumer_tb/init_ready sim:/drbg_consumer_tb/next_bits_ready sim:/drbg_consumer_tb/next_seed sim:/drbg_consumer_tb/init sim:/drbg_consumer_tb/entropy sim:/drbg_consumer_tb/random_bits sim:/drbg_consumer_tb/random_bits_serial sim:/drbg_consumer_tb/random_bits_serial_valid sim:/drbg_consumer_tb/reseed_counter sim:/drbg_consumer_tb/i
+sim:/drbg_consumer_tb/drbg_consumer_inst/first_read_iteration sim:/drbg_consumer_tb/drbg_consumer_inst/first_write_iteration sim:/drbg_consumer_tb/drbg_consumer_inst/read_done sim:/drbg_consumer_tb/drbg_consumer_inst/write_done sim:/drbg_consumer_tb/drbg_consumer_inst/do_read sim:/drbg_consumer_tb/drbg_consumer_inst/do_write sim:/drbg_consumer_tb/clk_sig sim:/drbg_consumer_tb/reset_n_sig sim:/drbg_consumer_tb/H_sig sim:/drbg_consumer_tb/V_sig sim:/drbg_consumer_tb/V_rising sim:/drbg_consumer_tb/bt656_sig sim:/drbg_consumer_tb/next_bits sim:/drbg_consumer_tb/generator_busy sim:/drbg_consumer_tb/init_ready sim:/drbg_consumer_tb/next_bits_ready sim:/drbg_consumer_tb/next_seed sim:/drbg_consumer_tb/init sim:/drbg_consumer_tb/entropy sim:/drbg_consumer_tb/random_bits sim:/drbg_consumer_tb/random_bits_serial sim:/drbg_consumer_tb/random_bits_serial_valid sim:/drbg_consumer_tb/reseed_counter sim:/drbg_consumer_tb/i
 */
 module drbg_consumer_tb;
 
@@ -20,7 +20,7 @@ module drbg_consumer_tb;
    reg clk_sig;
    reg reset_n_sig;
    reg reset_n_drbg_sig;
-   reg [9:0] bt_656_sig;
+   reg [9:0] bt656_sig;
    wire H_sig;
    wire V_sig;
    wire F_sig;
@@ -35,7 +35,7 @@ module drbg_consumer_tb;
    wire [255:0] random_bits;
    wire [7:0] random_bits_serial;
    wire random_bits_serial_valid;
-   wire [63:0] reseed_counter;
+   wire [31:0] reseed_counter;
    wire generator_busy;
    reg prev_V;
    wire V_rising = V_sig && !prev_V;
@@ -59,7 +59,7 @@ module drbg_consumer_tb;
    sync_parser sync_parser_inst (
       .clk(clk_sig),
       .reset_n(reset_n_sig),
-      .bt_656(bt_656_sig),
+      .bt656(bt656_sig),
       .H(H_sig),
       .V(V_sig),
       .F(F_sig)
@@ -70,7 +70,7 @@ module drbg_consumer_tb;
       .H(H_sig),  // input  H_sig
       .V(V_sig),  // input  V_sig
       .clk(clk_sig),  // input  clk_sig
-      .reset_n(reset_n_consumer),  // input  reset_n_sig
+      .reset_n(reset_n_drbg_sig),  // input  reset_n_sig
       .data_in(random_bits),  // input [(DATA_WIDTH_IN-1):0] data_in_sig
       .data_in_valid(next_bits_ready),  // input  data_in_valid_sig
       .generator_busy(generator_busy),
@@ -111,7 +111,7 @@ module drbg_consumer_tb;
       clk_sig = 0;
       reset_n_sig = 0;
       reset_n_drbg_sig = 0;
-      bt_656_sig = 0;
+      bt656_sig = 0;
 
 
       entropy = 256'h0;
@@ -153,7 +153,7 @@ module drbg_consumer_tb;
             //            $display("cut_position: %d", cut_position);
             video_value = line_store[j];
 
-            bt_656_sig = {video_value, 2'b00};
+            bt656_sig = {video_value, 2'b00};
 
             #1;
             clk_sig = 0;

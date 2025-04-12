@@ -1,7 +1,7 @@
 module sync_parser (
    input wire clk,
    input wire reset_n,
-   input wire [9:0] bt_656,
+   input wire [9:0] bt656,
    output reg H,
    output reg V,
    output reg F
@@ -19,22 +19,22 @@ module sync_parser (
          V <= 1;
          H <= 1;  // one because followinfg modules react to the negative edge 
       end else begin
-         if (bt_656[9:2] == PREAMBLE_0) begin
+         if (bt656[9:2] == PREAMBLE_0) begin
             state <= PREAMBLE_1_STATE;
          end else begin
             case (state)
                PREAMBLE_1_STATE: begin
-                  if (bt_656[9:2] == PREAMBLE_1) state <= PREAMBLE_2_STATE;
+                  if (bt656[9:2] == PREAMBLE_1) state <= PREAMBLE_2_STATE;
                   else state <= PREAMBLE_0_STATE;
                end
                PREAMBLE_2_STATE: begin
-                  if (bt_656[9:2] == PREAMBLE_2) state <= DATA_STATE;
+                  if (bt656[9:2] == PREAMBLE_2) state <= DATA_STATE;
                   else state <= PREAMBLE_0_STATE;
                end
                DATA_STATE: begin
-                  F <= bt_656[8];
-                  V <= bt_656[7];
-                  H <= bt_656[6];
+                  F <= bt656[8];
+                  V <= bt656[7];
+                  H <= bt656[6];
                   state <= PREAMBLE_0_STATE;
                   // TODO error correction codes
                end

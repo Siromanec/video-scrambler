@@ -1,7 +1,7 @@
 `timescale 10ns / 1ns
 /*
 modelsim wave
-sim:/line_rotator_drbg_tb/clk_sig sim:/line_rotator_drbg_tb/reset_n_sig sim:/line_rotator_drbg_tb/reset_n_drbg_sig sim:/line_rotator_drbg_tb/bt_656_sig sim:/line_rotator_drbg_tb/bt_656_scramled sim:/line_rotator_drbg_tb/H_sig sim:/line_rotator_drbg_tb/V_sig sim:/line_rotator_drbg_tb/F_sig sim:/line_rotator_drbg_tb/cut_position sim:/line_rotator_drbg_tb/next_seed sim:/line_rotator_drbg_tb/next_bits sim:/line_rotator_drbg_tb/init sim:/line_rotator_drbg_tb/entropy sim:/line_rotator_drbg_tb/init_ready sim:/line_rotator_drbg_tb/next_bits_ready sim:/line_rotator_drbg_tb/random_bits sim:/line_rotator_drbg_tb/random_bits_serial sim:/line_rotator_drbg_tb/random_bits_serial_valid sim:/line_rotator_drbg_tb/reseed_counter sim:/line_rotator_drbg_tb/generator_busy sim:/line_rotator_drbg_tb/prev_V sim:/line_rotator_drbg_tb/V_rising sim:/line_rotator_drbg_tb/reset_n_consumer sim:/line_rotator_drbg_tb/video_value sim:/line_rotator_drbg_tb/i sim:/line_rotator_drbg_tb/j
+sim:/line_rotator_drbg_tb/clk_sig sim:/line_rotator_drbg_tb/reset_n_sig sim:/line_rotator_drbg_tb/reset_n_drbg_sig sim:/line_rotator_drbg_tb/bt656_sig sim:/line_rotator_drbg_tb/bt656_scramled sim:/line_rotator_drbg_tb/H_sig sim:/line_rotator_drbg_tb/V_sig sim:/line_rotator_drbg_tb/F_sig sim:/line_rotator_drbg_tb/cut_position sim:/line_rotator_drbg_tb/next_seed sim:/line_rotator_drbg_tb/next_bits sim:/line_rotator_drbg_tb/init sim:/line_rotator_drbg_tb/entropy sim:/line_rotator_drbg_tb/init_ready sim:/line_rotator_drbg_tb/next_bits_ready sim:/line_rotator_drbg_tb/random_bits sim:/line_rotator_drbg_tb/random_bits_serial sim:/line_rotator_drbg_tb/random_bits_serial_valid sim:/line_rotator_drbg_tb/reseed_counter sim:/line_rotator_drbg_tb/generator_busy sim:/line_rotator_drbg_tb/prev_V sim:/line_rotator_drbg_tb/V_rising sim:/line_rotator_drbg_tb/reset_n_consumer sim:/line_rotator_drbg_tb/video_value sim:/line_rotator_drbg_tb/i sim:/line_rotator_drbg_tb/j
 */
 module line_rotator_drbg_tb;
 
@@ -20,8 +20,8 @@ module line_rotator_drbg_tb;
    reg clk_sig;
    reg reset_n_sig;
    reg reset_n_drbg_sig;
-   reg [9:0] bt_656_sig;
-   wire [9:0] bt_656_scramled;
+   reg [9:0] bt656_sig;
+   wire [9:0] bt656_scramled;
    wire H_sig;
    wire V_sig;
    wire F_sig;
@@ -36,14 +36,14 @@ module line_rotator_drbg_tb;
    wire [255:0] random_bits;
    wire [7:0] random_bits_serial;
    wire random_bits_serial_valid;
-   wire [63:0] reseed_counter;
+   wire [31:0] reseed_counter;
    wire generator_busy;
    reg prev_V;
    wire V_rising = V_sig && !prev_V;
-   reg first_iter;
+   reg first_iter_done;
    wire data_valid;
 
-   wire reset_n_consumer = !V_rising && first_iter;
+   wire reset_n_consumer = !V_rising && first_iter_done;
    master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
       .is_master_mode(0),
       .reset_n(reset_n_drbg_sig),
@@ -64,7 +64,7 @@ module line_rotator_drbg_tb;
    sync_parser sync_parser_inst (
       .clk(clk_sig),
       .reset_n(reset_n_sig),
-      .bt_656(bt_656_sig),
+      .bt656(bt656_sig),
       .H(H_sig),
       .V(V_sig),
       .F(F_sig)
@@ -75,7 +75,7 @@ module line_rotator_drbg_tb;
       .H(H_sig),  // input  H_sig
       .V(V_sig),  // input  V_sig
       .clk(clk_sig),  // input  clk_sig
-      .reset_n(reset_n_consumer),  // input  reset_n_sig
+      .reset_n(reset_n_drbg_sig),  // input  reset_n_sig
       .data_in(random_bits),  // input [(DATA_WIDTH_IN-1):0] data_in_sig
       .data_in_valid(next_bits_ready),  // input  data_in_valid_sig
       .generator_busy(generator_busy),
@@ -87,11 +87,11 @@ module line_rotator_drbg_tb;
    line_rotator line_rotator_inst (
       .clk(clk_sig),  // input  clk_sig
       .reset_n(reset_n_sig),  // input  reset_n_sig
-      .data_in(bt_656_sig),  // input [9:0] data_in_sig
+      .data_in(bt656_sig),  // input [9:0] data_in_sig
       .raw_cut_position(random_bits_serial),  // input [7:0] raw_cut_position_sig
       .V(V_sig),  // input  V_sig
       .H(H_sig),  // input  H_sig
-      .data_out(bt_656_scramled),  // output [9:0] data_out_sig
+      .data_out(bt656_scramled),  // output [9:0] data_out_sig
       .data_valid(data_valid)
    );
 
@@ -123,11 +123,11 @@ module line_rotator_drbg_tb;
          $finish;
       end
 
-      first_iter = 0;
+      first_iter_done = 0;
       clk_sig = 0;
       reset_n_sig = 0;
       reset_n_drbg_sig = 0;
-      bt_656_sig = 0;
+      bt656_sig = 0;
 
       init = 1'b0;
 
@@ -139,16 +139,14 @@ module line_rotator_drbg_tb;
       #1;
       clk_sig = 1;
       reset_n_drbg_sig = 1;
-      init = 1'b1;
       while (!init_ready) begin
          #1;
          clk_sig = 0;
          #1;
          clk_sig = 1;
       end
-      init = 1'b0;
       $display("\nInit ready");
-      first_iter  = 1;
+      first_iter_done  = 1;
       reset_n_sig = 1;
 
       for (i = 0; i < TOTAL_BYTES / LINE_SIZE; i = i + 1) begin
@@ -164,13 +162,13 @@ module line_rotator_drbg_tb;
 
             video_value = line_store[j];
 
-            bt_656_sig = {video_value, 2'b00};
+            bt656_sig = {video_value, 2'b00};
 
             #1;
             clk_sig = 0;
             #1;
             clk_sig = 1;
-            if (data_valid) line_store_out[j] = bt_656_scramled[9:2];
+            if (data_valid) line_store_out[j] = bt656_scramled[9:2];
          end
          for (j = 0; j < LINE_SIZE; j = j + 1) begin
             video_value = line_store_out[j];

@@ -42,7 +42,7 @@ module drbg_consumer #(
 		WRITE CONTROL
 	-----------------------------------
 	*/
-   always @(posedge clk or negedge reset_n) begin : get_new_data
+   always @(posedge clk or negedge reset_n) begin : write_data
       if (!reset_n) begin
          // DOES NOT MODIFY DO_READ
          // MODIFIES WRITE_DONE
@@ -96,7 +96,7 @@ module drbg_consumer #(
 		READ CONTROL
 	-----------------------------------
 	*/
-   always @(posedge H or negedge reset_n) begin
+   always @(posedge H or negedge reset_n) begin : read_data
       if (!reset_n) begin
          ra <= 0;
          data_out_valid <= 0;
@@ -128,20 +128,40 @@ module drbg_consumer #(
    wire V_rise = V && !prev_V;
    wire V_fall = !V && prev_V;
    wire H_rise = H && !prev_H;
+   reg first_iteration_after_reset_done;
    always @(posedge clk or negedge reset_n) begin
       if (!reset_n) begin
          prev_write_done <= 0;
          prev_read_done <= 0;
 
          first_write_iteration <= 1;
+         first_iteration_after_reset_done <= 0;
          do_read <= 0;
          do_write <= 1;
+         prev_V <= 0;
+         prev_H <= 0;
       end else begin
-         prev_write_done <= write_done;
-         prev_read_done <= read_done;
-         prev_V <= V;
-         prev_H <= H;
-         if (read_done_rise || first_write_iteration) begin
+         if (V_rise) begin
+            prev_write_done <= 0;
+            prev_read_done <= 0;
+         end else begin
+            prev_write_done <= write_done;
+            prev_read_done <= read_done;
+         end
+         if(!first_iteration_after_reset_done) begin
+            prev_V <= 0;
+            prev_H <= 0;
+            first_iteration_after_reset_done <= 1;
+         end else begin
+            prev_V <= V;
+            prev_H <= H;
+         end   
+
+         if (V_rise) begin
+            first_write_iteration <= 1;
+            do_read <= 0;
+            do_write <= 1;
+         end if (read_done_rise || first_write_iteration) begin
             do_write <= 1;
             first_write_iteration <= 0;
          end else if (prev_write_done) begin

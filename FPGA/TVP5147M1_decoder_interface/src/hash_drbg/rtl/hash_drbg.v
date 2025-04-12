@@ -2,7 +2,7 @@
 
 module hash_drbg #(
    parameter SEEDLEN = 256,
-   parameter RESEED_INTERVAL = 60 * 625
+   parameter RESEED_INTERVAL = 2 ** 32
 ) (
    input [SEEDLEN-1:0] entropy,
    input reset_n,
@@ -15,7 +15,7 @@ module hash_drbg #(
 
    output do_reseed,
    output reg [255:0] random_bits,
-   output wire [63:0] reseed_counter_out,
+   output wire [31:0] reseed_counter_out,
    output wire busy,
 
    // ------------------------------------------------------------
@@ -73,13 +73,13 @@ module hash_drbg #(
    reg [1:0] generate_state;
 
    reg generate_next;
-   reg [63:0] reseed_counter;
+   reg [31:0] reseed_counter;
 
    assign reseed_counter_out = reseed_counter;
 
 
 
-   assign do_reseed = reseed_counter >= RESEED_INTERVAL + 1;  // master will need to reset reset, set new entropy , set reset
+   assign do_reseed = reseed_counter > RESEED_INTERVAL;  // master will need to reset reset, set new entropy , set reset
 
 
    reg do_sha_request;
