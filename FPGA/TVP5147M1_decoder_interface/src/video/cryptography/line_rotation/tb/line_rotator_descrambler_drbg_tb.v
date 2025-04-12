@@ -101,12 +101,12 @@ module line_rotator_descrambler_drbg_tb;
    reg [7:0] video_value;
    integer fd;
    integer fd_out;
+   integer code;
 
    time i;
    time j;
 
-   reg [7:0] line_store[0:(LINE_SIZE - 1)];
-   reg [7:0] line_store_out[0:(LINE_SIZE - 1)];
+   reg [7:0] line_store[0:TOTAL_BYTES / LINE_SIZE - 1][0:(LINE_SIZE - 1)];
    initial begin
       fd = $fopen(VIDEO_FILE_LOCATION, "rb");
       if (fd == 0) begin
@@ -115,19 +115,21 @@ module line_rotator_descrambler_drbg_tb;
          $finish;
       end
 
-      fd_out = $fopen(SCRAMBLED_VIDEO_FILE_LOCATION, "wb");
-      if (fd_out == 0) begin
-         $display("Error: Could not open file %s", SCRAMBLED_VIDEO_FILE_LOCATION);
-         $display("fd_out = %d", fd_out);
-         $finish;
+
+      code = $fread(line_store[0][0], fd, 0, TOTAL_BYTES);
+      if (code == 0) begin
+         $display("Error: Could not read data.");
+         $stop;
+      end else begin
+         $display("Read %0d bytes of data.", code);
       end
+      $fclose(fd);
 
       first_iter = 0;
       clk_sig = 0;
       reset_n_sig = 0;
       reset_n_drbg_sig = 0;
       bt656_sig = 0;
-
 
       entropy = 256'h0;
 
@@ -143,24 +145,25 @@ module line_rotator_descrambler_drbg_tb;
          #1;
          clk_sig = 1;
       end
+      
 
       $display("\nInit ready");
       first_iter  = 1;
       reset_n_sig = 1;
 
       for (i = 0; i < TOTAL_BYTES / LINE_SIZE; i = i + 1) begin
-         for (j = 0; j < LINE_SIZE; j = j + 1) begin
-            $fgets(video_value, fd);
-            line_store[j] = video_value;
-         end
+         // for (j = 0; j < LINE_SIZE; j = j + 1) begin
+         
+         // end
 
-         $display("line: %d  cut_position: %d", i, random_bits_serial);
+         
+
 
          for (j = 0; j < LINE_SIZE; j = j + 1) begin
 
             prev_V = V_sig;
 
-            video_value = line_store[j];
+            video_value = line_store[i][j];
 
             bt656_sig = {video_value, 2'b00};
 
@@ -168,20 +171,30 @@ module line_rotator_descrambler_drbg_tb;
             clk_sig = 0;
             #1;
             clk_sig = 1;
-            if (data_valid) line_store_out[j] = bt656_scramled[9:2];
+            if (data_valid) line_store[i][j] = bt656_scramled[9:2];
          end
-         for (j = 0; j < LINE_SIZE; j = j + 1) begin
-            video_value = line_store_out[j];
 
-            $fwrite(fd_out, "%c", video_value);
-
-         end
 
       end
-      $fclose(fd);
+      fd_out = $fopen(SCRAMBLED_VIDEO_FILE_LOCATION, "wb");
+      if (fd_out == 0) begin
+         $display("Error: Could not open file %s", SCRAMBLED_VIDEO_FILE_LOCATION);
+         $display("fd_out = %d", fd_out);
+         $finish;
+      end
+      $display("Begining to write results...");
+      for (i = 0; i < TOTAL_BYTES / LINE_SIZE; i = i + 1) begin
+         for (j = 0; j < LINE_SIZE; j = j + 1) begin
+            $fwrite(fd_out, "%c", line_store[i][j]);
+         end
+      end
+      $display("results written");
       $fclose(fd_out);
       $stop;
 
    end
 
+   initial begin
+      $monitor("line: %d  cut_position: %d", i, random_bits_serial);
+   end
 endmodule

@@ -31,7 +31,6 @@ module line_rotator #(
 
    reg [ADDRESS_BITS-1:0] write_index; // 12 bits because 2**11 < ACTIVE_LINE_SIZE + ACTIVE_LINE_SIZE < 2**12  and (a + b) mod 2048 mod 1440 != (a + b) mod 1440
    reg switch_buffer;
-   reg prev_H;
 
    function [ADDRESS_BITS-1:0] get_read_idx(input [ADDRESS_BITS:0] write_index, input [ADDRESS_BITS-1:0] cut_position,
                                             input H, input V);
@@ -44,13 +43,16 @@ module line_rotator #(
    endfunction
    localparam GARBAGE_LINES = 1;
    reg [1:0] line_switch_count;
+   reg prev_H;
+   reg prev_V;
    wire V_fall = prev_V && !V;
    wire H_fall = prev_H && !H;
    wire V_rise = !prev_V && V;
    wire H_rise = !prev_H && H;
    reg V_internal;
-   wire V_lag = V | V_internal;
-   
+   wire V_lag = V & V_internal;
+   reg pull_on_next;
+
    reg [ADDRESS_BITS-1:0] cut_position_prev;
    always @(posedge clk or negedge reset_n) begin
       // todo begin working only after posedge V
@@ -64,18 +66,20 @@ module line_rotator #(
          line_switch_count <= 0;
          cut_position_prev <= 0;
          cut_position <= 0;
-         V_lag < V;
+         V_internal <= 1;
+         pull_on_next <= 0;
          if (!H) write_index <= 0;
          else write_index <= ACTIVE_LINE_SIZE;
 
       end else begin
+
          if (H_fall) begin  // at negative edge reset counters. Has to be done on the same clock tick
 
             if (MODE == MODE_SCRAMBLER) begin
                line_buffer[!switch_buffer][0] <= data_in;
                data_out <= line_buffer[switch_buffer][get_read_idx(0, cut_position_prev, H, V)];
             end else if (MODE == MODE_DESCRAMBLER) begin
-               line_buffer[!switch_buffer][get_read_idx(0, cut_position_wire, H, V)] <= data_in;
+               line_buffer[!switch_buffer][get_read_idx(0, cut_position_wire, H, V_lag)] <= data_in;
                data_out <= line_buffer[switch_buffer][0];
             end
 
@@ -88,10 +92,23 @@ module line_rotator #(
             switch_buffer <= !switch_buffer;
             write_index   <= 1;
          end else begin
+
             if (MODE == MODE_SCRAMBLER) begin
+               if (!V) begin
+                  V_internal <= 0;
+                  pull_on_next <= 0;
+               end else if (H_rise) begin
+                  if (V_rise) begin
+                     pull_on_next <= 1;
+                  end else if (pull_on_next) begin
+                     pull_on_next <= 0;
+                     V_internal <= 1;
+                  end
+               end
                line_buffer[switch_buffer][write_index] <= data_in;
-               data_out <= line_buffer[!switch_buffer][get_read_idx(write_index, cut_position_prev, H, V)];
+               data_out <= line_buffer[!switch_buffer][get_read_idx(write_index, cut_position_prev, H, V_lag)];
             end else if (MODE == MODE_DESCRAMBLER) begin
+
                line_buffer[switch_buffer][get_read_idx(write_index, cut_position, H, V)] <= data_in;
                data_out <= line_buffer[!switch_buffer][write_index];
             end
