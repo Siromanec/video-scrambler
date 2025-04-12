@@ -11,7 +11,6 @@ module drbg_synchronisator (
 
    output reg catch_up_mode,
    output reg get_next_seed,
-   output reg do_init,
 
    output wire reset_n_drbg,
    output reg  block_drbg_reseed
@@ -44,7 +43,6 @@ module drbg_synchronisator (
          sequence_external_store <= 0;
          allow_compare <= 0;
          reset_n_drbg_command <= 1;
-         do_init <= 0;
          sync_state <= SYNC_STATE_IDLE;
          catch_up_mode <= 0;
          get_next_seed <= 0;
@@ -52,7 +50,7 @@ module drbg_synchronisator (
          sequence_external_valid_prev <= 0;
 
       end else begin
-         sequence_external_valid_prev <= sequence_external_valid
+         sequence_external_valid_prev <= sequence_external_valid;
          if (allow_compare) begin
             if (sequence_internal < sequence_external_store) begin
                sync_state <= SYNC_STATE_CATCH_UP;
@@ -92,11 +90,9 @@ module drbg_synchronisator (
                end
                SYNC_STATE_RESET_DO_INIT: begin
                   if (init_done) begin
-                     sync_state <= SYNC_STATE_IDLE;
-                     do_init <= 0;
+                     sync_state <= SYNC_STATE_CATCH_UP; // needs to catch up if external is ahead
                   end else begin
                      reset_n_drbg_command <= 1;
-                     do_init <= 1;
                   end
                end
                SYNC_STATE_WAIT: begin
@@ -104,8 +100,9 @@ module drbg_synchronisator (
                       ((sequence_internal == sequence_external_store - 1) && !V)) begin // next iteration will update on its own
                      get_next_seed <= 0;
                      sync_state <= SYNC_STATE_IDLE;
-                  end else begin
                      block_drbg_reseed <= 0;
+                  end else begin
+                     block_drbg_reseed <= 1;
                   end
                end
 

@@ -127,8 +127,6 @@ module master_hash_slave_hash_drbg (
    defparam b2v_inst12.WIDTH = 3;
 
 
-   defparam b2v_inst13.WIDTH = 2;
-
    assign MASTER_DRBG_NEXT_IN[0] = MASTER_DRBG_NEXT;
 
 

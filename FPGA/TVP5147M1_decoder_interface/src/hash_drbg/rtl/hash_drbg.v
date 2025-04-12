@@ -5,7 +5,6 @@ module hash_drbg #(
    parameter RESEED_INTERVAL = 60 * 625
 ) (
    input [SEEDLEN-1:0] entropy,
-   input update,
    input reset_n,
 
    input clk,
