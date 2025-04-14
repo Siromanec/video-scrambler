@@ -74,8 +74,8 @@ module drbg_synchronisator (
                end
                SYNC_STATE_CATCH_UP: begin
 
-                  if (((sequence_internal == sequence_external_store) && V) || 
-                      ((sequence_internal == sequence_external_store - 1) && !V)) begin // next iteration will update on its own
+                  if (((sequence_internal == sequence_external_store - 1) && V) || 
+                      ((sequence_internal == sequence_external_store) && !V)) begin // next iteration will update on its own
                      catch_up_mode <= 0;
                      get_next_seed <= 0;
                      sync_state <= SYNC_STATE_IDLE;

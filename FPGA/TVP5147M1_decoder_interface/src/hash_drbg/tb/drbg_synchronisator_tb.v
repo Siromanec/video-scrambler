@@ -79,7 +79,7 @@ module drbg_synchronisator_tb;
         // Test case 1: Catch-up mode (sequence_internal < sequence_external)
         sequence_external = reseed_counter + 10; // Ensure external is smaller
         sequence_external_valid = 1;
-        V = 0;
+        V = 1;
         #(CLK_PERIOD);
         sequence_external_valid = 0;
 
@@ -92,7 +92,7 @@ module drbg_synchronisator_tb;
                 // Test case 1: Catch-up mode (sequence_internal < sequence_external)
         sequence_external = reseed_counter + 10; // Ensure external is smaller
         sequence_external_valid = 1;
-        V = 1;
+        V = 0;
         #(CLK_PERIOD);
         sequence_external_valid = 0;
 

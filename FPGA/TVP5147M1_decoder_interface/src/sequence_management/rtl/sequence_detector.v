@@ -8,7 +8,7 @@ module sequence_detector #(
    input             clock,
    input      [ 9:0] sequence_in,
    input             reset_n,
-   output     [31:0] sequence_out,
+   output reg [31:0] sequence_out,
    output reg        ready
 );
 
@@ -26,8 +26,6 @@ module sequence_detector #(
    reg [5:0] read_bits;
 
    wire [TOTAL_BITS-1:0] sequence_internal;
-
-   assign sequence_out = sequence_internal[31:0];
 
    sequence_shiftreg_in sequence_shiftreg_in_inst (
       .aclr(!reset_n),
@@ -82,6 +80,7 @@ module sequence_detector #(
                read_bits <= 0;
                if ((id_mask & sequence_internal) == id_mask) begin  // assert that it is not some random signal
                   ready <= 1;
+                  sequence_out <= sequence_internal[31:0];
                end else begin
                   ready <= 0;
                end

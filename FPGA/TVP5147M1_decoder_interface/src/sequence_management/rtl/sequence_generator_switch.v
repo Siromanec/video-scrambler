@@ -74,20 +74,20 @@ module sequence_generator_switch (
             load_generator <= 0;
             allow_counter <= 1;
             allow_out <= 1;
+            pixel_cnt <= 1;
          end else if (!H && allow_counter) begin
             if (pixel_cnt < ACTIVE_VIDEO_PIXELS - 1) begin
                pixel_cnt <= pixel_cnt + 1;
             end else if (pixel_cnt < ACTIVE_VIDEO_PIXELS - 1 + 4) begin
-               if (pixel_cnt == ACTIVE_VIDEO_PIXELS - 1 + 3) begin
-                  V_internal <= 0;
-               end
+               // if (pixel_cnt == ACTIVE_VIDEO_PIXELS - 1 + 3) begin
+                  // V_internal <= 0;
+               // end
                pixel_cnt <= pixel_cnt + 1;
                allow_out <= 0;
                enable_generator <= 0;
                sequence_done <= 1;
-
             end else begin
-               
+               V_internal <= 0;
                allow_counter <= 0;
                pixel_cnt <= 0;
             end
