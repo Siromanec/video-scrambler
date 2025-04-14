@@ -56,7 +56,7 @@ set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
 # Analysis & Synthesis Assignments
 # ================================
 set_global_assignment -name FAMILY "Cyclone V"
-set_global_assignment -name TOP_LEVEL_ENTITY line_rotator
+set_global_assignment -name TOP_LEVEL_ENTITY scrambler
 
 # Fitter Assignments
 # ==================
@@ -185,6 +185,14 @@ set_global_assignment -name EDA_TEST_BENCH_NAME posedge_to_pulse_tb -section_id 
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id posedge_to_pulse_tb
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME posedge_to_pulse_tb -section_id posedge_to_pulse_tb
 set_global_assignment -name EDA_TEST_BENCH_FILE src/utils/tb/posedge_to_pulse_tb.v -section_id posedge_to_pulse_tb
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VERILOG_FILE src/video/parsing/common/rtl/sync_parser.v
+set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/rtl/line_rotator.v
+set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/rtl/cut_position_interpolator.v
+set_global_assignment -name VERILOG_FILE src/video/cryptography/scrambling/rtl/scrambler.v
+set_global_assignment -name BDF_FILE config_output.bdf
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/scrambling/tb/line_rotator_tb.v
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/scrambling/tb/line_rotator_drbg_tb.v
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/scrambling/tb/line_rotator_descrambler_tb.v
@@ -229,7 +237,4 @@ set_global_assignment -name VERILOG_FILE include/sha256/sha256_core.v
 set_global_assignment -name VERILOG_FILE include/sha256/sha256.v
 set_global_assignment -name BDF_FILE TVP5147M1_decoder_interface.bdf
 set_global_assignment -name VERILOG_FILE utils/posedge_to_pulse.v
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

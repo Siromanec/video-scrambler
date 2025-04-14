@@ -22,7 +22,7 @@ module line_rotator_descrambler_tb;
    wire V_sig;
    wire F_sig;
    reg [7:0] cut_position;
-   wire data_valid;
+   wire data_out_valid;
    reg prev_H;
    wire H_rise;
    assign H_rise = !prev_H & H_sig;
@@ -46,7 +46,7 @@ module line_rotator_descrambler_tb;
       .V(V_sig),  // input  V_sig
       .H(H_sig),  // input  H_sig
       .data_out(bt656_scramled),  // output [9:0] data_out_sig
-      .data_valid(data_valid)
+      .data_out_valid(data_out_valid)
    );
    defparam line_rotator_inst.MODE = 1;
 
@@ -114,7 +114,7 @@ module line_rotator_descrambler_tb;
             // but i don't care because it will be a part of a stream
             // and happens only once and is solved by iterating further
             // the only consideration is when the encoder receives zeros and has to do something with it
-            if (data_valid) line_store_out[j] = bt656_scramled[9:2];
+            if (data_out_valid) line_store_out[j] = bt656_scramled[9:2];
             prev_H = H_sig;
          end
          for (j = 0; j < LINE_SIZE; j = j + 1) begin

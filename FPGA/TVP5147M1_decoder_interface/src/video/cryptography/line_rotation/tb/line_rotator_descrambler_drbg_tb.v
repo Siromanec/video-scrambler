@@ -41,7 +41,7 @@ module line_rotator_descrambler_drbg_tb;
    reg prev_V;
    wire V_rising = V_sig && !prev_V;
    reg first_iter;
-   wire data_valid;
+   wire data_out_valid;
 
    wire reset_n_consumer = !V_rising && first_iter;
    master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
@@ -92,7 +92,7 @@ module line_rotator_descrambler_drbg_tb;
       .V(V_sig),  // input  V_sig
       .H(H_sig),  // input  H_sig
       .data_out(bt656_scramled),  // output [9:0] data_out_sig
-      .data_valid(data_valid)
+      .data_out_valid(data_out_valid)
    );
    defparam line_rotator_inst.MODE = 1; defparam drbg_consumer_inst.DATA_WIDTH_IN = 256;
        defparam drbg_consumer_inst.DATA_WIDTH_OUT = 8;
@@ -171,7 +171,7 @@ module line_rotator_descrambler_drbg_tb;
             clk_sig = 0;
             #1;
             clk_sig = 1;
-            if (data_valid) line_store[i][j] = bt656_scramled[9:2];
+            if (data_out_valid) line_store[i][j] = bt656_scramled[9:2];
          end
 
 

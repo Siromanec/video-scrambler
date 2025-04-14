@@ -252,110 +252,110 @@ r1
 R10
 R11
 vline_rotator
-!s110 1744488481
+!s110 1744589342
 !i10b 1
-!s100 [;Z^b[MJ>=I1:XU5AFj`c1
-IMlRO4zDLzYOY5fQO`<i4X3
+!s100 NDf=zgl:jKfG<WWSXfdCh1
+I9H3iK?BFdlM?WYVURnQAD0
 R1
-w1744488413
+w1744589329
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/rtl/line_rotator.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/rtl/line_rotator.v
-!i122 136
-L0 2 122
+!i122 199
+L0 2 121
 R5
 R6
 r1
 !s85 0
 31
-!s108 1744488481.000000
+!s108 1744589342.000000
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/rtl/line_rotator.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/rtl/line_rotator.v|
 !i113 1
 R10
 R11
 vline_rotator_descrambler_drbg_tb
-!s110 1744495721
+!s110 1744589185
 !i10b 1
-!s100 cTPmPo?APF6i5hf1TXmXV3
-IzGIl8Sz]G3>MXzSDfEAEE0
+!s100 I?CBlWk=lc^jI<l^K161K1
+Id?3k<iNUXR2Cj?KaXOVHe0
 R1
-w1744495715
+w1744500266
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_descrambler_drbg_tb.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_descrambler_drbg_tb.v
-!i122 162
+!i122 198
 L0 7 194
 R5
 R6
 r1
 !s85 0
 31
-!s108 1744495721.000000
+!s108 1744589185.000000
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_descrambler_drbg_tb.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_descrambler_drbg_tb.v|
 !i113 1
 R10
 R11
 vline_rotator_descrambler_tb
-!s110 1744495696
+Z17 !s110 1744501097
 !i10b 1
-!s100 62X9XeRioZHEW8TNPkQla3
-I5LKXo@m7I3bB4XYfCzSgE0
+!s100 H1zKQk2c[4n[aBi];o[D60
+I`e[T6JiXSkjSZ6LojG[Tk0
 R1
-w1744495374
+w1744500263
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_descrambler_tb.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_descrambler_tb.v
-!i122 161
+!i122 165
 L0 3 134
 R5
 R6
 r1
 !s85 0
 31
-!s108 1744495696.000000
+Z18 !s108 1744501097.000000
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_descrambler_tb.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_descrambler_tb.v|
 !i113 1
 R10
 R11
 vline_rotator_drbg_tb
-!s110 1744480311
+R17
 !i10b 1
-!s100 RIYm^;cV0DG8GGR5Rb^Mh1
-IPGB^ZISl:m[hmH]COiQOc2
+!s100 KaE[F6[9KL7e0gP2YCl5Z0
+Ig=QRdSYeLPNjKbm8`j2D21
 R1
-w1744480301
+w1744500255
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_drbg_tb.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_drbg_tb.v
-!i122 122
+!i122 166
 L0 6 182
 R5
 R6
 r1
 !s85 0
 31
-!s108 1744480311.000000
+R18
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_drbg_tb.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_drbg_tb.v|
 !i113 1
 R10
 R11
 vline_rotator_tb
-Z17 !s110 1744479042
+R17
 !i10b 1
-!s100 bEIo^Dz]b`o6b2<adO6FR2
-I^?fdzYAnKlz[N9NGVinkH0
+!s100 NMg6YEU7KE^5;FOf<1em82
+ILJGD]cVdPQ1FAzznG?`Ej0
 R1
-Z18 w1744473732
+w1744500260
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_tb.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_tb.v
-!i122 112
+!i122 167
 L0 7 133
 R5
 R6
 r1
 !s85 0
 31
-Z19 !s108 1744479042.000000
+R18
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_tb.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_tb.v|
 !i113 1
@@ -367,11 +367,11 @@ R15
 !s100 ]_>OK;jdEJkb_acnWTRjQ3
 IYWD:10=Dbm?gaPmSEjXLI1
 R1
-Z20 w1743004971
+Z19 w1743004971
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/rtl/lpm_constant_0.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/rtl/lpm_constant_0.v
 !i122 3
-Z21 L0 21 8
+Z20 L0 21 8
 R5
 R6
 r1
@@ -389,11 +389,11 @@ R15
 !s100 S`HeK03]n1;2S6:e5S^5F2
 I6Q19gQ^mlM^:=OQ5YYDKV1
 R1
-R20
+R19
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/rtl/lpm_constant_1.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/rtl/lpm_constant_1.v
 !i122 4
-R21
+R20
 R5
 R6
 r1
@@ -428,7 +428,7 @@ r1
 R10
 R11
 vmaster_hash_slave_hash_drbg_randomness_tb
-Z22 !s110 1744412329
+Z21 !s110 1744412329
 !i10b 1
 !s100 hU2OedFk_hGGQ2S7ekX3F0
 Ik=53:RE2Z_?Ba7[b86F<;0
@@ -443,14 +443,14 @@ R6
 r1
 !s85 0
 31
-Z23 !s108 1744412329.000000
+Z22 !s108 1744412329.000000
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/master_hash_slave_hash_drbg_randomness_tb.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/master_hash_slave_hash_drbg_randomness_tb.v|
 !i113 1
 R10
 R11
 vmaster_hash_slave_hash_drbg_slave_tb
-R22
+R21
 !i10b 1
 !s100 ;S;j8z:4o=Q7176?O8dT10
 IA22@m5U_Kd09ijD>@goFj3
@@ -465,14 +465,14 @@ R6
 r1
 !s85 0
 31
-R23
+R22
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/master_hash_slave_hash_drbg_slave_tb.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/master_hash_slave_hash_drbg_slave_tb.v|
 !i113 1
 R10
 R11
 vmaster_hash_slave_hash_drbg_tb
-R22
+R21
 !i10b 1
 !s100 F^O7@`Vm7iE_]06@kZQgH1
 IUWXQ?L?MUVbE=Me<g9dIg2
@@ -487,7 +487,7 @@ R6
 r1
 !s85 0
 31
-R23
+R22
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/master_hash_slave_hash_drbg_tb.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/master_hash_slave_hash_drbg_tb.v|
 !i113 1
@@ -537,6 +537,50 @@ R13
 !i113 1
 R10
 R11
+vscrambler
+!s110 1744587093
+!i10b 1
+!s100 ^dCk11PBma_NEh6Jd4X7=1
+IePA:GFPN1zcdYKBO7Ehel3
+R1
+w1744587085
+8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/scrambling/rtl/scrambler.v
+FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/scrambling/rtl/scrambler.v
+!i122 193
+L0 1 220
+R5
+R6
+r1
+!s85 0
+31
+!s108 1744587093.000000
+!s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/scrambling/rtl/scrambler.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/scrambling/rtl/scrambler.v|
+!i113 1
+R10
+R11
+vscrambler_tb
+!s110 1744584865
+!i10b 1
+!s100 ZDm9C=YZ;Ph76]H6SELMR3
+IJaYTmb<59U92L_ZfWYP@61
+R1
+w1744584858
+8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/scrambling/tb/scrambler_tb.v
+FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/scrambling/tb/scrambler_tb.v
+!i122 181
+L0 7 99
+R5
+R6
+r1
+!s85 0
+31
+!s108 1744584865.000000
+!s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/scrambling/tb/scrambler_tb.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/scrambling/tb/scrambler_tb.v|
+!i113 1
+R10
+R11
 vsequence_detector
 R0
 !i10b 1
@@ -560,12 +604,12 @@ R7
 R10
 R11
 vsequence_detector_bt656_stream_tb
-R17
+Z23 !s110 1744479042
 !i10b 1
 !s100 9i?N<WT9Le__S2>GmB8AU1
 I?O4;jNiCG5N8TjZi60QWE0
 R1
-R18
+Z24 w1744473732
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/tb/sequence_detector_bt656_stream_tb.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/tb/sequence_detector_bt656_stream_tb.v
 !i122 108
@@ -575,7 +619,7 @@ R6
 r1
 !s85 0
 31
-R19
+Z25 !s108 1744479042.000000
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/tb/sequence_detector_bt656_stream_tb.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/tb/sequence_detector_bt656_stream_tb.v|
 !i113 1
@@ -626,34 +670,34 @@ R9
 R10
 R11
 vsequence_generator_switch
-!s110 1744487711
+!s110 1744587446
 !i10b 1
-!s100 S:Oj`f^=Z_4XLbJJUOe>G3
-IO?1W@nEZUM`2ZE0Zg;Nba2
+!s100 7:ja03g9S?7WHUJX]i`g<3
+I:C1oZKXiK;O2W0Wma:1AX1
 R1
-w1744486369
+w1744587444
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/rtl/sequence_generator_switch.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/rtl/sequence_generator_switch.v
-!i122 133
-L0 1 74
+!i122 194
+L0 1 97
 R5
 R6
 r1
 !s85 0
 31
-!s108 1744487710.000000
+!s108 1744587446.000000
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/rtl/sequence_generator_switch.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/rtl/sequence_generator_switch.v|
 !i113 1
 R10
 R11
 vsequence_generator_switch_tb
-R17
+R23
 !i10b 1
 !s100 <2?jcfmCU4VIoCd=TC69O2
 Ih>]]nI_Q<9klbMRXe3KIl0
 R1
-R18
+R24
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/tb/sequence_generator_switch_tb.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/tb/sequence_generator_switch_tb.v
 !i122 109
@@ -663,7 +707,7 @@ R6
 r1
 !s85 0
 31
-R19
+R25
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/tb/sequence_generator_switch_tb.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/tb/sequence_generator_switch_tb.v|
 !i113 1
@@ -701,7 +745,7 @@ R2
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/rtl/sequence_shiftreg_in.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/rtl/sequence_shiftreg_in.v
 !i122 46
-Z24 L0 40 37
+Z26 L0 40 37
 R5
 R6
 r1
@@ -723,7 +767,7 @@ R2
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/rtl/sequence_shiftreg_out.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/rtl/sequence_shiftreg_out.v
 !i122 47
-R24
+R26
 R5
 R6
 r1
@@ -736,7 +780,7 @@ R7
 R10
 R11
 vsha256
-Z25 !s110 1744413031
+Z27 !s110 1744413031
 !i10b 1
 !s100 6<_7WYYTaTg3Xc<II2mC92
 IFU=TNM50LPl116nmSgXVV1
@@ -751,19 +795,19 @@ R6
 r1
 !s85 0
 31
-Z26 !s108 1744413031.000000
+Z28 !s108 1744413031.000000
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256.v|
 !i113 1
 R10
 R11
 vsha256_core
-R25
+R27
 !i10b 1
 !s100 WXXAH1Mm8GQ97==Ho<NUT1
 IHd=e9zQ9>nhG9eazJ0`d02
 R1
-Z27 w1742748996
+Z29 w1742748996
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_core.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_core.v
 !i122 79
@@ -773,19 +817,19 @@ R6
 r1
 !s85 0
 31
-R26
+R28
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_core.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_core.v|
 !i113 1
 R10
 R11
 vsha256_k_constants
-Z28 !s110 1744413032
+Z30 !s110 1744413032
 !i10b 1
 !s100 ^Va[i]`UHR6fPm8Lic>3H3
 I6c]AK;QG2GEeTjGO;8Ujm1
 R1
-R27
+R29
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_k_constants.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_k_constants.v
 !i122 80
@@ -795,19 +839,19 @@ R6
 r1
 !s85 0
 31
-R26
+R28
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_k_constants.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_k_constants.v|
 !i113 1
 R10
 R11
 vsha256_w_mem
-R28
+R30
 !i10b 1
 !s100 @M]a;mXm>0:^>?Xl=51m50
 IORQDHBkN>YnW?g?AGYY=S0
 R1
-R27
+R29
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_w_mem.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_w_mem.v
 !i122 81
@@ -824,12 +868,12 @@ r1
 R10
 R11
 vsync_parser
-R17
+R23
 !i10b 1
 !s100 =^UeHH9<c^DBH<NEUUKba3
 Ind9h7DFe]ZmOSfj:f;5SU3
 R1
-R18
+R24
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/parsing/common/rtl/sync_parser.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/parsing/common/rtl/sync_parser.v
 !i122 113
@@ -839,19 +883,19 @@ R6
 r1
 !s85 0
 31
-R19
+R25
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/parsing/common/rtl/sync_parser.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/parsing/common/rtl/sync_parser.v|
 !i113 1
 R10
 R11
 vsync_parser_tb
-R17
+R23
 !i10b 1
 !s100 _HRfhJ[HAGbFK>6@SHH9M1
 IECf5k@NX>1D5CVfm:CJ^A2
 R1
-R18
+R24
 8C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/parsing/common/tb/sync_parser_tb.v
 FC:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/parsing/common/tb/sync_parser_tb.v
 !i122 114
@@ -861,7 +905,7 @@ R6
 r1
 !s85 0
 31
-R19
+R25
 !s107 C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/parsing/common/tb/sync_parser_tb.v|
 !s90 -reportprogress|300|-work|work|-stats=none|C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/parsing/common/tb/sync_parser_tb.v|
 !i113 1

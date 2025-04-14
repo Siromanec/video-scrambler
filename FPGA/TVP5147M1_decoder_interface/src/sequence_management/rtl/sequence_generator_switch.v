@@ -19,7 +19,7 @@ module sequence_generator_switch (
 
    reg  V_internal;
    // does not actually change the vsync in the stream, it is a trick for line rotator to not do encryption
-   assign V_out = V | V_internal;
+   assign V_out = V || V_internal;
 
    reg line_cnt;
    reg [$clog2(ACTIVE_VIDEO_PIXELS)-1:0] pixel_cnt;
@@ -28,6 +28,25 @@ module sequence_generator_switch (
    reg sequence_done;
    assign bt656_stream_out = allow_out ? sequence_in : bt656_stream_in;
 
+   // // V V_lag V_out
+   // // 0   0   0
+   // // 0   1   1
+   // // 1   0   1
+   // // 1   1   1
+   // reg V_lag1;
+   // reg V_soften;
+   // for some reason modelsim generates zero-tick low pulse for the output of V_out 
+   // when V changes state which is enough to break everything
+
+   // always @(posedge H or negedge reset_n) begin
+   //    if (!reset_n) begin
+   //       V_lag1 <= V;
+   //       V_out <= V;
+   //    end else begin
+   //       V_out <= V_soften | V | V_lag1; 
+   //       V_lag1 <= V;
+   //    end
+   // end
 
    always @(posedge clk or negedge reset_n) begin
       if (!reset_n) begin
@@ -59,12 +78,16 @@ module sequence_generator_switch (
             if (pixel_cnt < ACTIVE_VIDEO_PIXELS - 1) begin
                pixel_cnt <= pixel_cnt + 1;
             end else if (pixel_cnt < ACTIVE_VIDEO_PIXELS - 1 + 4) begin
+               if (pixel_cnt == ACTIVE_VIDEO_PIXELS - 1 + 3) begin
+                  V_internal <= 0;
+               end
                pixel_cnt <= pixel_cnt + 1;
                allow_out <= 0;
                enable_generator <= 0;
                sequence_done <= 1;
+
             end else begin
-               V_internal <= 0;
+               
                allow_counter <= 0;
                pixel_cnt <= 0;
             end

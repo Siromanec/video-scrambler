@@ -2,7 +2,7 @@
 
 /*
 modelsim wave
-sim:/line_rotator_tb/clk_sig sim:/line_rotator_tb/reset_n_sig sim:/line_rotator_tb/bt656_sig sim:/line_rotator_tb/bt656_scramled sim:/line_rotator_tb/H_sig sim:/line_rotator_tb/V_sig sim:/line_rotator_tb/F_sig sim:/line_rotator_tb/data_valid sim:/line_rotator_tb/line_rotator_inst/write_index sim:/line_rotator_tb/cut_position sim:/line_rotator_tb/i sim:/line_rotator_tb/j
+sim:/line_rotator_tb/clk_sig sim:/line_rotator_tb/reset_n_sig sim:/line_rotator_tb/bt656_sig sim:/line_rotator_tb/bt656_scramled sim:/line_rotator_tb/H_sig sim:/line_rotator_tb/V_sig sim:/line_rotator_tb/F_sig sim:/line_rotator_tb/data_out_valid sim:/line_rotator_tb/line_rotator_inst/write_index sim:/line_rotator_tb/cut_position sim:/line_rotator_tb/i sim:/line_rotator_tb/j
 */
 module line_rotator_tb;
 
@@ -26,7 +26,7 @@ module line_rotator_tb;
    wire V_sig;
    wire F_sig;
    reg [7:0] cut_position;
-   wire data_valid;
+   wire data_out_valid;
 
    localparam CUT_POSITION = 128;
    //   localparam CUT_POSITION = 0;
@@ -47,7 +47,7 @@ module line_rotator_tb;
       .V(V_sig),  // input  V_sig
       .H(H_sig),  // input  H_sig
       .data_out(bt656_scramled),  // output [9:0] data_out_sig
-      .data_valid(data_valid)
+      .data_out_valid(data_out_valid)
    );
 
 
@@ -119,7 +119,7 @@ module line_rotator_tb;
             // but i don't care because it will be a part of a stream
             // and happens only once and is solved by iterating further
             // the only consideration is when the encoder receives zeros and has to do something with it
-            if (data_valid) line_store_out[j] = bt656_scramled[9:2];
+            if (data_out_valid) line_store_out[j] = bt656_scramled[9:2];
             prev_H <= H_sig;
          end
          for (j = 0; j < LINE_SIZE; j = j + 1) begin
