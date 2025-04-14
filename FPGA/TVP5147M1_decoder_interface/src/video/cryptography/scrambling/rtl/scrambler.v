@@ -10,25 +10,7 @@ module scrambler #(
    localparam MODE_SCRAMBLER = 0;
    localparam MODE_DESCRAMBLER = 1;
 
-   /* 
-   ----------------------------------------
-      DRBG CONSUMER OUT WIRES
-   ----------------------------------------
-   */
-   wire [7:0] CONSUMER_RAW_CUT_POSITION;
-   /* 
-   ----------------------------------------
-      SEQUENCE GENERATOR IN WIRES
-   ----------------------------------------
-   */
-   wire SEQUENCE_GENERATOR_ENABLE;
-   wire SEQUENCE_GENERATOR_LOAD;
-   /* 
-   ----------------------------------------
-      SEQUENCE GENERATOR OUT WIRES
-   ----------------------------------------
-   */
-   wire [9:0] SEQUENCE_GENERATOR_OUT;
+
 
    /* 
    ----------------------------------------
@@ -59,20 +41,51 @@ module scrambler #(
    wire [255:0] DRBG_RANDOM_BITS;
    /* 
    ----------------------------------------
+      SEQUENCE GENERATOR IN WIRES
+   ----------------------------------------
+   */
+   wire SEQUENCE_GENERATOR_ENABLE;
+   wire SEQUENCE_GENERATOR_LOAD;
+   /* 
+   ----------------------------------------
+      SEQUENCE GENERATOR OUT WIRES
+   ----------------------------------------
+   */
+   wire [9:0] SEQUENCE_GENERATOR_OUT;
+
+   /* 
+   ----------------------------------------
       SEQUENCE SWITCH OUT WIRES
    ----------------------------------------
    */
    wire [9:0] SWITCH_DATA_OUT;
    wire SWITCH_V;
 
-
-   wire [31:0] SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL;
+   /* 
+   ----------------------------------------
+      SEQUENCE DETECTOR OUT WIRES
+   ----------------------------------------
+   */
    wire SEQUENCE_DETECTOR_SEQUENCE_EXTERAL_VALID;
-   
+   wire [31:0] SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL;
+
+   /* 
+   ----------------------------------------
+      DRBG SYNCHRONISATOR OUT WIRES
+   ----------------------------------------
+   */
    wire DRBG_SYNCHRONISATOR_CATCH_UP_MODE;
    wire DRBG_SYNCHRONISATOR_GET_NEXT_SEED;
    wire DRBG_SYNCHRONISATOR_DRBG_RESET_N;
    wire DRBG_SYNCHRONISATOR_BLOCK_DRBG_RESEED;
+
+   /* 
+   ----------------------------------------
+      DRBG CONSUMER OUT WIRES
+   ----------------------------------------
+   */
+   wire [7:0] CONSUMER_RAW_CUT_POSITION;
+
    /* 
    ----------------------------------------
       LINE ROTATOR OUT WIRES
@@ -137,6 +150,14 @@ module scrambler #(
       .catch_up_mode(MODE ? DRBG_SYNCHRONISATOR_CATCH_UP_MODE : 0)
    );
 
+   /* 
+   ----------------------------------------
+      SEQUENCE MANAGEMENT
+      This section is responsible for managing the sequence generator and detector,
+      and synchronizing the DRBG on the descrambler side with the scrambler's DRBG.
+   ----------------------------------------
+   */
+
 generate
 
    case (MODE)
@@ -181,7 +202,13 @@ generate
          );
       end
       MODE_DESCRAMBLER: begin
-
+         /* 
+         ----------------------------------------
+         SEQUENCE DETECTOR
+         Detects external sequence inserted by SEQUENCE GENERATOR SWITCH and
+         transforms it to 32-bit value SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL
+         ----------------------------------------
+         */
          sequence_detector sequence_detector_inst (
             .clock(clk),  // input  clock_sig
             .sequence_in(bt656_stream_in),  // input [9:0] sequence_in_sig
@@ -189,7 +216,22 @@ generate
             .sequence_out(SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL),  // output [31:0] sequence_out_sig
             .ready(SEQUENCE_DETECTOR_SEQUENCE_EXTERAL_VALID)  // output  ready_sig
          );
+         /* 
+         ----------------------------------------
+         DRBG SYNCHRONISATOR
+         Synchronizes the DRBG with the external sequence inserted by SEQUENCE GENERATOR SWITCH
 
+         If the external sequence bigger than the internal sequence (reseed counter),
+         it will make DRBG catch up with it.
+
+         If the external sequence smaller than the internal sequence, 
+         but the difference is small it will stop the DRBG and
+         wait for the external sequence to catch up.
+
+         If the external sequence smaller than the internal sequence, 
+         and the difference is big it will reset the DRBG and make the DRBG catch up with it.
+         ----------------------------------------
+         */
          drbg_synchronisator drbg_synchronisator0 (
             .clk(clk),
             .reset_n(reset_n),
@@ -257,13 +299,4 @@ endgenerate
    );
       defparam line_rotator_inst.MODE = MODE;
 
-
-
-   // no logic needed
-   // always @(posedge clk or negedge reset_n) begin
-   //    if (!reset_n) begin
-   //    end else begin
-   //    end
-      
-   // end
 endmodule
