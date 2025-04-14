@@ -1,0 +1,119 @@
+`timescale 1ns / 1ns
+
+/*
+modelsim waves
+sim:/line_rotator_descrambler_drbg_tb/clk_sig sim:/line_rotator_descrambler_drbg_tb/reset_n_sig sim:/line_rotator_descrambler_drbg_tb/reset_n_drbg_sig sim:/line_rotator_descrambler_drbg_tb/cut_position sim:/line_rotator_descrambler_drbg_tb/next_seed sim:/line_rotator_descrambler_drbg_tb/next_bits sim:/line_rotator_descrambler_drbg_tb/init sim:/line_rotator_descrambler_drbg_tb/entropy sim:/line_rotator_descrambler_drbg_tb/init_ready sim:/line_rotator_descrambler_drbg_tb/next_bits_ready sim:/line_rotator_descrambler_drbg_tb/random_bits sim:/line_rotator_descrambler_drbg_tb/random_bits_serial sim:/line_rotator_descrambler_drbg_tb/random_bits_serial_valid sim:/line_rotator_descrambler_drbg_tb/reseed_counter sim:/line_rotator_descrambler_drbg_tb/generator_busy sim:/line_rotator_descrambler_drbg_tb/prev_V sim:/line_rotator_descrambler_drbg_tb/V_rising sim:/line_rotator_descrambler_drbg_tb/reset_n_consumer sim:/line_rotator_descrambler_drbg_tb/H_sig sim:/line_rotator_descrambler_drbg_tb/V_sig sim:/line_rotator_descrambler_drbg_tb/F_sig sim:/line_rotator_descrambler_drbg_tb/bt656_scramled sim:/line_rotator_descrambler_drbg_tb/video_value sim:/line_rotator_descrambler_drbg_tb/fd sim:/line_rotator_descrambler_drbg_tb/fd_out sim:/line_rotator_descrambler_drbg_tb/i sim:/line_rotator_descrambler_drbg_tb/j
+*/
+// `define SCRAMBLER
+`define SPLIT
+module scrambler_tb;
+   parameter CLK_PERIOD = 2;
+
+`ifdef 
+   localparam VIDEO_FILE_LOCATION = "data/video_f60.bin";
+   localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/video_f60_scrambled_scrambler.bin";
+`else
+   `ifdef SPLIT
+      localparam VIDEO_FILE_LOCATION = "data/video_f60_scrambled_scrambler2.bin";
+      localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/video_f60_descrambled_scrambler2.bin";
+   `else
+      localparam VIDEO_FILE_LOCATION = "data/video_f60_scrambled_scrambler.bin";
+      localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/video_f60_descrambled_scrambler.bin";
+   `endif // SPLIT
+`endif // SCRAMBLER
+
+   localparam LINE_SIZE = 2 * 858;
+
+   localparam LINE_COUNT = 525;
+   //   localparam TOTAL_FRAMES = 60;
+   localparam TOTAL_FRAMES = 10;
+   localparam TOTAL_LINES = LINE_COUNT * TOTAL_FRAMES;
+   localparam TOTAL_BYTES = LINE_SIZE * TOTAL_LINES;
+
+   reg clk;
+   reg reset_n_sig;
+   reg [9:0] bt656_stream_in_sig;
+   reg [255:0] seed;
+   wire [9:0] bt656_stream_out_sig;
+   scrambler scrambler_inst
+   (
+      .clk(clk) ,	// input  clk_sig
+      .reset_n(reset_n_sig) ,	// input  reset_n_sig
+      .bt656_stream_in(bt656_stream_in_sig) ,	// input [9:0] bt656_stream_in_sig
+      .seed(seed) ,	// input [255:0] seed_sig
+      .bt656_stream_out(bt656_stream_out_sig) 	// output [9:0] bt656_stream_out_sig
+   );
+`ifdef SCRAMBLER
+   defparam scrambler_inst.MODE = 0;
+`else
+   defparam scrambler_inst.MODE = 1;
+`endif
+   integer fd;
+   integer fd_out;
+   integer code;
+   reg [7:0] line_store[0:TOTAL_BYTES / LINE_SIZE - 1][0:(LINE_SIZE - 1)];
+
+   time i;
+   time j;
+
+    // Clock generation
+   initial begin
+      clk = 0;
+      forever #(CLK_PERIOD / 2) clk = ~clk;
+   end
+
+   initial begin
+
+      seed = 0;
+
+      fd = $fopen(VIDEO_FILE_LOCATION, "rb");
+      if (fd == 0) begin
+         $display("Error: Could not open file %s", VIDEO_FILE_LOCATION);
+         $display("fd = %d", fd);
+         $finish;
+      end
+
+
+      code = $fread(line_store[0][0], fd, 0, TOTAL_BYTES);
+      if (code == 0) begin
+         $display("Error: Could not read data.");
+         $stop;
+      end else begin
+         $display("Read %0d bytes of data.", code);
+      end
+      $fclose(fd);
+      $display("\nInit ready");
+      reset_n_sig = 0;
+      #(CLK_PERIOD * 10);
+      reset_n_sig = 1;
+
+      for (i = 0; i < code / LINE_SIZE; i = i + 1) begin
+         for (j = 0; j < LINE_SIZE; j = j + 1) begin
+            bt656_stream_in_sig = {line_store[i][j], 2'b00};
+            line_store[i][j] = bt656_stream_out_sig[9:2];
+            #(CLK_PERIOD);
+         end
+      end
+
+      fd_out = $fopen(SCRAMBLED_VIDEO_FILE_LOCATION, "wb");
+      if (fd_out == 0) begin
+         $display("Error: Could not open file %s", SCRAMBLED_VIDEO_FILE_LOCATION);
+         $display("fd_out = %d", fd_out);
+         $finish;
+      end
+      $display("Begining to write results...");
+      for (i = 0; i < code / LINE_SIZE; i = i + 1) begin
+         for (j = 0; j < LINE_SIZE; j = j + 1) begin
+            $fwrite(fd_out, "%c", line_store[i][j]);
+         end
+      end
+      $display("Results written");
+      $fclose(fd_out);
+      $stop;
+
+   end
+
+   initial begin
+      $monitor("line: %d", i);
+   end
+endmodule
