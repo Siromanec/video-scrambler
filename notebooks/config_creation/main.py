@@ -1,6 +1,7 @@
 from typing import Literal
 
 import numpy as np
+import mif
 
 
 class GenericI2CMemConfig:
@@ -148,7 +149,6 @@ def main():
     fpga_config = FPGAConfig(adv7393, tvp5147m1)
     memory = fpga_config.to_array()
 
-    import mif
 
     print(f"Mapped memory size: {len(memory)} bytes")
     bit_mem = np.unpackbits(memory, bitorder="little").reshape(-1, 8)

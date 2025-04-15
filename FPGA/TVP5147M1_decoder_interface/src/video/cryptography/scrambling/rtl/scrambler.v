@@ -1,6 +1,5 @@
-module scrambler #(
-    parameter MODE = 0 // 0: scrambler, 1: descrambler
-) (
+module scrambler (
+    input wire  MODE,// 0: scrambler, 1: descrambler
     input wire clk,
     input wire reset_n,
     input wire [9:0] bt656_stream_in,
@@ -158,10 +157,10 @@ module scrambler #(
    ----------------------------------------
    */
 
-generate
+// generate
 
-   case (MODE)
-      MODE_SCRAMBLER:  begin
+   // case (MODE)
+      // MODE_SCRAMBLER:  begin
 
          /* 
          ----------------------------------------
@@ -173,7 +172,7 @@ generate
          sequence_generator sequence_generator_inst (
             .clock(clk),  // input  clock_sig
             .reseed_count(DRBG_RESEED_COUNTER),  // input [31:0] sequence_sig
-            .enable(SEQUENCE_GENERATOR_ENABLE),  // input  enable_sig
+            .enable(MODE ? 0 : SEQUENCE_GENERATOR_ENABLE),  // input  enable_sig
             .load(SEQUENCE_GENERATOR_LOAD),  // input  load_sig
             .sequence_out(SEQUENCE_GENERATOR_OUT)  // output [9:0] sequence_out_sig
          );
@@ -190,7 +189,7 @@ generate
          */
          sequence_generator_switch sequence_generator_switch_inst (
             .clk(clk),  // input  clk
-            .reset_n(reset_n),  // input  reset_n
+            .reset_n(MODE ? 0 : reset_n),  // input  reset_n
             .H(H),  // input  H
             .V(V),  // input  V
             .bt656_stream_in(bt656_stream_in),  // input [9:0] bt656_stream_in_sig
@@ -200,8 +199,8 @@ generate
             .enable_generator(SEQUENCE_GENERATOR_ENABLE),  // output  SEQUENCE_GENERATOR_ENABLE
             .load_generator(SEQUENCE_GENERATOR_LOAD)  // output  SEQUENCE_GENERATOR_LOAD
          );
-      end
-      MODE_DESCRAMBLER: begin
+      // end
+      // MODE_DESCRAMBLER: begin
          /* 
          ----------------------------------------
          SEQUENCE DETECTOR
@@ -212,7 +211,7 @@ generate
          sequence_detector sequence_detector_inst (
             .clock(clk),  // input  clock_sig
             .sequence_in(bt656_stream_in),  // input [9:0] sequence_in_sig
-            .reset_n(!H),  // input  reset_n_sig
+            .reset_n(MODE ? !H : 0),  // input  reset_n_sig
             .sequence_out(SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL),  // output [31:0] sequence_out_sig
             .ready(SEQUENCE_DETECTOR_SEQUENCE_EXTERAL_VALID)  // output  ready_sig
          );
@@ -234,7 +233,7 @@ generate
          */
          drbg_synchronisator drbg_synchronisator0 (
             .clk(clk),
-            .reset_n(reset_n),
+            .reset_n(MODE ? reset_n : 0),
             .init_done(DRBG_INIT_READY),
             .sequence_internal(DRBG_RESEED_COUNTER),
             .sequence_external(SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL),
@@ -245,11 +244,11 @@ generate
             .reset_n_drbg(DRBG_SYNCHRONISATOR_DRBG_RESET_N),
             .block_drbg_reseed(DRBG_SYNCHRONISATOR_BLOCK_DRBG_RESEED)
          );
-      end
+      // end
 
-   endcase
+   // endcase
 
-endgenerate
+// endgenerate
 
 
    /* 
@@ -288,6 +287,7 @@ endgenerate
    ----------------------------------------
    */
    line_rotator line_rotator_inst (
+      .MODE(MODE),  // input  mode
       .clk(clk),  // input  clk
       .reset_n(reset_n),  // input  reset_n
       .data_in(MODE ? bt656_stream_in : SWITCH_DATA_OUT),  // input [9:0] data_in_sig
@@ -297,6 +297,5 @@ endgenerate
       .data_out(ROTATOR_DATA_OUT),  // output [9:0] data_out_sig
       .data_out_valid(ROTATOR_DATA_OUT_VALID)
    );
-      defparam line_rotator_inst.MODE = MODE;
 
 endmodule

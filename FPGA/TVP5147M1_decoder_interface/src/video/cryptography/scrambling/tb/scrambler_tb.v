@@ -35,19 +35,21 @@ module scrambler_tb;
    reg [9:0] bt656_stream_in_sig;
    reg [255:0] seed;
    wire [9:0] bt656_stream_out_sig;
+`ifdef SCRAMBLER
+   localparam MODE = 0;
+`else
+   localparam MODE = 1;
+`endif
    scrambler scrambler_inst
-   (
+   (  
+      .MODE(MODE),
       .clk(clk) ,	// input  clk_sig
       .reset_n(reset_n_sig) ,	// input  reset_n_sig
       .bt656_stream_in(bt656_stream_in_sig) ,	// input [9:0] bt656_stream_in_sig
       .seed(seed) ,	// input [255:0] seed_sig
       .bt656_stream_out(bt656_stream_out_sig) 	// output [9:0] bt656_stream_out_sig
    );
-`ifdef SCRAMBLER
-   defparam scrambler_inst.MODE = 0;
-`else
-   defparam scrambler_inst.MODE = 1;
-`endif
+
    integer fd;
    integer fd_out;
    integer code;

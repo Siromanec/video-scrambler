@@ -58,7 +58,7 @@ module hash_drbg #(
 
 
    reg [255:0] do_sha_digest;
-   reg [511:0] do_sha_message;
+   // reg [511:0] do_sha_message;
 
 
 
@@ -90,11 +90,46 @@ module hash_drbg #(
    reg do_sha_need_init_flag;
    reg accuire_sha_bus;
    reg do_sha_reset_n_flag;
-   assign sha_block = accuire_sha_bus ? do_sha_message : 512'hz; // why would i ever release the bus if i am curenntly using it? (why i removed sha_ready). okay someone else may be using it
+   assign sha_block = accuire_sha_bus ? select_sha_message(sha_message_select) : 512'hz; // why would i ever release the bus if i am curenntly using it? (why i removed sha_ready). okay someone else may be using it
    assign sha_init = accuire_sha_bus ? do_sha_need_init_flag : 1'bz;
    assign sha_reset_n = do_sha_reset_n_flag;
    localparam SHA_IDLE = 0, SHA_INIT = 1, SHA_WAIT = 2, SHA_RELEASE = 3;
    reg [1:0] do_sha_state;
+
+
+   localparam SHA_MESSAGE_NONE = 0,
+              SHA_MESSAGE_INIT = 1,
+              SHA_MESSAGE_RANDOM_BITS = 2,
+              SHA_MESSAGE_RESEED = 3,
+              SHA_MESSAGE_SEED = 4;
+   
+   reg [$clog2(5)-1:0] sha_message_select;
+
+   function [511:0] select_sha_message(input [$clog2(5)-1:0] select);
+      case (select)
+         SHA_MESSAGE_SEED: begin
+            select_sha_message = seed_material;
+         end
+         SHA_MESSAGE_NONE: begin
+            select_sha_message = 512'hz;
+         end
+         SHA_MESSAGE_INIT: begin
+            select_sha_message = {PREPEND_INIT, do_sha_digest, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
+         end
+         SHA_MESSAGE_RANDOM_BITS: begin
+            select_sha_message = {v, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
+         end
+         SHA_MESSAGE_RESEED: begin
+            select_sha_message = {PREPEND_HASH, v, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
+         end
+      endcase
+   endfunction
+
+   // wire [511:0] init_sha_message = {PREPEND_INIT, do_sha_digest, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
+   // wire [511:0] random_bits_sha_message = {v, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
+   // wire [511:0] reseed_sha_message = {PREPEND_HASH, v, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
+
+
 
    task do_sha;
       begin
@@ -140,7 +175,8 @@ module hash_drbg #(
                // retrieve the the do_sha_digest
                v <= do_sha_digest;
                // set the message for the next hash
-               do_sha_message <= {PREPEND_INIT, do_sha_digest, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
+               // do_sha_message <= {PREPEND_INIT, do_sha_digest, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
+               sha_message_select <= SHA_MESSAGE_INIT;
                // prepare control signals for do_sha
                do_sha_request <= 1;
                // set the next state
@@ -167,6 +203,7 @@ module hash_drbg #(
    endtask
 
 
+
    // ------------------------------------------------------------
    // generate fsm
    // ------------------------------------------------------------
@@ -177,7 +214,8 @@ module hash_drbg #(
                // retrieve the the do_sha_digest
                random_bits <= do_sha_digest;
                // set the message for the next hash
-               do_sha_message <= {PREPEND_HASH, v, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
+               // do_sha_message <= {PREPEND_HASH, v, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
+               sha_message_select <= SHA_MESSAGE_RESEED;
                // prepare control signals for do_sha
                do_sha_request <= 1;
                // set the next state
@@ -191,6 +229,15 @@ module hash_drbg #(
             end  // GENERATE_RETURN_BITS_DONE
             GENERATE_UPDATE_CNT: begin
                // retrieve the the do_sha_digest and use it as intermideate instead of h
+
+               // this would save 1 256-bit register, it is not worth it
+               // eax <= v;
+               // ebx <= do_sha_digest;
+
+               // eax <= eax + ebx;
+               // ebx <= c;
+
+               // eax <= eax + ebx;
                v <= v + do_sha_digest + c + reseed_counter;
 `ifdef DEBUG
                $display("new_v=0x%0h", v[31:0]);
@@ -219,6 +266,7 @@ module hash_drbg #(
          do_sha_need_init_flag <= 0;
          accuire_sha_bus <= 0;
          do_sha_reset_n_flag <= 1'b0;
+         sha_message_select <= SHA_MESSAGE_SEED;
 
          // set working variables to 0
          v <= 0;
@@ -230,7 +278,7 @@ module hash_drbg #(
          generate_state <= GENERATE_IDLE;
 
          // set the message for the next hash
-         do_sha_message <= seed_material;
+         // do_sha_message <= seed_material;
          // prepare control signals for do_sha
          do_sha_request <= 1;
          // set external state
@@ -249,7 +297,8 @@ module hash_drbg #(
             if (reseed_counter <= RESEED_INTERVAL) begin
 
                // set the message for the next hash
-               do_sha_message <= {v, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
+               // do_sha_message <= {v, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
+               sha_message_select <= SHA_MESSAGE_RANDOM_BITS;
                // prepare control signals for do_sha
                do_sha_request <= 1;
                // set external state
