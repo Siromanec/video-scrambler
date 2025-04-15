@@ -1,7 +1,6 @@
 `define DEBUG
-module line_rotator #(
-   parameter MODE = 0
-) (
+module line_rotator (
+   input wire MODE,
    input wire clk,
    input wire reset_n,
    input wire [9:0] data_in,
@@ -83,33 +82,36 @@ module line_rotator #(
 
          if (H_fall) begin  // at negative edge reset counters. Has to be done on the same clock tick
 
-            if (MODE == MODE_SCRAMBLER) begin
-               line_buffer[!switch_buffer][0] <= data_in;
-               data_out <= line_buffer[switch_buffer][get_read_idx(0, cut_position_prev, H, V_lag2)];
-            end else if (MODE == MODE_DESCRAMBLER) begin
-               line_buffer[!switch_buffer][get_read_idx(0, cut_position_wire, H, V)] <= data_in;
-               data_out <= line_buffer[switch_buffer][0];
-            end
+            case (MODE)
+               MODE_SCRAMBLER:  begin
+                  line_buffer[!switch_buffer][0] <= data_in;
+                  data_out <= line_buffer[switch_buffer][get_read_idx(0, cut_position_prev, H, V_lag2)];
+                  cut_position_prev <= cut_position;
 
+               end 
+               MODE_DESCRAMBLER: begin
+                  line_buffer[!switch_buffer][get_read_idx(0, cut_position_wire, H, V)] <= data_in;
+                  data_out <= line_buffer[switch_buffer][0];
+               end
+            endcase
             if (line_switch_count < GARBAGE_LINES) line_switch_count <= line_switch_count + 1;
             else data_out_valid <= 1;
 
-            if (MODE == MODE_SCRAMBLER) begin
-               cut_position_prev <= cut_position;
-            end
-            
             cut_position  <= cut_position_wire;
             switch_buffer <= !switch_buffer;
             write_index   <= 1;
          end else begin
-
-            if (MODE == MODE_SCRAMBLER) begin
-               line_buffer[switch_buffer][write_index] <= data_in;
-               data_out <= line_buffer[!switch_buffer][get_read_idx(write_index, cut_position_prev, H, V_lag2)];
-            end else if (MODE == MODE_DESCRAMBLER) begin
-               line_buffer[switch_buffer][get_read_idx(write_index, cut_position, H, V)] <= data_in;
-               data_out <= line_buffer[!switch_buffer][write_index];
-            end
+            
+            case (MODE)
+               MODE_SCRAMBLER:  begin
+                  line_buffer[switch_buffer][write_index] <= data_in;
+                  data_out <= line_buffer[!switch_buffer][get_read_idx(write_index, cut_position_prev, H, V_lag2)];
+               end 
+               MODE_DESCRAMBLER: begin
+                  line_buffer[switch_buffer][get_read_idx(write_index, cut_position, H, V)] <= data_in;
+                  data_out <= line_buffer[!switch_buffer][write_index];
+               end
+            endcase
 
             write_index <= write_index + 1;
          end
