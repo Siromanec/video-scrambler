@@ -18,7 +18,7 @@ module drbg_synchronisator_tb;
     wire get_next_seed;
     reg need_next;
     wire block_drbg_reseed;
-   wire [63:0] reseed_counter;
+   wire [31:0] reseed_counter;
    wire [255:0] random_bits;
     // Instantiate the Unit Under Test (UUT)
     drbg_synchronisator drbg_synchronisator0 (
@@ -37,7 +37,6 @@ module drbg_synchronisator_tb;
 
 
    master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
-      .is_master_mode(1'b0),
       .reset_n(reset_n_drbg),
       .clk(clk),
       .next_seed((get_next_seed | need_next) & !block_drbg_reseed),

@@ -82,6 +82,7 @@ module drbg_synchronisator (
                   end else begin
                      catch_up_mode <= 1;
                      get_next_seed <= 1;
+                     block_drbg_reseed <= 0;
                   end
                end
                SYNC_STATE_RESET: begin

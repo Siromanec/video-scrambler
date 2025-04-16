@@ -45,7 +45,6 @@ module line_rotator_descrambler_drbg_tb;
 
    wire reset_n_consumer = !V_rising && first_iter;
    master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
-      .is_master_mode(0),
       .reset_n(reset_n_drbg_sig),
       .clk(clk_sig),
       .next_seed(next_seed),
@@ -85,6 +84,7 @@ module line_rotator_descrambler_drbg_tb;
    );
 
    line_rotator line_rotator_inst (
+      .MODE(1),
       .clk(clk_sig),  // input  clk_sig
       .reset_n(reset_n_sig),  // input  reset_n_sig
       .data_in(bt656_sig),  // input [9:0] data_in_sig
@@ -94,7 +94,7 @@ module line_rotator_descrambler_drbg_tb;
       .data_out(bt656_scramled),  // output [9:0] data_out_sig
       .data_out_valid(data_out_valid)
    );
-   defparam line_rotator_inst.MODE = 1; defparam drbg_consumer_inst.DATA_WIDTH_IN = 256;
+   defparam drbg_consumer_inst.DATA_WIDTH_IN = 256;
        defparam drbg_consumer_inst.DATA_WIDTH_OUT = 8;
 
    //   reg [7:0] video_data [0:TOTAL_LINES-1];

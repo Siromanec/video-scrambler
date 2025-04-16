@@ -1,4 +1,4 @@
-`timescale 10ns / 1ns
+`timescale 1ns/100ps
 /*
 modelsim wave
 sim:/drbg_consumer_tb/drbg_consumer_inst/first_read_iteration sim:/drbg_consumer_tb/drbg_consumer_inst/first_write_iteration sim:/drbg_consumer_tb/drbg_consumer_inst/read_done sim:/drbg_consumer_tb/drbg_consumer_inst/write_done sim:/drbg_consumer_tb/drbg_consumer_inst/do_read sim:/drbg_consumer_tb/drbg_consumer_inst/do_write sim:/drbg_consumer_tb/clk_sig sim:/drbg_consumer_tb/reset_n_sig sim:/drbg_consumer_tb/H_sig sim:/drbg_consumer_tb/V_sig sim:/drbg_consumer_tb/V_rising sim:/drbg_consumer_tb/bt656_sig sim:/drbg_consumer_tb/next_bits sim:/drbg_consumer_tb/generator_busy sim:/drbg_consumer_tb/init_ready sim:/drbg_consumer_tb/next_bits_ready sim:/drbg_consumer_tb/next_seed sim:/drbg_consumer_tb/init sim:/drbg_consumer_tb/entropy sim:/drbg_consumer_tb/random_bits sim:/drbg_consumer_tb/random_bits_serial sim:/drbg_consumer_tb/random_bits_serial_valid sim:/drbg_consumer_tb/reseed_counter sim:/drbg_consumer_tb/i
@@ -41,7 +41,6 @@ module drbg_consumer_tb;
    wire V_rising = V_sig && !prev_V;
 
    master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
-      .is_master_mode(0),
       .reset_n(reset_n_drbg_sig),
       .clk(clk_sig),
       .next_seed(next_seed),

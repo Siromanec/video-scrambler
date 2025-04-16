@@ -9,11 +9,11 @@ module hash_drbg #(
 
    input clk,
    input next,
+   input wire reseed,
    output reg next_ready,
    output reg init_ready,
 
 
-   output do_reseed,
    output reg [255:0] random_bits,
    output wire [31:0] reseed_counter_out,
    output wire busy,
@@ -65,12 +65,9 @@ module hash_drbg #(
 
 
 
-   localparam GENERATE_IDLE = 0, GENERATE_RETURN_BITS_DONE = 1, GENERATE_UPDATE_V = 2, GENERATE_UPDATE_CNT = 3;
-
 
    localparam INIT_IDLE = 0, INIT_V_DONE = 1, INIT_C_DONE = 2;
    reg [1:0] init_state;
-   reg [1:0] generate_state;
 
    reg generate_next;
    reg [31:0] reseed_counter;
@@ -79,7 +76,6 @@ module hash_drbg #(
 
 
 
-   assign do_reseed = reseed_counter > RESEED_INTERVAL;  // master will need to reset reset, set new entropy , set reset
 
 
    reg do_sha_request;
@@ -95,7 +91,8 @@ module hash_drbg #(
    assign sha_reset_n = do_sha_reset_n_flag;
    localparam SHA_IDLE = 0, SHA_INIT = 1, SHA_WAIT = 2, SHA_RELEASE = 3;
    reg [1:0] do_sha_state;
-
+   integer data_cnt;
+   reg reseeding;
 
    localparam SHA_MESSAGE_NONE = 0,
               SHA_MESSAGE_INIT = 1,
@@ -117,7 +114,7 @@ module hash_drbg #(
             select_sha_message = {PREPEND_INIT, do_sha_digest, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
          end
          SHA_MESSAGE_RANDOM_BITS: begin
-            select_sha_message = {v, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
+            select_sha_message = {v + data_cnt, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
          end
          SHA_MESSAGE_RESEED: begin
             select_sha_message = {PREPEND_HASH, v, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
@@ -204,61 +201,12 @@ module hash_drbg #(
 
 
 
-   // ------------------------------------------------------------
-   // generate fsm
-   // ------------------------------------------------------------
-   task do_next;
-      begin
-         case (generate_state)
-            GENERATE_RETURN_BITS_DONE: begin
-               // retrieve the the do_sha_digest
-               random_bits <= do_sha_digest;
-               // set the message for the next hash
-               // do_sha_message <= {PREPEND_HASH, v, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
-               sha_message_select <= SHA_MESSAGE_RESEED;
-               // prepare control signals for do_sha
-               do_sha_request <= 1;
-               // set the next state
-               generate_state <= GENERATE_UPDATE_CNT;
-               next_ready <= 1;
-
-               reseed_counter <= reseed_counter + 1;
-`ifdef DEBUG
-               $display("old_v=0x%0h", v[31:0]);
-`endif
-            end  // GENERATE_RETURN_BITS_DONE
-            GENERATE_UPDATE_CNT: begin
-               // retrieve the the do_sha_digest and use it as intermideate instead of h
-
-               // this would save 1 256-bit register, it is not worth it
-               // eax <= v;
-               // ebx <= do_sha_digest;
-
-               // eax <= eax + ebx;
-               // ebx <= c;
-
-               // eax <= eax + ebx;
-               v <= v + do_sha_digest + c + reseed_counter;
-`ifdef DEBUG
-               $display("new_v=0x%0h", v[31:0]);
-`endif
-
-               // reset state
-               generate_next <= 0;
-               // set external state
-               generate_state <= GENERATE_IDLE;
-            end  // GENERATE_UPDATE_CNT
-         endcase  // case (generate_state)
-      end  // if generating next and not doing a request
-   endtask
-
-
 
 
    // ------------------------------------------------------------
    // function selection/ dispatch
    // ------------------------------------------------------------
-   assign busy =  generate_next | !init_ready;
+   assign busy =  generate_next | !init_ready | reseeding;
    always @(posedge clk or negedge reset_n) begin
       if (!reset_n) begin
          // reset do_sha
@@ -275,8 +223,7 @@ module hash_drbg #(
 
          // reset internal state
          generate_next <= 0;
-         generate_state <= GENERATE_IDLE;
-
+         data_cnt <= 0;
          // set the message for the next hash
          // do_sha_message <= seed_material;
          // prepare control signals for do_sha
@@ -286,36 +233,60 @@ module hash_drbg #(
          next_ready <= 0;
          // set the next state
          init_state <= INIT_V_DONE;
+         reseeding <= 0;
 
-      end else if (!do_reseed) begin
+      end else begin
          if (do_sha_request) begin
+             // while sha is perforing it is stuck here and gives control to the rest of the logic only when sha is done
             do_sha;
          end else if (!init_ready) begin
             do_init;
+         end else if (!reseeding && reseed) begin
+            // do_sha_message <= {PREPEND_HASH, v, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
+            sha_message_select <= SHA_MESSAGE_RESEED;
+            // prepare control signals for do_sha
+            do_sha_request <= 1;
+            // set the next state
+            reseeding <= 1;
+            reseed_counter <= reseed_counter + 1;
+            data_cnt <= 0;
+         end else if (reseeding) begin
+            // do reseed
+               // retrieve the the do_sha_digest and use it as intermideate instead of h
+            v <= v + do_sha_digest + c + reseed_counter;
+`ifdef DEBUG
+            $display("new_v=0x%0h", v[31:0]);
+`endif
+            // reset state
+            reseeding <= 0;
+            // set external state
          end else if (!generate_next && next) begin 
-
-            if (reseed_counter <= RESEED_INTERVAL) begin
-
-               // set the message for the next hash
-               // do_sha_message <= {v, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
-               sha_message_select <= SHA_MESSAGE_RANDOM_BITS;
-               // prepare control signals for do_sha
-               do_sha_request <= 1;
-               // set external state
-               next_ready <= 0;
-               // set the next state
-               generate_next <= 1;
-               generate_state <= GENERATE_RETURN_BITS_DONE;
-            end
+            // set the message for the next hash
+            // do_sha_message <= {v, DEFAULT_ZEROS, 1'b1, NBITS_DEFAULT};
+            sha_message_select <= SHA_MESSAGE_RANDOM_BITS;
+            // prepare control signals for do_sha
+            do_sha_request <= 1;
+            // set external state
+            next_ready <= 0;
+            // set the next state
+            generate_next <= 1;
 
          end else if (generate_next) begin  // if generating next and not doing a request
-            do_next;
-         end  // else if (!init_ready) begin
+            // do_next;
+            // retrieve the the do_sha_digest
+            random_bits <= do_sha_digest;
+            // set the message for the next hash
+            // set the next state
+            next_ready <= 1;
+            generate_next <= 0;
+            data_cnt <= data_cnt + 1;
 
-      end else begin
-         init_ready <= 0;
-         next_ready <= 0;
-      end  // if (!reset_n) begin
+`ifdef DEBUG
+            $display("old_v=0x%0h", v[31:0]);
+`endif
+         end
+
+      end
    end  // always @ (posedge clk or negedge reset_n) begin
 
 endmodule

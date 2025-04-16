@@ -16,7 +16,7 @@ module drbg_consumer #(
 
    localparam BUFFER_SIZE = DATA_WIDTH_IN / DATA_WIDTH_OUT;
    localparam BUFFER_ADDRESS_BITS = $clog2(BUFFER_SIZE);
-   reg [DATA_WIDTH_OUT-1:0] data_buffer[0:0][0:BUFFER_SIZE - 1];
+   reg [DATA_WIDTH_OUT-1:0] data_buffer[0:BUFFER_SIZE - 1];
 
    reg [BUFFER_ADDRESS_BITS-1:0] wa;
    reg [BUFFER_ADDRESS_BITS-1:0] ra;
@@ -62,11 +62,12 @@ module drbg_consumer #(
                end
             end
             GET_NEW_DATA_NEXT: begin
-               if (!generator_busy && not_busy_cnt_after_do_write < 8) begin
+               if (!generator_busy && not_busy_cnt_after_do_write < 3) begin
                   not_busy_cnt_after_do_write <= not_busy_cnt_after_do_write + 1;
                end else if (generator_busy) begin
                   not_busy_cnt_after_do_write <= 0;
                end else begin
+                  not_busy_cnt_after_do_write <= 0;
                   need_next <= 1;
                   get_new_data_state <= GET_NEW_DATA_WAIT1;
                end
@@ -77,10 +78,18 @@ module drbg_consumer #(
                get_new_data_state <= GET_NEW_DATA_WAIT2;
             end
             GET_NEW_DATA_WAIT2: begin  // wait for a valid data
-               if (data_in_valid) get_new_data_state <= GET_NEW_DATA_FILL;
+               if (data_in_valid && not_busy_cnt_after_do_write < 3) begin // data needs to be valid for at least 3 cycles
+                  not_busy_cnt_after_do_write <= not_busy_cnt_after_do_write + 1;
+               end else if (!data_in_valid) begin
+                  not_busy_cnt_after_do_write <= 0;
+               end else begin
+                  not_busy_cnt_after_do_write <= 0;
+                  get_new_data_state <= GET_NEW_DATA_FILL;
+               end
+               
             end
             GET_NEW_DATA_FILL: begin
-               data_buffer[0][wa] <= data_in[wa*DATA_WIDTH_OUT+:DATA_WIDTH_OUT];
+               data_buffer[wa] <= data_in[wa*DATA_WIDTH_OUT+:DATA_WIDTH_OUT];
                if (wa != BUFFER_SIZE - 1) wa <= wa + 1;
                else begin
                   get_new_data_state <= GET_NEW_DATA_IDLE;
@@ -103,7 +112,7 @@ module drbg_consumer #(
          read_done <= 0;
       end else if (!V && do_read) begin
          data_out_valid <= 1;
-         data_out <= data_buffer[0][ra];
+         data_out <= data_buffer[ra];
          if (ra != BUFFER_SIZE - 1) begin
             ra <= ra + 1;
             read_done <= 0;

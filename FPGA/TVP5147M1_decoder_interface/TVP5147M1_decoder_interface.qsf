@@ -56,7 +56,7 @@ set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
 # Analysis & Synthesis Assignments
 # ================================
 set_global_assignment -name FAMILY "Cyclone V"
-set_global_assignment -name TOP_LEVEL_ENTITY master_hash_slave_hash_drbg
+set_global_assignment -name TOP_LEVEL_ENTITY scrambler_mm
 
 # Fitter Assignments
 # ==================

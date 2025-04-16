@@ -131,7 +131,6 @@ module scrambler (
    ----------------------------------------
    */
    master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
-      .is_master_mode(0),
       .reset_n(MODE ? DRBG_SYNCHRONISATOR_DRBG_RESET_N & reset_n : reset_n),
       .clk(clk),
       .next_seed(MODE ? 

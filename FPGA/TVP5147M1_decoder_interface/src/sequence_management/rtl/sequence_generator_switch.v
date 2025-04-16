@@ -26,7 +26,7 @@ module sequence_generator_switch (
    reg allow_counter;
    reg allow_out;
    reg sequence_done;
-   assign bt656_stream_out = allow_out ? sequence_in : bt656_stream_in;
+   assign bt656_stream_out = allow_out && reset_n ? sequence_in : bt656_stream_in;
 
    // // V V_lag V_out
    // // 0   0   0
@@ -79,9 +79,6 @@ module sequence_generator_switch (
             if (pixel_cnt < ACTIVE_VIDEO_PIXELS - 1) begin
                pixel_cnt <= pixel_cnt + 1;
             end else if (pixel_cnt < ACTIVE_VIDEO_PIXELS - 1 + 4) begin
-               // if (pixel_cnt == ACTIVE_VIDEO_PIXELS - 1 + 3) begin
-                  // V_internal <= 0;
-               // end
                pixel_cnt <= pixel_cnt + 1;
                allow_out <= 0;
                enable_generator <= 0;

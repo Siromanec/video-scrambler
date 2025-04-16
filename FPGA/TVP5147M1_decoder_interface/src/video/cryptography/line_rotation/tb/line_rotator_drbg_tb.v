@@ -45,7 +45,6 @@ module line_rotator_drbg_tb;
 
    wire reset_n_consumer = !V_rising && first_iter_done;
    master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
-      .is_master_mode(0),
       .reset_n(reset_n_drbg_sig),
       .clk(clk_sig),
       .next_seed(next_seed),
@@ -85,6 +84,7 @@ module line_rotator_drbg_tb;
    );
 
    line_rotator line_rotator_inst (
+      .MODE(0),
       .clk(clk_sig),  // input  clk_sig
       .reset_n(reset_n_sig),  // input  reset_n_sig
       .data_in(bt656_sig),  // input [9:0] data_in_sig

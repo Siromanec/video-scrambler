@@ -18,7 +18,6 @@
 // CREATED		"Wed Mar 26 18:02:51 2025"
 
 module master_hash_slave_hash_drbg (
-   is_master_mode,
    reset_n,
    clk,
    next_seed,
@@ -37,7 +36,6 @@ module master_hash_slave_hash_drbg (
    //parameter BITS_GENERATOR_MAX_CYCLE = 37500;
    //parameter SEED_GENERATOR_MAX_CYCLE = 65536;
 
-   input wire is_master_mode;
    input wire reset_n;
    input wire clk;
    input wire next_seed;
@@ -52,13 +50,11 @@ module master_hash_slave_hash_drbg (
 
 
    wire MASTER_BUSY;
-   wire SLAVE_BUSY;
 
-   assign busy = MASTER_BUSY | SLAVE_BUSY;  // in master mode is always busy
+   assign busy = MASTER_BUSY;  // in master mode is always busy
 
    wire _SHA_RESET_N;
    wire CLOCK;
-   wire MASTER_DRBG_DO_RESEED;
    wire [255:0] MASTER_DRBG_ENTROPY;
    wire MASTER_DRBG_INIT_READY;
    wire MASTER_DRBG_NEXT;
@@ -66,6 +62,7 @@ module master_hash_slave_hash_drbg (
    wire MASTER_DRBG_NEXT_OUT;
    wire MASTER_DRBG_NEXT_FINAL;
    wire MASTER_DRBG_NEXT_READY;
+   wire MASTER_DRBG_RESEED;
    wire [255:0] MASTER_DRBG_RANDOM_BITS;
    wire MASTER_DRBG_RESET_N;
    wire [31:0] MASTER_RESEED_COUNTER;
@@ -78,32 +75,25 @@ module master_hash_slave_hash_drbg (
    wire SHA_NEXT;
    wire SHA_READY;
    wire SHA_RESET_N;
-   wire SLAVE_DRBG_DO_RESEED;
-   wire SLAVE_DRBG_INIT_READY;
-   wire SLAVE_DRBG_NEXT;
-   wire SLAVE_DRBG_NEXT_READY;
-   wire [255:0] SLAVE_DRBG_RANDOM_BITS;
-   wire SLAVE_RESET_N;
-   wire SLAVE_SHA_RESET_N;
-   wire next_seed_pulse_out;
+   wire MASTER_DRBG_RESEED_OUT;
+   wire MASTER_DRBG_RESEED_FINAL;
 
 
 
 
-   assign MASTER_DRBG_NEXT_IN[2] = SLAVE_DRBG_DO_RESEED & is_master_mode;
 
 
    hash_drbg master_drbg (
       .reset_n(MASTER_DRBG_RESET_N),
       .clk(CLOCK),
-      .next(MASTER_DRBG_NEXT_FINAL),
+      .next(MASTER_DRBG_NEXT_OUT),
       .sha_ready(SHA_READY),
       .sha_digest_valid(SHA_DIGEST_VALID),
       .entropy(MASTER_DRBG_ENTROPY),
       .sha_digest(SHA_DIGEST),
       .next_ready(MASTER_DRBG_NEXT_READY),
       .init_ready(MASTER_DRBG_INIT_READY),
-      .do_reseed(MASTER_DRBG_DO_RESEED),
+      .reseed(MASTER_DRBG_RESEED_FINAL),
       .busy(MASTER_BUSY),
       .sha_init(SHA_INIT),
       .sha_reset_n(MASTER_SHA_RESET_N),
@@ -115,45 +105,18 @@ module master_hash_slave_hash_drbg (
 
    assign MASTER_DRBG_RESET_N = reset_n;
 
-
-   assign MASTER_DRBG_NEXT_IN[1] = MASTER_DRBG_INIT_READY;
-
-   assign MASTER_DRBG_NEXT_FINAL = MASTER_DRBG_NEXT_OUT | (next_seed & catch_up_mode);
+   assign MASTER_DRBG_RESEED_FINAL = MASTER_DRBG_RESEED_OUT | (MASTER_DRBG_RESEED & catch_up_mode);
 
    posedge_to_pulse b2v_inst12 (
       .clk(CLOCK),
       .reset_n(reset_n),
-      .signal_in(MASTER_DRBG_NEXT_IN),
+      .signal_in(MASTER_DRBG_NEXT),
       .pulse_out(MASTER_DRBG_NEXT_OUT)
    );
-   defparam b2v_inst12.WIDTH = 3;
+   defparam b2v_inst12.WIDTH = 1;
 
 
-   assign MASTER_DRBG_NEXT_IN[0] = MASTER_DRBG_NEXT;
-
-
-
-   assign _SHA_RESET_N = SLAVE_SHA_RESET_N | MASTER_SHA_RESET_N;
-
-
-   hash_drbg slave_drbg (
-      .reset_n(SLAVE_RESET_N),
-      .clk(CLOCK),
-      .next(SLAVE_DRBG_NEXT),
-      .sha_ready(SHA_READY),
-      .sha_digest_valid(SHA_DIGEST_VALID),
-      .entropy(MASTER_DRBG_RANDOM_BITS),
-      .sha_digest(SHA_DIGEST),
-      .next_ready(SLAVE_DRBG_NEXT_READY),
-      .init_ready(SLAVE_DRBG_INIT_READY),
-      .do_reseed(SLAVE_DRBG_DO_RESEED),
-      .busy(SLAVE_BUSY),
-      .sha_init(SHA_INIT),
-      .sha_reset_n(SLAVE_SHA_RESET_N),
-      .random_bits(SLAVE_DRBG_RANDOM_BITS),
-      .sha_block(SHA_BLOCK)
-   );
-   defparam slave_drbg.RESEED_INTERVAL = BITS_GENERATOR_MAX_CYCLE; defparam slave_drbg.SEEDLEN = 256;
+   assign _SHA_RESET_N = MASTER_SHA_RESET_N;
 
    assign SHA_RESET_N = reset_n & _SHA_RESET_N;
 
@@ -176,21 +139,20 @@ module master_hash_slave_hash_drbg (
    posedge_to_pulse b2v_inst14 (
       .clk(CLOCK),
       .reset_n(reset_n),
-      .signal_in(next_seed),
-      .pulse_out(next_seed_pulse_out)
+      .signal_in(MASTER_DRBG_RESEED),
+      .pulse_out(MASTER_DRBG_RESEED_OUT)
    );
    defparam b2v_inst14.WIDTH = 1;
 
-   assign SLAVE_RESET_N = reset_n & !MASTER_BUSY & !next_seed_pulse_out;
 
-   assign init_ready = MASTER_DRBG_INIT_READY & SLAVE_DRBG_INIT_READY;
+   assign init_ready = MASTER_DRBG_INIT_READY;
 
    assign CLOCK = clk;
-   assign SLAVE_DRBG_NEXT = next_bits;
-   assign MASTER_DRBG_NEXT = next_seed;
+   assign MASTER_DRBG_NEXT = next_bits;
+   assign MASTER_DRBG_RESEED = next_seed;
    assign MASTER_DRBG_ENTROPY = entropy;
-   assign next_bits_ready = SLAVE_DRBG_NEXT_READY;
-   assign random_bits = SLAVE_DRBG_RANDOM_BITS;
+   assign next_bits_ready = MASTER_DRBG_NEXT_READY;
+   assign random_bits = MASTER_DRBG_RANDOM_BITS;
    assign reseed_counter = MASTER_RESEED_COUNTER;
 
 endmodule
