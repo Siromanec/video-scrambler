@@ -2,12 +2,13 @@
 
 module cfg_reader_tb;
    // inits rom_1 and cfg_reader and i2c_master_controller
+   reg clk;
+
 localparam CLK_PERIOD = 2;
    initial begin
          clk = 0;
          forever #(CLK_PERIOD / 2) clk = ~clk;
    end
-   reg clk;
    reg data_clk;
    reg [7:0] data;
    reg i2c_busy;

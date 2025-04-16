@@ -1,6 +1,6 @@
 module cut_position_interpolator (
-   input  [ 7:0] raw_cut_position,
-   output [10:0] cut_position
+   input  wire [ 7:0] raw_cut_position,
+   output wire [10:0] cut_position
 );
    // 360 is number of chroma samles
    // there are 4 values per point in 360

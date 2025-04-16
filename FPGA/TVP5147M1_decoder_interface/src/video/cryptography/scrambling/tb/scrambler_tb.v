@@ -1,32 +1,32 @@
-`timescale 1ns / 1ns
+`timescale 1ns/100ps
 
 /*
 modelsim waves
 sim:/line_rotator_descrambler_drbg_tb/clk_sig sim:/line_rotator_descrambler_drbg_tb/reset_n_sig sim:/line_rotator_descrambler_drbg_tb/reset_n_drbg_sig sim:/line_rotator_descrambler_drbg_tb/cut_position sim:/line_rotator_descrambler_drbg_tb/next_seed sim:/line_rotator_descrambler_drbg_tb/next_bits sim:/line_rotator_descrambler_drbg_tb/init sim:/line_rotator_descrambler_drbg_tb/entropy sim:/line_rotator_descrambler_drbg_tb/init_ready sim:/line_rotator_descrambler_drbg_tb/next_bits_ready sim:/line_rotator_descrambler_drbg_tb/random_bits sim:/line_rotator_descrambler_drbg_tb/random_bits_serial sim:/line_rotator_descrambler_drbg_tb/random_bits_serial_valid sim:/line_rotator_descrambler_drbg_tb/reseed_counter sim:/line_rotator_descrambler_drbg_tb/generator_busy sim:/line_rotator_descrambler_drbg_tb/prev_V sim:/line_rotator_descrambler_drbg_tb/V_rising sim:/line_rotator_descrambler_drbg_tb/reset_n_consumer sim:/line_rotator_descrambler_drbg_tb/H_sig sim:/line_rotator_descrambler_drbg_tb/V_sig sim:/line_rotator_descrambler_drbg_tb/F_sig sim:/line_rotator_descrambler_drbg_tb/bt656_scramled sim:/line_rotator_descrambler_drbg_tb/video_value sim:/line_rotator_descrambler_drbg_tb/fd sim:/line_rotator_descrambler_drbg_tb/fd_out sim:/line_rotator_descrambler_drbg_tb/i sim:/line_rotator_descrambler_drbg_tb/j
 */
 // `define SCRAMBLER
-`define SPLIT
+// `define SPLIT
 module scrambler_tb;
    parameter CLK_PERIOD = 2;
 
-`ifdef 
-   localparam VIDEO_FILE_LOCATION = "data/video_f60.bin";
-   localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/video_f60_scrambled_scrambler.bin";
+`ifdef SCRAMBLER
+   localparam VIDEO_FILE_LOCATION = "data/church_f218.bin";
+   localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/church_f218_scrambled_seed0.bin";
 `else
    `ifdef SPLIT
       localparam VIDEO_FILE_LOCATION = "data/video_f60_scrambled_scrambler2.bin";
       localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/video_f60_descrambled_scrambler2.bin";
    `else
-      localparam VIDEO_FILE_LOCATION = "data/video_f60_scrambled_scrambler.bin";
-      localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/video_f60_descrambled_scrambler.bin";
+      localparam VIDEO_FILE_LOCATION = "data/church_f218_scrambled_seed0.bin";
+      localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/church_f218_descrambled_seed0.bin";
    `endif // SPLIT
 `endif // SCRAMBLER
 
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
-   //   localparam TOTAL_FRAMES = 60;
-   localparam TOTAL_FRAMES = 10;
+   localparam TOTAL_FRAMES = 300;
+   // localparam TOTAL_FRAMES = 10;
    localparam TOTAL_LINES = LINE_COUNT * TOTAL_FRAMES;
    localparam TOTAL_BYTES = LINE_SIZE * TOTAL_LINES;
 
@@ -57,6 +57,8 @@ module scrambler_tb;
 
    time i;
    time j;
+   time frame;
+   time frame_cnt;
 
     // Clock generation
    initial begin
@@ -88,8 +90,12 @@ module scrambler_tb;
       reset_n_sig = 0;
       #(CLK_PERIOD * 10);
       reset_n_sig = 1;
+      frame = 0;
 
       for (i = 0; i < code / LINE_SIZE; i = i + 1) begin
+         if (i % LINE_COUNT == 0) begin
+            frame = frame + 1;
+         end
          for (j = 0; j < LINE_SIZE; j = j + 1) begin
             bt656_stream_in_sig = {line_store[i][j], 2'b00};
             line_store[i][j] = bt656_stream_out_sig[9:2];
@@ -107,6 +113,7 @@ module scrambler_tb;
       for (i = 0; i < code / LINE_SIZE; i = i + 1) begin
          for (j = 0; j < LINE_SIZE; j = j + 1) begin
             $fwrite(fd_out, "%c", line_store[i][j]);
+
          end
       end
       $display("Results written");
@@ -116,6 +123,6 @@ module scrambler_tb;
    end
 
    initial begin
-      $monitor("line: %d", i);
+      $monitor("frame: %d/%d", frame, (code/LINE_SIZE)/LINE_COUNT);
    end
 endmodule
