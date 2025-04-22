@@ -1,10 +1,10 @@
 /PCB/TVP5147M1_decoder/TVP5147M1_decoder-backups/
 *.bak
-/FPGA/TVP5147M1_decoder_interface/db/
-/FPGA/TVP5147M1_decoder_interface/incremental_db/
+/FPGA/core/db/
+/FPGA/core/incremental_db/
 *.zip
 
-/FPGA/TVP5147M1_decoder_interface/output_files/
+/FPGA/core/output_files/
 *.mp4
 *wlf*
 *.bin
