@@ -36,7 +36,7 @@ module drbg_synchronisator_tb;
     );
 
 
-   master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
+   hash_drbg_sha256 hash_drbg_sha256_0 (
       .reset_n(reset_n_drbg),
       .clk(clk),
       .next_seed((get_next_seed | need_next) & !block_drbg_reseed),

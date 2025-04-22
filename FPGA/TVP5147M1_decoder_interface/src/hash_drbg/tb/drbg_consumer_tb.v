@@ -40,7 +40,7 @@ module drbg_consumer_tb;
    reg prev_V;
    wire V_rising = V_sig && !prev_V;
 
-   master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
+   hash_drbg_sha256 hash_drbg_sha256_0 (
       .reset_n(reset_n_drbg_sig),
       .clk(clk_sig),
       .next_seed(next_seed),
@@ -52,8 +52,8 @@ module drbg_consumer_tb;
       .reseed_counter(reseed_counter),
       .busy(generator_busy)
    );
-   //    defparam master_hash_slave_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE; // irrelevant
-   ///defparam master_hash_slave_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = 2;
+   //    defparam hash_drbg_sha256_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE; // irrelevant
+   ///defparam hash_drbg_sha256_0.SEED_GENERATOR_MAX_CYCLE = 2;
 
    sync_parser sync_parser_inst (
       .clk(clk_sig),

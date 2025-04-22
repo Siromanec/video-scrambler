@@ -122,15 +122,10 @@ module scrambler (
       DRBG INSTANTIATION
       generates random number DRBG_RANDOM_BITS
       V reseeds the drbg with new number from internal master drbg
-      master_hash_slave_hash_drbg means that: 
-         There is a Master that is responsible for reseeding and controlling the Slave
-         There is a Slave that is responsible for generating the numbers
-         Master uses Hash DRBG algorithm
-         Slave uses Hash DRBG algorithm
 
    ----------------------------------------
    */
-   master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
+   hash_drbg_sha256 hash_drbg_sha256_0 (
       .reset_n(MODE ? DRBG_SYNCHRONISATOR_DRBG_RESET_N & reset_n : reset_n),
       .clk(clk),
       .next_seed(MODE ? 

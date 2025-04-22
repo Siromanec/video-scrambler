@@ -2,7 +2,7 @@
 
 } {} {}} ../../src/hash_drbg/tb/drbg_synchronisator_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/drbg_synchronisator_tb.v
 
-} {} {}} ../../src/hash_drbg/tb/master_hash_slave_hash_drbg_slave_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/master_hash_slave_hash_drbg_slave_tb.v
+} {} {}} ../../src/hash_drbg/tb/hash_drbg_sha256_slave_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/hash_drbg_sha256_slave_tb.v
 
 } {} {}} C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256.v {1 {vlog -work work -nodebug -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256.v
 
@@ -36,7 +36,7 @@
 
 } {} {}} ../../src/hash_drbg/tb/hash_drbg_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/hash_drbg_tb.v
 
-} {} {}} ../../src/hash_drbg/tb/master_hash_slave_hash_drbg_randomness_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/master_hash_slave_hash_drbg_randomness_tb.v
+} {} {}} ../../src/hash_drbg/tb/hash_drbg_sha256_randomness_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/hash_drbg_sha256_randomness_tb.v
 
 } {} {}} ../../src/video/cryptography/line_rotation/tb/line_rotator_descrambler_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/cryptography/line_rotation/tb/line_rotator_descrambler_tb.v
 
@@ -67,7 +67,7 @@ Top level modules:
 
 } {} {}} ../../src/video/parsing/common/rtl/sync_parser.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/video/parsing/common/rtl/sync_parser.v
 
-} {} {}} ../../src/hash_drbg/rtl/master_hash_slave_hash_drbg.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/rtl/master_hash_slave_hash_drbg.v
+} {} {}} ../../src/hash_drbg/rtl/hash_drbg_sha256.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/rtl/hash_drbg_sha256.v
 
 } {} {}} C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_w_mem.v {1 {vlog -work work -nodebug -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_w_mem.v
 
@@ -75,7 +75,7 @@ Top level modules:
 
 } {} {}} ../../src/sequence_management/rtl/sequence_generator_switch.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/sequence_management/rtl/sequence_generator_switch.v
 
-} {} {}} ../../src/hash_drbg/tb/master_hash_slave_hash_drbg_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/master_hash_slave_hash_drbg_tb.v
+} {} {}} ../../src/hash_drbg/tb/hash_drbg_sha256_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/src/hash_drbg/tb/hash_drbg_sha256_tb.v
 
 } {} {}} C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_k_constants.v {1 {vlog -work work -nodebug -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/TVP5147M1_decoder_interface/include/sha256/sha256_k_constants.v
 

@@ -44,7 +44,7 @@ module line_rotator_drbg_tb;
    wire data_out_valid;
 
    wire reset_n_consumer = !V_rising && first_iter_done;
-   master_hash_slave_hash_drbg master_hash_slave_hash_drbg_0 (
+   hash_drbg_sha256 hash_drbg_sha256_0 (
       .reset_n(reset_n_drbg_sig),
       .clk(clk_sig),
       .next_seed(next_seed),
@@ -57,8 +57,8 @@ module line_rotator_drbg_tb;
       .busy(generator_busy),
       .catch_up_mode(0)
    );
-   //    defparam master_hash_slave_hash_drbg_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE; // irrelevant
-   ///defparam master_hash_slave_hash_drbg_0.SEED_GENERATOR_MAX_CYCLE = 2;
+   //    defparam hash_drbg_sha256_0.BITS_GENERATOR_MAX_CYCLE = BITS_GENERATOR_MAX_CYCLE; // irrelevant
+   ///defparam hash_drbg_sha256_0.SEED_GENERATOR_MAX_CYCLE = 2;
 
    sync_parser sync_parser_inst (
       .clk(clk_sig),

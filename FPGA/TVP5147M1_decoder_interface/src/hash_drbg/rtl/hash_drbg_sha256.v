@@ -17,7 +17,7 @@
 // VERSION		"Version 23.1std.1 Build 993 05/14/2024 SC Lite Edition"
 // CREATED		"Wed Mar 26 18:02:51 2025"
 
-module master_hash_slave_hash_drbg (
+module hash_drbg_sha256 (
    reset_n,
    clk,
    next_seed,
