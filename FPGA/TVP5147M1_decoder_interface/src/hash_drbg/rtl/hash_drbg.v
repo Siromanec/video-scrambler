@@ -84,31 +84,28 @@ module hash_drbg #(
    // SHA-256 core interface and fsm
    // ------------------------------------------------------------
    reg do_sha_need_init_flag;
-   reg accuire_sha_bus;
+   reg do_sha_lock;
    reg do_sha_reset_n_flag;
-   assign sha_block = accuire_sha_bus ? select_sha_message(sha_message_select) : 512'hz; // why would i ever release the bus if i am curenntly using it? (why i removed sha_ready). okay someone else may be using it
-   assign sha_init = accuire_sha_bus ? do_sha_need_init_flag : 1'bz;
+   assign sha_block = do_sha_lock ? select_sha_message(sha_message_select):0; // why would i ever release the bus if i am curenntly using it? (why i removed sha_ready). okay someone else may be using it
+   assign sha_init = do_sha_lock ? do_sha_need_init_flag : 0;
    assign sha_reset_n = do_sha_reset_n_flag;
    localparam SHA_IDLE = 0, SHA_INIT = 1, SHA_WAIT = 2, SHA_RELEASE = 3;
    reg [1:0] do_sha_state;
    integer data_cnt;
    reg reseeding;
 
-   localparam SHA_MESSAGE_NONE = 0,
-              SHA_MESSAGE_INIT = 1,
-              SHA_MESSAGE_RANDOM_BITS = 2,
-              SHA_MESSAGE_RESEED = 3,
-              SHA_MESSAGE_SEED = 4;
+   localparam SHA_MESSAGE_INIT = 0,
+              SHA_MESSAGE_RANDOM_BITS = 1,
+              SHA_MESSAGE_RESEED = 2,
+              SHA_MESSAGE_SEED = 3;
+   localparam TOTAL_SHA_MESSAGE_SELECTS = 4;
    
-   reg [$clog2(5)-1:0] sha_message_select;
+   reg [$clog2(TOTAL_SHA_MESSAGE_SELECTS)-1:0] sha_message_select;
 
-   function [511:0] select_sha_message(input [$clog2(5)-1:0] select);
+   function [511:0] select_sha_message(input [$clog2(TOTAL_SHA_MESSAGE_SELECTS)-1:0] select);
       case (select)
          SHA_MESSAGE_SEED: begin
             select_sha_message = seed_material;
-         end
-         SHA_MESSAGE_NONE: begin
-            select_sha_message = 512'hz;
          end
          SHA_MESSAGE_INIT: begin
             select_sha_message = {PREPEND_INIT, do_sha_digest, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
@@ -132,15 +129,15 @@ module hash_drbg #(
       begin
          case (do_sha_state)
             SHA_IDLE: begin
-               if (sha_ready && !accuire_sha_bus && !sha_digest_valid) begin
+               if (sha_ready && !do_sha_lock && !sha_digest_valid) begin
                   do_sha_state <= SHA_WAIT;
                   do_sha_reset_n_flag <= 1;
                   do_sha_need_init_flag <= 1;
-                  accuire_sha_bus <= 1;
+                  do_sha_lock <= 1;
                end
             end  // SHA_IDLE
             SHA_WAIT: begin
-               if (sha_digest_valid && accuire_sha_bus) begin
+               if (sha_digest_valid && do_sha_lock) begin
                   // set values
                   do_sha_digest <= sha_digest;
                   // reset internal state
@@ -148,7 +145,7 @@ module hash_drbg #(
                   // reset external state
                   do_sha_request <= 0;
                   // release the bus
-                  accuire_sha_bus <= 0;
+                  do_sha_lock <= 0;
                   do_sha_reset_n_flag <= 0;
 
                   do_sha_state <= SHA_IDLE;
@@ -212,7 +209,7 @@ module hash_drbg #(
          // reset do_sha
          do_sha_state <= SHA_IDLE;
          do_sha_need_init_flag <= 0;
-         accuire_sha_bus <= 0;
+         do_sha_lock <= 0;
          do_sha_reset_n_flag <= 1'b0;
          sha_message_select <= SHA_MESSAGE_SEED;
 
