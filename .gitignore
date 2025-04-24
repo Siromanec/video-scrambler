@@ -9,3 +9,7 @@
 *wlf*
 *.bin
 *cache
+
+# EXCEPTIONS for LFS-tracked MP4s
+!notebooks/mp4_to_bt656/aperol.mp4
+!notebooks/mp4_to_bt656/church.mp4
