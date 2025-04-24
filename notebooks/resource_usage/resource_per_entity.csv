@@ -1,0 +1,59 @@
+Copyright (C) 2024  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and any partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
+
+Analysis & Synthesis Resource Utilization by Entity
+
+Compilation Hierarchy Node,Combinational ALUTs,Dedicated Logic Registers,Block Memory Bits,DSP Blocks,Pins,Virtual Pins,Full Hierarchy Name,Entity Name,Library Name
+|scrambler_mm,2730 (2),2785 (0),41728,1,23,0,|scrambler_mm,scrambler_mm,work
+   |rom_scrambler_config:rom_scrambler_config0|,38 (0),34 (0),512,0,0,0,|scrambler_mm|rom_scrambler_config:rom_scrambler_config0,rom_scrambler_config,work
+      |altsyncram:altsyncram_component|,38 (0),34 (0),512,0,0,0,|scrambler_mm|rom_scrambler_config:rom_scrambler_config0|altsyncram:altsyncram_component,altsyncram,work
+         |altsyncram_72j1:auto_generated|,38 (0),34 (0),512,0,0,0,|scrambler_mm|rom_scrambler_config:rom_scrambler_config0|altsyncram:altsyncram_component|altsyncram_72j1:auto_generated,altsyncram_72j1,work
+            |altsyncram_8kk2:altsyncram1|,0 (0),0 (0),512,0,0,0,|scrambler_mm|rom_scrambler_config:rom_scrambler_config0|altsyncram:altsyncram_component|altsyncram_72j1:auto_generated|altsyncram_8kk2:altsyncram1,altsyncram_8kk2,work
+            |sld_mod_ram_rom:mgl_prim2|,38 (22),34 (25),0,0,0,0,|scrambler_mm|rom_scrambler_config:rom_scrambler_config0|altsyncram:altsyncram_component|altsyncram_72j1:auto_generated|sld_mod_ram_rom:mgl_prim2,sld_mod_ram_rom,work
+               |sld_rom_sr:\ram_rom_logic_gen:name_gen:info_rom_sr|,16 (16),9 (9),0,0,0,0,|scrambler_mm|rom_scrambler_config:rom_scrambler_config0|altsyncram:altsyncram_component|altsyncram_72j1:auto_generated|sld_mod_ram_rom:mgl_prim2|sld_rom_sr:\ram_rom_logic_gen:name_gen:info_rom_sr,sld_rom_sr,work
+   |rom_scrambler_config_reader:rom_scrambler_config_reader0|,47 (47),266 (266),0,0,0,0,|scrambler_mm|rom_scrambler_config_reader:rom_scrambler_config_reader0,rom_scrambler_config_reader,work
+   |scrambler:scrambler_inst|,2542 (26),2399 (0),41216,1,0,0,|scrambler_mm|scrambler:scrambler_inst,scrambler,work
+      |drbg_consumer:drbg_consumer_inst|,127 (127),27 (27),256,0,0,0,|scrambler_mm|scrambler:scrambler_inst|drbg_consumer:drbg_consumer_inst,drbg_consumer,work
+         |altsyncram:data_buffer_rtl_0|,0 (0),0 (0),256,0,0,0,|scrambler_mm|scrambler:scrambler_inst|drbg_consumer:drbg_consumer_inst|altsyncram:data_buffer_rtl_0,altsyncram,work
+            |altsyncram_qsj1:auto_generated|,0 (0),0 (0),256,0,0,0,|scrambler_mm|scrambler:scrambler_inst|drbg_consumer:drbg_consumer_inst|altsyncram:data_buffer_rtl_0|altsyncram_qsj1:auto_generated,altsyncram_qsj1,work
+      |drbg_synchronizer:drbg_synchronizer0|,167 (167),43 (43),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|drbg_synchronizer:drbg_synchronizer0,drbg_synchronizer,work
+      |hash_drbg_sha256:hash_drbg_sha256_0|,2005 (2),2137 (0),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|hash_drbg_sha256:hash_drbg_sha256_0,hash_drbg_sha256,work
+         |hash_drbg:master_drbg|,855 (855),1099 (1099),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|hash_drbg_sha256:hash_drbg_sha256_0|hash_drbg:master_drbg,hash_drbg,work
+         |posedge_to_pulse:b2v_inst12|,1 (1),2 (2),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|hash_drbg_sha256:hash_drbg_sha256_0|posedge_to_pulse:b2v_inst12,posedge_to_pulse,work
+         |posedge_to_pulse:b2v_inst14|,1 (1),2 (2),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|hash_drbg_sha256:hash_drbg_sha256_0|posedge_to_pulse:b2v_inst14,posedge_to_pulse,work
+         |sha256_core:b2v_inst5|,1146 (525),1034 (522),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|hash_drbg_sha256:hash_drbg_sha256_0|sha256_core:b2v_inst5,sha256_core,work
+            |sha256_k_constants:k_constants_inst|,32 (32),0 (0),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|hash_drbg_sha256:hash_drbg_sha256_0|sha256_core:b2v_inst5|sha256_k_constants:k_constants_inst,sha256_k_constants,work
+            |sha256_w_mem:w_mem_inst|,589 (589),512 (512),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|hash_drbg_sha256:hash_drbg_sha256_0|sha256_core:b2v_inst5|sha256_w_mem:w_mem_inst,sha256_w_mem,work
+      |line_rotator:line_rotator_inst|,132 (125),36 (36),40960,1,0,0,|scrambler_mm|scrambler:scrambler_inst|line_rotator:line_rotator_inst,line_rotator,work
+         |altsyncram:line_buffer_rtl_0|,0 (0),0 (0),40960,0,0,0,|scrambler_mm|scrambler:scrambler_inst|line_rotator:line_rotator_inst|altsyncram:line_buffer_rtl_0,altsyncram,work
+            |altsyncram_ecn1:auto_generated|,0 (0),0 (0),40960,0,0,0,|scrambler_mm|scrambler:scrambler_inst|line_rotator:line_rotator_inst|altsyncram:line_buffer_rtl_0|altsyncram_ecn1:auto_generated,altsyncram_ecn1,work
+         |cut_position_interpolator:cut_position_interpolator_inst|,7 (7),0 (0),0,1,0,0,|scrambler_mm|scrambler:scrambler_inst|line_rotator:line_rotator_inst|cut_position_interpolator:cut_position_interpolator_inst,cut_position_interpolator,work
+      |sequence_detector:sequence_detector_inst|,24 (24),86 (48),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|sequence_detector:sequence_detector_inst,sequence_detector,work
+         |sequence_shiftreg_in:sequence_shiftreg_in_inst|,0 (0),38 (0),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|sequence_detector:sequence_detector_inst|sequence_shiftreg_in:sequence_shiftreg_in_inst,sequence_shiftreg_in,work
+            |lpm_shiftreg:LPM_SHIFTREG_component|,0 (0),38 (38),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|sequence_detector:sequence_detector_inst|sequence_shiftreg_in:sequence_shiftreg_in_inst|lpm_shiftreg:LPM_SHIFTREG_component,lpm_shiftreg,work
+      |sequence_generator:sequence_generator_inst|,15 (1),46 (1),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|sequence_generator:sequence_generator_inst,sequence_generator,work
+         |clk_div36:clkdiv0|,5 (5),5 (5),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|sequence_generator:sequence_generator_inst|clk_div36:clkdiv0,clk_div36,work
+         |sequence_shiftreg_out:sequence_shiftreg_out_inst|,9 (0),40 (0),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|sequence_generator:sequence_generator_inst|sequence_shiftreg_out:sequence_shiftreg_out_inst,sequence_shiftreg_out,work
+            |lpm_shiftreg:LPM_SHIFTREG_component|,9 (9),40 (40),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|sequence_generator:sequence_generator_inst|sequence_shiftreg_out:sequence_shiftreg_out_inst|lpm_shiftreg:LPM_SHIFTREG_component,lpm_shiftreg,work
+      |sequence_generator_switch:sequence_generator_switch_inst|,37 (37),19 (19),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|sequence_generator_switch:sequence_generator_switch_inst,sequence_generator_switch,work
+      |sync_parser:sync_parser_inst|,9 (9),5 (5),0,0,0,0,|scrambler_mm|scrambler:scrambler_inst|sync_parser:sync_parser_inst,sync_parser,work
+   |sld_hub:auto_hub|,101 (1),86 (0),0,0,0,0,|scrambler_mm|sld_hub:auto_hub,sld_hub,altera_sld
+      |alt_sld_fab_with_jtag_input:\instrumentation_fabric_with_node_gen:fabric_gen_new_way:with_jtag_input_gen:instrumentation_fabric|,100 (0),86 (0),0,0,0,0,|scrambler_mm|sld_hub:auto_hub|alt_sld_fab_with_jtag_input:\instrumentation_fabric_with_node_gen:fabric_gen_new_way:with_jtag_input_gen:instrumentation_fabric,alt_sld_fab_with_jtag_input,altera_sld
+         |alt_sld_fab:instrumentation_fabric|,100 (0),86 (0),0,0,0,0,|scrambler_mm|sld_hub:auto_hub|alt_sld_fab_with_jtag_input:\instrumentation_fabric_with_node_gen:fabric_gen_new_way:with_jtag_input_gen:instrumentation_fabric|alt_sld_fab:instrumentation_fabric,alt_sld_fab,alt_sld_fab
+            |alt_sld_fab_alt_sld_fab:alt_sld_fab|,100 (1),86 (5),0,0,0,0,|scrambler_mm|sld_hub:auto_hub|alt_sld_fab_with_jtag_input:\instrumentation_fabric_with_node_gen:fabric_gen_new_way:with_jtag_input_gen:instrumentation_fabric|alt_sld_fab:instrumentation_fabric|alt_sld_fab_alt_sld_fab:alt_sld_fab,alt_sld_fab_alt_sld_fab,alt_sld_fab
+               |alt_sld_fab_alt_sld_fab_sldfabric:sldfabric|,99 (0),81 (0),0,0,0,0,|scrambler_mm|sld_hub:auto_hub|alt_sld_fab_with_jtag_input:\instrumentation_fabric_with_node_gen:fabric_gen_new_way:with_jtag_input_gen:instrumentation_fabric|alt_sld_fab:instrumentation_fabric|alt_sld_fab_alt_sld_fab:alt_sld_fab|alt_sld_fab_alt_sld_fab_sldfabric:sldfabric,alt_sld_fab_alt_sld_fab_sldfabric,alt_sld_fab
+                  |sld_jtag_hub:\jtag_hub_gen:real_sld_jtag_hub|,99 (66),81 (53),0,0,0,0,|scrambler_mm|sld_hub:auto_hub|alt_sld_fab_with_jtag_input:\instrumentation_fabric_with_node_gen:fabric_gen_new_way:with_jtag_input_gen:instrumentation_fabric|alt_sld_fab:instrumentation_fabric|alt_sld_fab_alt_sld_fab:alt_sld_fab|alt_sld_fab_alt_sld_fab_sldfabric:sldfabric|sld_jtag_hub:\jtag_hub_gen:real_sld_jtag_hub,sld_jtag_hub,work
+                     |sld_rom_sr:hub_info_reg|,14 (14),9 (9),0,0,0,0,|scrambler_mm|sld_hub:auto_hub|alt_sld_fab_with_jtag_input:\instrumentation_fabric_with_node_gen:fabric_gen_new_way:with_jtag_input_gen:instrumentation_fabric|alt_sld_fab:instrumentation_fabric|alt_sld_fab_alt_sld_fab:alt_sld_fab|alt_sld_fab_alt_sld_fab_sldfabric:sldfabric|sld_jtag_hub:\jtag_hub_gen:real_sld_jtag_hub|sld_rom_sr:hub_info_reg,sld_rom_sr,work
+                     |sld_shadow_jsm:shadow_jsm|,19 (19),19 (19),0,0,0,0,|scrambler_mm|sld_hub:auto_hub|alt_sld_fab_with_jtag_input:\instrumentation_fabric_with_node_gen:fabric_gen_new_way:with_jtag_input_gen:instrumentation_fabric|alt_sld_fab:instrumentation_fabric|alt_sld_fab_alt_sld_fab:alt_sld_fab|alt_sld_fab_alt_sld_fab_sldfabric:sldfabric|sld_jtag_hub:\jtag_hub_gen:real_sld_jtag_hub|sld_shadow_jsm:shadow_jsm,sld_shadow_jsm,altera_sld
