@@ -1,4 +1,2 @@
 notebooks/mp4_to_bt656/aperol.mp4 filter=lfs diff=lfs merge=lfs -text
 notebooks/mp4_to_bt656/church.mp4 filter=lfs diff=lfs merge=lfs -text
-notebooks/mp4_to_bt656/aperol.mp4 filter=lfs diff=lfs merge=lfs -text
-notebooks/mp4_to_bt656/church.mp4 filter=lfs diff=lfs merge=lfs -text
