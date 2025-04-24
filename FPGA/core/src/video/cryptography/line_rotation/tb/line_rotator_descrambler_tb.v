@@ -48,7 +48,7 @@ module line_rotator_descrambler_tb;
       .data_out(bt656_scramled),  // output [9:0] data_out_sig
       .data_out_valid(data_out_valid)
    );
-   defparam line_rotator_inst.MODE = 1;
+   defparam line_rotator_inst.mode = 1;
 
 
    //   reg [7:0] video_data [0:TOTAL_LINES-1];

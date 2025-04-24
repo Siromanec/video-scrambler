@@ -1,6 +1,6 @@
 `timescale 1 ps / 1 ps
 
-module rom_scrambler_reader_tb;
+module rom_scrambler_config_reader_tb;
 
 reg reset_n;
 reg clk;
@@ -8,21 +8,21 @@ reg clk;
 wire [7:0] q;
 wire [5:0] address;
 wire reset_n_scrambler;
-wire MODE;
+wire mode;
 wire [255:0] seed;
 
-rom_scrambler_reader rom_scrambler_reader0 (
+rom_scrambler_config_reader rom_scrambler_config_reader0 (
     .reset_n(reset_n),
     .clk(clk),
     .reset_n_scrambler(reset_n_scrambler),
-    .MODE(MODE),
+    .mode(mode),
     .seed(seed),
 
     .q(q),
     .address(address)
 );
 
-rom_scrambler_sim rom_scrambler0 (
+rom_scrambler_config_sim rom_scrambler_config0 (
 	.address(address),
 	.clock(clk),
 	.q(q));

@@ -22,7 +22,7 @@ https://fpgasoftware.intel.com/eula.
 (header "symbol" (version "1.2"))
 (symbol
 	(rect 0 0 216 128)
-	(text "rom_scrambler" (rect 65 0 166 16)(font "Arial" (font_size 10)))
+	(text "rom_scrambler_config" (rect 65 0 166 16)(font "Arial" (font_size 10)))
 	(text "inst" (rect 8 112 25 124)(font "Arial" ))
 	(port
 		(pt 0 32)

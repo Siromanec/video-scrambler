@@ -1,8 +1,8 @@
-module rom_scrambler_reader (
+module rom_scrambler_config_reader (
     input wire reset_n,
     input wire clk,
     output reg reset_n_scrambler,
-    output reg MODE,
+    output reg mode,
     output wire [255:0] seed,
 
     input wire [7:0] q,
@@ -38,7 +38,7 @@ module rom_scrambler_reader (
             if (!init_done) begin
 
                 if (address - DELAY == MODE_ADDR) begin
-                    MODE = q;
+                    mode = q;
                 end else if (SEED_ADDR_START <= address - DELAY && address - DELAY < SEED_ADDR_END) begin
                     seed_ram[address - DELAY - SEED_ADDR_START] <= q;
                 end

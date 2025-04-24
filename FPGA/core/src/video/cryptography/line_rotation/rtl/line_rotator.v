@@ -1,6 +1,6 @@
 `define DEBUG
 module line_rotator (
-   input wire MODE,
+   input wire mode,
    input wire clk,
    input wire reset_n,
    input wire [9:0] data_in,
@@ -82,7 +82,7 @@ module line_rotator (
 
          if (H_fall) begin  // at negative edge reset counters. Has to be done on the same clock tick
 
-            case (MODE)
+            case (mode)
                MODE_SCRAMBLER:  begin
                   line_buffer[!switch_buffer][0] <= data_in;
                   data_out <= line_buffer[switch_buffer][get_read_idx(0, cut_position_prev, H, V_lag2)];
@@ -102,7 +102,7 @@ module line_rotator (
             write_index   <= 1;
          end else begin
             
-            case (MODE)
+            case (mode)
                MODE_SCRAMBLER:  begin
                   line_buffer[switch_buffer][write_index] <= data_in;
                   data_out <= line_buffer[!switch_buffer][get_read_idx(write_index, cut_position_prev, H, V_lag2)];

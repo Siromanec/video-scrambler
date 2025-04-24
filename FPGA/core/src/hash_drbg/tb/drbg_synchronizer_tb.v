@@ -1,4 +1,4 @@
-module drbg_synchronisator_tb;
+module drbg_synchronizer_tb;
 
     // Parameters
     parameter CLK_PERIOD = 10;
@@ -21,7 +21,7 @@ module drbg_synchronisator_tb;
    wire [31:0] reseed_counter;
    wire [255:0] random_bits;
     // Instantiate the Unit Under Test (UUT)
-    drbg_synchronisator drbg_synchronisator0 (
+    drbg_synchronizer drbg_synchronizer0 (
         .clk(clk),
         .reset_n(reset_n),
         .init_done(init_done),

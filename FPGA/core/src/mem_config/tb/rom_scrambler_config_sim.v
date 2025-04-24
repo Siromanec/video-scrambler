@@ -4,7 +4,7 @@
 // MODULE: altsyncram 
 
 // ============================================================
-// File Name: rom_scrambler.v
+// File Name: rom_scrambler_config.v
 // Megafunction Name(s):
 // 			altsyncram
 //
@@ -37,11 +37,11 @@
 // synopsys translate_off
 `timescale 1 ps / 1 ps
 // synopsys translate_on
-module rom_scrambler (
+module rom_scrambler_config_sim (
 	address,
 	clock,
 	q);
-	parameter init_file = "./src/mem_config/cfg/scrambler.mif";
+
 	input	[5:0]  address;
 	input	  clock;
 	output	[7:0]  q;
@@ -84,7 +84,7 @@ module rom_scrambler (
 		altsyncram_component.address_aclr_a = "NONE",
 		altsyncram_component.clock_enable_input_a = "BYPASS",
 		altsyncram_component.clock_enable_output_a = "BYPASS",
-		altsyncram_component.init_file = init_file,
+		altsyncram_component.init_file = "./cfg/scrambler.mif",
 		altsyncram_component.intended_device_family = "Cyclone V",
 		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=YES,INSTANCE_NAME=SC",
 		altsyncram_component.lpm_type = "altsyncram",
@@ -151,10 +151,10 @@ endmodule
 // Retrieval info: CONNECT: @address_a 0 0 6 0 address 0 0 6 0
 // Retrieval info: CONNECT: @clock0 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: q 0 0 8 0 @q_a 0 0 8 0
-// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler.v TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler.inc FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler.cmp FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler.bsf TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler_inst.v FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler_bb.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler_config.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler_config.inc FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler_config.cmp FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler_config.bsf TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler_config_inst.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL rom_scrambler_config_bb.v FALSE
 // Retrieval info: LIB_FILE: altera_mf

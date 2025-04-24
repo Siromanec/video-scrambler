@@ -1,4 +1,4 @@
-module drbg_synchronisator (
+module drbg_synchronizer (
    input wire clk,
    input wire reset_n,
 

@@ -1,5 +1,5 @@
 module scrambler (
-    input wire  MODE,// 0: scrambler, 1: descrambler
+    (* keep = "true" *) input wire  mode,// 0: scrambler, 1: descrambler
     input wire clk,
     input wire reset_n,
     input wire [9:0] bt656_stream_in,
@@ -73,10 +73,10 @@ module scrambler (
       DRBG SYNCHRONISATOR OUT WIRES
    ----------------------------------------
    */
-   wire DRBG_SYNCHRONISATOR_CATCH_UP_MODE;
-   wire DRBG_SYNCHRONISATOR_GET_NEXT_SEED;
-   wire DRBG_SYNCHRONISATOR_DRBG_RESET_N;
-   wire DRBG_SYNCHRONISATOR_BLOCK_DRBG_RESEED;
+   wire drbg_synchronizer_CATCH_UP_MODE;
+   wire drbg_synchronizer_GET_NEXT_SEED;
+   wire drbg_synchronizer_DRBG_RESET_N;
+   wire drbg_synchronizer_BLOCK_DRBG_RESEED;
 
    /* 
    ----------------------------------------
@@ -126,11 +126,11 @@ module scrambler (
    ----------------------------------------
    */
    hash_drbg_sha256 hash_drbg_sha256_0 (
-      .reset_n(MODE ? DRBG_SYNCHRONISATOR_DRBG_RESET_N & reset_n : reset_n),
+      .reset_n(mode ? drbg_synchronizer_DRBG_RESET_N & reset_n : reset_n),
       .clk(clk),
-      .next_seed(MODE ? 
-                        ((DRBG_SYNCHRONISATOR_GET_NEXT_SEED | DRBG_NEXT_SEED) 
-                           & !DRBG_SYNCHRONISATOR_BLOCK_DRBG_RESEED)
+      .next_seed(mode ?
+                        ((drbg_synchronizer_GET_NEXT_SEED | DRBG_NEXT_SEED)
+                           & !drbg_synchronizer_BLOCK_DRBG_RESEED)
                         :
                         DRBG_NEXT_SEED),
       .next_bits(DRBG_GET_NEXT_BITS),
@@ -140,7 +140,7 @@ module scrambler (
       .random_bits(DRBG_RANDOM_BITS),
       .reseed_counter(DRBG_RESEED_COUNTER),
       .busy(DRBG_BUSY),
-      .catch_up_mode(MODE ? DRBG_SYNCHRONISATOR_CATCH_UP_MODE : 0)
+      .catch_up_mode(mode ? drbg_synchronizer_CATCH_UP_MODE : 0)
    );
 
    /* 
@@ -153,7 +153,7 @@ module scrambler (
 
 // generate
 
-   // case (MODE)
+   // case (mode)
       // MODE_SCRAMBLER:  begin
 
          /* 
@@ -166,7 +166,7 @@ module scrambler (
          sequence_generator sequence_generator_inst (
             .clock(clk),  // input  clock_sig
             .reseed_count(DRBG_RESEED_COUNTER),  // input [31:0] sequence_sig
-            .enable(MODE ? 0 : SEQUENCE_GENERATOR_ENABLE),  // input  enable_sig
+            .enable(mode ? 0 : SEQUENCE_GENERATOR_ENABLE),  // input  enable_sig
             .load(SEQUENCE_GENERATOR_LOAD),  // input  load_sig
             .sequence_out(SEQUENCE_GENERATOR_OUT)  // output [9:0] sequence_out_sig
          );
@@ -183,7 +183,7 @@ module scrambler (
          */
          sequence_generator_switch sequence_generator_switch_inst (
             .clk(clk),  // input  clk
-            .reset_n(MODE ? 0 : reset_n),  // input  reset_n
+            .reset_n(mode ? 0 : reset_n),  // input  reset_n
             .H(H),  // input  H
             .V(V),  // input  V
             .bt656_stream_in(bt656_stream_in),  // input [9:0] bt656_stream_in_sig
@@ -205,7 +205,7 @@ module scrambler (
          sequence_detector sequence_detector_inst (
             .clock(clk),  // input  clock_sig
             .sequence_in(bt656_stream_in),  // input [9:0] sequence_in_sig
-            .reset_n(MODE ? !H : 0),  // input  reset_n_sig
+            .reset_n(mode ? !H : 0),  // input  reset_n_sig
             .sequence_out(SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL),  // output [31:0] sequence_out_sig
             .ready(SEQUENCE_DETECTOR_SEQUENCE_EXTERAL_VALID)  // output  ready_sig
          );
@@ -225,18 +225,18 @@ module scrambler (
          and the difference is big it will reset the DRBG and make the DRBG catch up with it.
          ----------------------------------------
          */
-         drbg_synchronisator drbg_synchronisator0 (
+         drbg_synchronizer drbg_synchronizer0 (
             .clk(clk),
-            .reset_n(MODE ? reset_n : 0),
+            .reset_n(mode ? reset_n : 0),
             .init_done(DRBG_INIT_READY),
             .sequence_internal(DRBG_RESEED_COUNTER),
             .sequence_external(SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL),
             .sequence_external_valid(SEQUENCE_DETECTOR_SEQUENCE_EXTERAL_VALID),
             .V(V),
-            .catch_up_mode(DRBG_SYNCHRONISATOR_CATCH_UP_MODE),
-            .get_next_seed(DRBG_SYNCHRONISATOR_GET_NEXT_SEED),
-            .reset_n_drbg(DRBG_SYNCHRONISATOR_DRBG_RESET_N),
-            .block_drbg_reseed(DRBG_SYNCHRONISATOR_BLOCK_DRBG_RESEED)
+            .catch_up_mode(drbg_synchronizer_CATCH_UP_MODE),
+            .get_next_seed(drbg_synchronizer_GET_NEXT_SEED),
+            .reset_n_drbg(drbg_synchronizer_DRBG_RESET_N),
+            .block_drbg_reseed(drbg_synchronizer_BLOCK_DRBG_RESEED)
          );
       // end
 
@@ -281,12 +281,12 @@ module scrambler (
    ----------------------------------------
    */
    line_rotator line_rotator_inst (
-      .MODE(MODE),  // input  mode
+      .mode(mode),  // input  mode
       .clk(clk),  // input  clk
       .reset_n(reset_n),  // input  reset_n
-      .data_in(MODE ? bt656_stream_in : SWITCH_DATA_OUT),  // input [9:0] data_in_sig
+      .data_in(mode ? bt656_stream_in : SWITCH_DATA_OUT),  // input [9:0] data_in_sig
       .raw_cut_position(CONSUMER_RAW_CUT_POSITION),  // input [7:0] raw_cut_position_sig
-      .V(MODE ? V : SWITCH_V),  // input  V
+      .V(mode ? V : SWITCH_V),  // input  V
       .H(H),  // input  H
       .data_out(ROTATOR_DATA_OUT),  // output [9:0] data_out_sig
       .data_out_valid(ROTATOR_DATA_OUT_VALID)

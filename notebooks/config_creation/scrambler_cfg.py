@@ -1,6 +1,7 @@
 import argparse
 import numpy as np
 import mif  # Using your interface
+import os
 
 # Constants
 MODE_ADDR = 0
@@ -10,9 +11,8 @@ MEM_SIZE = 64
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Fill memory and dump to MIF file.")
-    parser.add_argument('--mode', choices=['scrambler', 'descrambler'], required=True, help="Operating mode.")
     parser.add_argument('--seed', required=True, help="256-bit seed in hex (64 hex characters).")
-    parser.add_argument('--output', default='config.mif', help="Output MIF filename.")
+    parser.add_argument('--output_dir', default='out', help="Output MIF destination")
     return parser.parse_args()
 
 def hex_to_bytes(seed_hex):
@@ -21,19 +21,23 @@ def hex_to_bytes(seed_hex):
         raise ValueError("Seed must be exactly 64 hex characters (256 bits).")
     return bytes.fromhex(seed_hex)
 
-def fill_memory(mode: str, seed_bytes: bytes) -> np.ndarray:
+def fill_memory(seed_bytes: bytes) -> (np.ndarray, np.ndarray):
     mem = np.zeros(MEM_SIZE, dtype=np.uint8)
-
-    # Map mode to value
-    if mode == 'scrambler':
-        mem[MODE_ADDR] = 0
-    elif mode == 'descrambler':
-        mem[MODE_ADDR] = 1
 
     # Fill seed into addresses 32–63
     mem[SEED_ADDR_START:SEED_ADDR_END] = np.frombuffer(seed_bytes, dtype=np.uint8)
 
-    return mem
+    mem_copy  = mem.copy()
+
+    # Map mode to value
+    # if mode == 'scrambler':
+    mem_copy[MODE_ADDR] = 0
+    # elif mode == 'descrambler':
+    mem[MODE_ADDR] = 1
+
+
+
+    return mem_copy, mem
 
 def save_to_mif(mem: np.ndarray, output_file: str):
     bit_mem = np.unpackbits(mem, bitorder="little").reshape(-1, 8)
@@ -46,8 +50,11 @@ def save_to_mif(mem: np.ndarray, output_file: str):
 def main():
     args = parse_args()
     seed_bytes = hex_to_bytes(args.seed)
-    mem = fill_memory(args.mode, seed_bytes)
-    save_to_mif(mem, args.output)
+    mem_scr, mem_descr = fill_memory(seed_bytes)
+    os.makedirs(os.path.join(args.output_dir, "scrambler"), exist_ok=True)
+    os.makedirs(os.path.join(args.output_dir, "descrambler"), exist_ok=True)
+    save_to_mif(mem_scr, os.path.join(args.output_dir, "scrambler", "config.mif"))
+    save_to_mif(mem_descr, os.path.join(args.output_dir, "descrambler", "config.mif"))
 
 if __name__ == "__main__":
     main()

@@ -19,7 +19,7 @@
 #
 # Quartus Prime
 # Version 23.1std.1 Build 993 05/14/2024 SC Lite Edition
-# Date created = 16:12:33  April 11, 2025
+# Date created = 17:52:44  April 22, 2025
 #
 # -------------------------------------------------------------------------- #
 #
@@ -46,147 +46,8 @@ set_global_assignment -name LAST_QUARTUS_VERSION "23.1std.1 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name NUM_PARALLEL_PROCESSORS 6
-
-# Classic Timing Assignments
-# ==========================
-set_global_assignment -name MIN_CORE_JUNCTION_TEMP "-40"
-set_global_assignment -name MAX_CORE_JUNCTION_TEMP 100
-set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
-
-# Analysis & Synthesis Assignments
-# ================================
-set_global_assignment -name FAMILY "Cyclone V"
-set_global_assignment -name TOP_LEVEL_ENTITY scrambler_mm
-
-# Fitter Assignments
-# ==================
-set_global_assignment -name DEVICE 5CSEBA6U23I7
-set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 256
-
-# EDA Netlist Writer Assignments
-# ==============================
-set_global_assignment -name EDA_SIMULATION_TOOL "QuestaSim (Verilog)"
-
-# Power Estimation Assignments
-# ============================
-set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
-set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-
-# start EDA_TOOL_SETTINGS(eda_simulation)
-# ---------------------------------------
-
-	# EDA Netlist Writer Assignments
-	# ==============================
-	set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
-	set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
-
-# end EDA_TOOL_SETTINGS(eda_simulation)
-# -------------------------------------
-
-# start EDA_TOOL_SETTINGS(eda_board_design_boundary_scan)
-# -------------------------------------------------------
-
-	# EDA Netlist Writer Assignments
-	# ==============================
-	set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
-
-# end EDA_TOOL_SETTINGS(eda_board_design_boundary_scan)
-# -----------------------------------------------------
-
-# start EDA_TOOL_SETTINGS(eda_board_design_timing)
-# ------------------------------------------------
-
-	# EDA Netlist Writer Assignments
-	# ==============================
-	set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_timing
-
-# end EDA_TOOL_SETTINGS(eda_board_design_timing)
-# ----------------------------------------------
-
-# start EDA_TOOL_SETTINGS(eda_board_design_symbol)
-# ------------------------------------------------
-
-	# EDA Netlist Writer Assignments
-	# ==============================
-	set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_symbol
-
-# end EDA_TOOL_SETTINGS(eda_board_design_symbol)
-# ----------------------------------------------
-
-# start EDA_TOOL_SETTINGS(eda_board_design_signal_integrity)
-# ----------------------------------------------------------
-
-	# EDA Netlist Writer Assignments
-	# ==============================
-	set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_signal_integrity
-
-# end EDA_TOOL_SETTINGS(eda_board_design_signal_integrity)
-# --------------------------------------------------------
-
-# ------------------------------
-# start ENTITY(double_hash_drbg)
-
-# end ENTITY(double_hash_drbg)
-# ----------------------------
-
-# ---------------------------------
-# start ENTITY(double_hash_drbg_tb)
-
-# end ENTITY(double_hash_drbg_tb)
-# -------------------------------
-
-# ---------------------------------
-# start ENTITY(drbg_synchronisator)
-
-	# start DESIGN_PARTITION(Top)
-	# ---------------------------
-
-		# Incremental Compilation Assignments
-		# ===================================
-
-	# end DESIGN_PARTITION(Top)
-	# -------------------------
-
-# end ENTITY(drbg_synchronisator)
-# -------------------------------
-
-# --------------------------------
-# start ENTITY(hash_drbg_consumer)
-
-# end ENTITY(hash_drbg_consumer)
-# ------------------------------
-
-# --------------------------
-# start ENTITY(line_rotator)
-
-# end ENTITY(line_rotator)
-# ------------------------
-
-# -----------------------------------------
-# start ENTITY(hash_drbg_sha256)
-
-# end ENTITY(hash_drbg_sha256)
-# ---------------------------------------
-
-# ---------------------------------------
-# start ENTITY(sequence_generator_switch)
-
-# end ENTITY(sequence_generator_switch)
-# -------------------------------------
-
-# -------------------------
-# start ENTITY(sha256_core)
-
-# end ENTITY(sha256_core)
-# -----------------------
-set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
-set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH posedge_to_pulse_tb -section_id eda_simulation
-set_global_assignment -name EDA_TEST_BENCH_NAME posedge_to_pulse_tb -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id posedge_to_pulse_tb
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME posedge_to_pulse_tb -section_id posedge_to_pulse_tb
-set_global_assignment -name EDA_TEST_BENCH_FILE src/utils/tb/posedge_to_pulse_tb.v -section_id posedge_to_pulse_tb
 set_global_assignment -name VERILOG_FILE src/video/cryptography/scrambling/rtl/scrambler_mm.v
-set_global_assignment -name VERILOG_FILE src/mem_config/rtl/rom_scrambler_reader.v
+set_global_assignment -name VERILOG_FILE src/mem_config/rtl/rom_scrambler_config_reader.v
 set_global_assignment -name VERILOG_FILE src/video/parsing/common/rtl/sync_parser.v
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/rtl/line_rotator.v
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/rtl/cut_position_interpolator.v
@@ -198,8 +59,8 @@ set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/sc
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/scrambling/tb/line_rotator_descrambler_drbg_tb.v
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/scrambling/tb/cut_position_interpolator_tb.v
 set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/drbg_consumer_tb.v
-set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/drbg_synchronisator_tb.v
-set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/drbg_synchronisator.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/tb/drbg_synchronizer_tb.v
+set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/drbg_synchronizer.v
 set_global_assignment -name VERILOG_FILE src/sequence_management/rtl/sequence_generator_switch.v
 set_global_assignment -name VERILOG_FILE src/hash_drbg/rtl/drbg_consumer.v
 set_global_assignment -name VERILOG_FILE src/video/cryptography/line_rotation/scrambling/rtl/line_rotator.v
@@ -233,10 +94,119 @@ set_global_assignment -name VERILOG_FILE include/sha256/sha256_k_constants.v
 set_global_assignment -name VERILOG_FILE include/sha256/sha256_core.v
 set_global_assignment -name VERILOG_FILE include/sha256/sha256.v
 set_global_assignment -name VERILOG_FILE utils/posedge_to_pulse.v
-set_global_assignment -name QIP_FILE src/mem_config/rtl/rom_scrambler.qip
+set_global_assignment -name QIP_FILE src/mem_config/rtl/rom_scrambler_config.qip
+set_global_assignment -name FLOW_ENABLE_RTL_VIEWER ON
+
+# Pin & Location Assignments
+# ==========================
+set_location_assignment PIN_V11 -to clk
+
+# Classic Timing Assignments
+# ==========================
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP "-40"
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 100
+set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
+
+# Analysis & Synthesis Assignments
+# ================================
+set_global_assignment -name FAMILY "Cyclone V"
+set_global_assignment -name TOP_LEVEL_ENTITY scrambler_mm
+
+# Fitter Assignments
+# ==================
+set_global_assignment -name DEVICE 5CSEBA6U23I7
+set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 256
+
+# EDA Netlist Writer Assignments
+# ==============================
+set_global_assignment -name EDA_SIMULATION_TOOL "QuestaSim (Verilog)"
+
+# Power Estimation Assignments
+# ============================
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+
+# start EDA_TEST_BENCH_SETTINGS(posedge_to_pulse_tb)
+# --------------------------------------------------
+
+	# EDA Netlist Writer Assignments
+	# ==============================
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id posedge_to_pulse_tb
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME posedge_to_pulse_tb -section_id posedge_to_pulse_tb
+set_global_assignment -name EDA_TEST_BENCH_FILE src/utils/tb/posedge_to_pulse_tb.v -section_id posedge_to_pulse_tb
+
+# end EDA_TEST_BENCH_SETTINGS(posedge_to_pulse_tb)
+# ------------------------------------------------
+
+# start EDA_TOOL_SETTINGS(eda_simulation)
+# ---------------------------------------
+
+	# EDA Netlist Writer Assignments
+	# ==============================
+set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
+set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH posedge_to_pulse_tb -section_id eda_simulation
+set_global_assignment -name EDA_TEST_BENCH_NAME posedge_to_pulse_tb -section_id eda_simulation
+
+# end EDA_TOOL_SETTINGS(eda_simulation)
+# -------------------------------------
+
+# start EDA_TOOL_SETTINGS(eda_board_design_boundary_scan)
+# -------------------------------------------------------
+
+	# EDA Netlist Writer Assignments
+	# ==============================
+set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
+
+# end EDA_TOOL_SETTINGS(eda_board_design_boundary_scan)
+# -----------------------------------------------------
+
+# start EDA_TOOL_SETTINGS(eda_board_design_timing)
+# ------------------------------------------------
+
+	# EDA Netlist Writer Assignments
+	# ==============================
+set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_timing
+
+# end EDA_TOOL_SETTINGS(eda_board_design_timing)
+# ----------------------------------------------
+
+# start EDA_TOOL_SETTINGS(eda_board_design_symbol)
+# ------------------------------------------------
+
+	# EDA Netlist Writer Assignments
+	# ==============================
+set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_symbol
+
+# end EDA_TOOL_SETTINGS(eda_board_design_symbol)
+# ----------------------------------------------
+
+# start EDA_TOOL_SETTINGS(eda_board_design_signal_integrity)
+# ----------------------------------------------------------
+
+	# EDA Netlist Writer Assignments
+	# ==============================
+set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_signal_integrity
+
+# end EDA_TOOL_SETTINGS(eda_board_design_signal_integrity)
+# --------------------------------------------------------
+
+# --------------------------
+# start ENTITY(scrambler_mm)
+
+	# start DESIGN_PARTITION(Top)
+	# ---------------------------
+
+		# Incremental Compilation Assignments
+		# ===================================
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_global_assignment -name FLOW_ENABLE_RTL_VIEWER ON
-set_location_assignment PIN_V11 -to clk
+
+	# end DESIGN_PARTITION(Top)
+	# -------------------------
+
+# end ENTITY(scrambler_mm)
+# ------------------------
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

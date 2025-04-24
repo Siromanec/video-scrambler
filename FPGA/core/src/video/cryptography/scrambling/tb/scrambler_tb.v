@@ -5,46 +5,61 @@ modelsim waves
 sim:/line_rotator_descrambler_drbg_tb/clk_sig sim:/line_rotator_descrambler_drbg_tb/reset_n_sig sim:/line_rotator_descrambler_drbg_tb/reset_n_drbg_sig sim:/line_rotator_descrambler_drbg_tb/cut_position sim:/line_rotator_descrambler_drbg_tb/next_seed sim:/line_rotator_descrambler_drbg_tb/next_bits sim:/line_rotator_descrambler_drbg_tb/init sim:/line_rotator_descrambler_drbg_tb/entropy sim:/line_rotator_descrambler_drbg_tb/init_ready sim:/line_rotator_descrambler_drbg_tb/next_bits_ready sim:/line_rotator_descrambler_drbg_tb/random_bits sim:/line_rotator_descrambler_drbg_tb/random_bits_serial sim:/line_rotator_descrambler_drbg_tb/random_bits_serial_valid sim:/line_rotator_descrambler_drbg_tb/reseed_counter sim:/line_rotator_descrambler_drbg_tb/generator_busy sim:/line_rotator_descrambler_drbg_tb/prev_V sim:/line_rotator_descrambler_drbg_tb/V_rising sim:/line_rotator_descrambler_drbg_tb/reset_n_consumer sim:/line_rotator_descrambler_drbg_tb/H_sig sim:/line_rotator_descrambler_drbg_tb/V_sig sim:/line_rotator_descrambler_drbg_tb/F_sig sim:/line_rotator_descrambler_drbg_tb/bt656_scramled sim:/line_rotator_descrambler_drbg_tb/video_value sim:/line_rotator_descrambler_drbg_tb/fd sim:/line_rotator_descrambler_drbg_tb/fd_out sim:/line_rotator_descrambler_drbg_tb/i sim:/line_rotator_descrambler_drbg_tb/j
 */
 
-// `define SPLIT
-`define SMALL
+
+// ---------------- USER DEFINED ----------------------
+
+// `define DEBUG
+`define DATA_DIR "data"
+
+`ifdef V1
+   `define BASE_VIDEO_NAME "church"
+   `define VIDEO_FRAME_CNT_RAW 218
+`elsif V2
+   `define BASE_VIDEO_NAME "aperol"
+   `define VIDEO_FRAME_CNT_RAW 84
+`else
+   `define BASE_VIDEO_NAME "church"
+   `define VIDEO_FRAME_CNT_RAW 218
+`endif
+
+`define SEED 0
+
+
+// ---------------- INTERNAL ----------------------
+
+
+`ifndef DEBUG
+   `define VIDEO_FRAME_CNT `VIDEO_FRAME_CNT_RAW
+`else
+   `define VIDEO_FRAME_CNT 10
+`endif
+
+
+`ifndef DESCRAMBLER
+   `define DST_POSTFIX "scrambled"
+`else
+   `define SRC_POSTFIX "scrambled"
+   `define DST_POSTFIX "descrambled"
+`endif // SCRAMBLER
+
+
+// ---------------- MODULE START ----------------------
 `ifndef DESCRAMBLER
 module scrambler_tb;
 `else
 module descrambler_tb;
 `endif
-   parameter CLK_PERIOD = 2;
+   reg [8*255:0] SRC_FILE_LOCATION;
+   reg [8*255:0] DST_FILE_LOCATION;
 
-`ifndef DESCRAMBLER
-   localparam VIDEO_FILE_LOCATION = "data/church_f218.bin";
-   `ifdef SMALL
-      localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/church_f10_scrambled_seed0.bin";
-   `else
-      localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/church_f218_scrambled_seed0.bin";
-   `endif // SMALL
-`else
-   `ifdef SPLIT
-      localparam VIDEO_FILE_LOCATION = "data/video_f60_scrambled_scrambler2.bin";
-      localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/video_f60_descrambled_scrambler2.bin";
-   `else
-      `ifdef SMALL
-         localparam VIDEO_FILE_LOCATION = "data/church_f10_scrambled_seed0.bin";
-         localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/church_f10_descrambled_seed0.bin";
-      `else
-         localparam VIDEO_FILE_LOCATION = "data/church_f218_scrambled_seed0.bin";
-         localparam SCRAMBLED_VIDEO_FILE_LOCATION = "data/church_f218_descrambled_seed0.bin";
-      `endif // SMALL
-   `endif // SPLIT
-`endif // SCRAMBLER
+
+   parameter CLK_PERIOD = 2;
 
    localparam LINE_SIZE = 2 * 858;
 
    localparam LINE_COUNT = 525;
 
-`ifdef SMALL
-   localparam TOTAL_FRAMES = 10;
-`else
-   localparam TOTAL_FRAMES = 300;
-`endif // SMALL
+   localparam TOTAL_FRAMES = `VIDEO_FRAME_CNT;
    
    localparam TOTAL_LINES = LINE_COUNT * TOTAL_FRAMES;
    localparam TOTAL_BYTES = LINE_SIZE * TOTAL_LINES;
@@ -55,13 +70,13 @@ module descrambler_tb;
    reg [255:0] seed;
    wire [9:0] bt656_stream_out_sig;
 `ifndef DESCRAMBLER
-   localparam MODE = 0;
+   localparam mode = 0;
 `else
-   localparam MODE = 1;
+   localparam mode = 1;
 `endif
    scrambler scrambler_inst
    (  
-      .MODE(MODE),
+      .mode(mode),
       .clk(clk) ,	// input  clk_sig
       .reset_n(reset_n_sig) ,	// input  reset_n_sig
       .bt656_stream_in(bt656_stream_in_sig) ,	// input [9:0] bt656_stream_in_sig
@@ -86,12 +101,22 @@ module descrambler_tb;
    end
 
    initial begin
+`ifndef DESCRAMBLER
+      $sformat(SRC_FILE_LOCATION, "%0s/%0s_f%0d.bin", `DATA_DIR, `BASE_VIDEO_NAME, `VIDEO_FRAME_CNT_RAW);
+`else
+   `ifdef SPLIT
+      // localparam SRC_FILE_LOCATION = "data/video_f60_scrambled_scrambler2.bin";
+      // localparam DST_FILE_LOCATION = "data/video_f60_descrambled_scrambler2.bin";
+   `else
+         $sformat(SRC_FILE_LOCATION, "%0s/%0s_f%0d_%0s_seed%0d.bin", `DATA_DIR, `BASE_VIDEO_NAME, `VIDEO_FRAME_CNT, `SRC_POSTFIX, `SEED);
+   `endif // SPLIT
+`endif // SCRAMBLER
+      $sformat(DST_FILE_LOCATION, "%0s/%0s_f%0d_%0s_seed%0d.bin", `DATA_DIR, `BASE_VIDEO_NAME, `VIDEO_FRAME_CNT, `DST_POSTFIX, `SEED);
+      seed = `SEED;
 
-      seed = 0;
-
-      fd = $fopen(VIDEO_FILE_LOCATION, "rb");
+      fd = $fopen(SRC_FILE_LOCATION, "rb");
       if (fd == 0) begin
-         $display("Error: Could not open file %s", VIDEO_FILE_LOCATION);
+         $display("Error: Could not open file %s", SRC_FILE_LOCATION);
          $display("fd = %d", fd);
          $finish;
       end
@@ -122,9 +147,9 @@ module descrambler_tb;
          end
       end
 
-      fd_out = $fopen(SCRAMBLED_VIDEO_FILE_LOCATION, "wb");
+      fd_out = $fopen(DST_FILE_LOCATION, "wb");
       if (fd_out == 0) begin
-         $display("Error: Could not open file %s", SCRAMBLED_VIDEO_FILE_LOCATION);
+         $display("Error: Could not open file %s", DST_FILE_LOCATION);
          $display("fd_out = %d", fd_out);
          $finish;
       end
