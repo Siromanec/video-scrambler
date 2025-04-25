@@ -8,7 +8,7 @@ sim:/line_rotator_descrambler_drbg_tb/clk_sig sim:/line_rotator_descrambler_drbg
 
 // ---------------- USER DEFINED ----------------------
 
-// `define DEBUG
+`define DEBUG
 `define DATA_DIR "data"
 
 `ifdef V1
@@ -132,12 +132,12 @@ module descrambler_tb;
       $fclose(fd);
       $display("\nInit ready");
       reset_n_sig = 0;
+      frame = 0;
       #(CLK_PERIOD * 10);
       reset_n_sig = 1;
-      frame = 0;
 
       for (i = 0; i < code / LINE_SIZE; i = i + 1) begin
-         if (i % LINE_COUNT == 0) begin
+         if (i % LINE_COUNT == 0 && i != 0) begin
             frame = frame + 1;
          end
          for (j = 0; j < LINE_SIZE; j = j + 1) begin

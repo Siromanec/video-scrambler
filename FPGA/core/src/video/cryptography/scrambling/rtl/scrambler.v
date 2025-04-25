@@ -108,15 +108,41 @@ module scrambler (
       detects control signals H, V, F in bt656_stream_in
    ----------------------------------------
    */
-   sync_parser sync_parser_inst (
+   wire H_current;
+   wire V_current;
+   wire F_current;
+   wire H_delayed;
+   wire V_delayed;
+   wire F_delayed;
+   wire [9:0] bt656_stream_in_delayed;
+
+   sync_parser sync_parser_current (
       .clk(clk),
       .reset_n(reset_n),
       .bt656(bt656_stream_in),
-      .H(H),
-      .V(V),
-      .F(F)
+      .H(H_current),
+      .V(V_current),
+      .F(F_current)
    );
 
+   delay_buffer_4clk #(.DATA_WIDTH(10)) delay_stream (
+      .clk(clk),
+      .reset_n(reset_n),
+      .din(bt656_stream_in),
+      .dout(bt656_stream_in_delayed)
+   );
+   sync_parser sync_parser_delayed (
+      .clk(clk),
+      .reset_n(reset_n),
+      .bt656(bt656_stream_in_delayed),
+      .H(H_delayed),
+      .V(V_delayed),
+      .F(F_delayed)
+   );
+
+   assign H = H_current | H_delayed;
+   assign V = V_current;
+   assign F = F_current;
    /* 
    ----------------------------------------
       DRBG INSTANTIATION
@@ -175,7 +201,7 @@ module scrambler (
          /* 
          ----------------------------------------
             SEQUENCE GENERATOR SWITCH
-            Inserts the bt656 compatible stream SEQUENCE_GENERATOR_OUT into bt656_stream_in 
+            Inserts the bt656 compatible stream SEQUENCE_GENERATOR_OUT into bt656_stream_in_delayed 
             and outputs it as SWITCH_DATA_OUT that goes to LINE ROTATOR.
 
             Disables the line rotation of inserted SEQUENCE_GENERATOR_OUT via SWITCH_V.
@@ -186,7 +212,7 @@ module scrambler (
             .reset_n(mode ? 0 : reset_n),  // input  reset_n
             .H(H),  // input  H
             .V(V),  // input  V
-            .bt656_stream_in(bt656_stream_in),  // input [9:0] bt656_stream_in_sig
+            .bt656_stream_in(bt656_stream_in_delayed),  // input [9:0] bt656_stream_in_sig
             .sequence_in(SEQUENCE_GENERATOR_OUT),  // input [9:0] sequence_in_sig
             .bt656_stream_out(SWITCH_DATA_OUT),  // output [9:0] bt656_stream_out_sig
             .V_out(SWITCH_V),  // output  SWITCH_V
@@ -204,7 +230,7 @@ module scrambler (
          */
          sequence_detector sequence_detector_inst (
             .clock(clk),  // input  clock_sig
-            .sequence_in(bt656_stream_in),  // input [9:0] sequence_in_sig
+            .sequence_in(bt656_stream_in_delayed),  // input [9:0] sequence_in_sig
             .reset_n(mode ? !H : 0),  // input  reset_n_sig
             .sequence_out(SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL),  // output [31:0] sequence_out_sig
             .ready(SEQUENCE_DETECTOR_SEQUENCE_EXTERAL_VALID)  // output  ready_sig
@@ -284,7 +310,7 @@ module scrambler (
       .mode(mode),  // input  mode
       .clk(clk),  // input  clk
       .reset_n(reset_n),  // input  reset_n
-      .data_in(mode ? bt656_stream_in : SWITCH_DATA_OUT),  // input [9:0] data_in_sig
+      .data_in(mode ? bt656_stream_in_delayed : SWITCH_DATA_OUT),  // input [9:0] data_in_sig
       .raw_cut_position(CONSUMER_RAW_CUT_POSITION),  // input [7:0] raw_cut_position_sig
       .V(mode ? V : SWITCH_V),  // input  V
       .H(H),  // input  H
