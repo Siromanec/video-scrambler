@@ -230,7 +230,7 @@ module scrambler (
          */
          sequence_detector sequence_detector_inst (
             .clock(clk),  // input  clock_sig
-            .sequence_in(bt656_stream_in_delayed),  // input [9:0] sequence_in_sig
+            .sequence_in(bt656_stream_in),  // input [9:0] sequence_in_sig
             .reset_n(mode ? !H : 0),  // input  reset_n_sig
             .sequence_out(SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL),  // output [31:0] sequence_out_sig
             .ready(SEQUENCE_DETECTOR_SEQUENCE_EXTERAL_VALID)  // output  ready_sig

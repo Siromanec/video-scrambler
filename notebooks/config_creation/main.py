@@ -154,7 +154,7 @@ def main():
     bit_mem = np.unpackbits(memory, bitorder="little").reshape(-1, 8)
     with open("config.mif", 'w') as fp:
         mif.dump(bit_mem, fp)
-    print("Memory dumped to 'config.mif'")
+    print("Memory dumped to 'scrambler.mif'")
 
 
 if __name__ == "__main__":

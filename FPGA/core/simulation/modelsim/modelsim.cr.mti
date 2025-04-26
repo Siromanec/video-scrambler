@@ -1,4 +1,11 @@
-../../src/sequence_management/rtl/sequence_detector.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/sequence_management/rtl/sequence_detector.v
+C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/video/cryptography/scrambling/tb/descrambler_mm_tb.v {1 {vlog -work work +define+MODELSIM -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/video/cryptography/scrambling/tb/descrambler_mm_tb.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling module descrambler_mm_tb
+
+Top level modules:
+	descrambler_mm_tb
+
+} {} {}} ../../src/sequence_management/rtl/sequence_detector.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/sequence_management/rtl/sequence_detector.v
 
 } {} {}} ../../src/hash_drbg/tb/drbg_synchronizer_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/hash_drbg/tb/drbg_synchronizer_tb.v
 
@@ -45,22 +52,17 @@ Top level modules:
 
 } {} {}} ../../src/hash_drbg/tb/hash_drbg_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/hash_drbg/tb/hash_drbg_tb.v
 
-} {} {}} ../../src/mem_config/tb/rom_scrambler_config_sim.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/mem_config/tb/rom_scrambler_config_sim.v
-
 } {} {}} ../../include/sha256/sha256.v {1 {vlog -work work -nodebug -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/include/sha256/sha256.v
 
 } {} {}} ../../include/sha256/sha256_core.v {1 {vlog -work work -nodebug -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/include/sha256/sha256_core.v
 
-} {} {}} {C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/video/parsing/common/rtl/delay_buffer_4clk .v} {1 {vlog -work work -stats=none {C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/video/parsing/common/rtl/delay_buffer_4clk .v}
-Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
--- Compiling module delay_buffer_4clk
-
-Top level modules:
-	delay_buffer_4clk
+} {} {}} {C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/video/parsing/common/rtl/delay_buffer_4clk .v} {1 {vlog -work work -quiet -stats=none {C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/video/parsing/common/rtl/delay_buffer_4clk .v}
 
 } {} {}} ../../src/hash_drbg/tb/hash_drbg_sha256_randomness_tb.v {1 {vlog -work work -quiet -stats=none ../../src/hash_drbg/tb/hash_drbg_sha256_randomness_tb.v
 
 } {} {}} ../../src/video/cryptography/line_rotation/tb/line_rotator_descrambler_tb.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/video/cryptography/line_rotation/tb/line_rotator_descrambler_tb.v
+
+} {} {}} ../../src/video/cryptography/scrambling/tb/scrambler_tb.v {1 {vlog -work work -quiet +define+V2 -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/video/cryptography/scrambling/tb/scrambler_tb.v
 
 } {} {}} ../../src/sequence_management/rtl/sequence_shiftreg_in.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/sequence_management/rtl/sequence_shiftreg_in.v
 
@@ -70,6 +72,13 @@ Top level modules:
 
 } {} {}} ../../src/utils/rtl/posedge_to_pulse.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/utils/rtl/posedge_to_pulse.v
 
+} {} {}} C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/mem_config/tb/rom_scrambler_config_sim.v {1 {vlog -work work -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/mem_config/tb/rom_scrambler_config_sim.v
+Model Technology ModelSim - Intel FPGA Edition vlog 2021.1 Compiler 2021.02 Feb  3 2021
+-- Compiling module rom_scrambler_config_sim
+
+Top level modules:
+	rom_scrambler_config_sim
+
 } {} {}} ../../src/mem_config/rtl/rom_scrambler_config_reader.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/mem_config/rtl/rom_scrambler_config_reader.v
 
 } {} {}} ../../src/video/parsing/common/rtl/sync_parser.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/video/parsing/common/rtl/sync_parser.v
@@ -77,6 +86,8 @@ Top level modules:
 } {} {}} ../../src/hash_drbg/rtl/hash_drbg_sha256.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/hash_drbg/rtl/hash_drbg_sha256.v
 
 } {} {}} ../../src/sequence_management/rtl/sequence_generator.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/sequence_management/rtl/sequence_generator.v
+
+} {} {}} C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/video/cryptography/scrambling/rtl/scrambler_mm.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/video/cryptography/scrambling/rtl/scrambler_mm.v
 
 } {} {}} ../../src/sequence_management/rtl/sequence_generator_switch.v {1 {vlog -work work -quiet -stats=none C:/Users/ADMIN/edu/thesis/video-scrambler/FPGA/core/src/sequence_management/rtl/sequence_generator_switch.v
 

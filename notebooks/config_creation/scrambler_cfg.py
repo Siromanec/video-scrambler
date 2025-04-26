@@ -53,8 +53,8 @@ def main():
     mem_scr, mem_descr = fill_memory(seed_bytes)
     os.makedirs(os.path.join(args.output_dir, "scrambler"), exist_ok=True)
     os.makedirs(os.path.join(args.output_dir, "descrambler"), exist_ok=True)
-    save_to_mif(mem_scr, os.path.join(args.output_dir, "scrambler", "config.mif"))
-    save_to_mif(mem_descr, os.path.join(args.output_dir, "descrambler", "config.mif"))
+    save_to_mif(mem_scr, os.path.join(args.output_dir, "scrambler", "scrambler.mif"))
+    save_to_mif(mem_descr, os.path.join(args.output_dir, "descrambler", "scrambler.mif"))
 
 if __name__ == "__main__":
     main()

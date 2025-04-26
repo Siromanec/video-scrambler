@@ -78,16 +78,14 @@ module sequence_generator_switch (
          end else if (!H && allow_counter) begin
             if (pixel_cnt < ACTIVE_VIDEO_PIXELS - 1) begin
                pixel_cnt <= pixel_cnt + 1;
-            end else if (pixel_cnt < ACTIVE_VIDEO_PIXELS - 1 + 4) begin
-               pixel_cnt <= pixel_cnt + 1;
+            end else begin
                allow_out <= 0;
                enable_generator <= 0;
                sequence_done <= 1;
-            end else begin
                V_internal <= 0;
                allow_counter <= 0;
                pixel_cnt <= 0;
-            end
+            end 
          end
       end
    end

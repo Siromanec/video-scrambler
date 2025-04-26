@@ -41,7 +41,7 @@ module rom_scrambler_config (
 	address,
 	clock,
 	q);
-	parameter init_file = "./src/mem_config/cfg/scrambler.mif";
+	parameter init_file = "./src/mem_config/cfg/config.mif";
 	input	[5:0]  address;
 	input	  clock;
 	output	[7:0]  q;
