@@ -31,8 +31,8 @@ module hash_drbg_sha256 (
    busy
 );
 
-   parameter BITS_GENERATOR_MAX_CYCLE = 2**32 - 1;
-   parameter SEED_GENERATOR_MAX_CYCLE = 2**32 - 1;
+   parameter BITS_GENERATOR_MAX_CYCLE = (2**32 - 1);
+   parameter SEED_GENERATOR_MAX_CYCLE = (2**32 - 1);
    //parameter BITS_GENERATOR_MAX_CYCLE = 37500;
    //parameter SEED_GENERATOR_MAX_CYCLE = 65536;
 

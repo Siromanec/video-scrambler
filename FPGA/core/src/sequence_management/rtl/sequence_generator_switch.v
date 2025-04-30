@@ -21,12 +21,11 @@ module sequence_generator_switch (
    // does not actually change the vsync in the stream, it is a trick for line rotator to not do encryption
    assign V_out = V || V_internal;
 
-   reg line_cnt;
    reg [$clog2(ACTIVE_VIDEO_PIXELS)-1:0] pixel_cnt;
    reg allow_counter;
    reg allow_out;
    reg sequence_done;
-   assign bt656_stream_out = allow_out && reset_n ? sequence_in : bt656_stream_in;
+   assign bt656_stream_out = allow_out ? sequence_in : bt656_stream_in;
 
    // // V V_lag V_out
    // // 0   0   0
@@ -50,15 +49,18 @@ module sequence_generator_switch (
 
    always @(posedge clk or negedge reset_n) begin
       if (!reset_n) begin
-         prev_V <= V;
-         prev_H <= H;
-         load_generator <= 0;
+         prev_V <= 0;
+         prev_H <= 0;
          V_internal <= 0;
+
          pixel_cnt <= 0;
+         allow_out <= 0;
          allow_counter <= 0;
          sequence_done <= 0;
+
+         load_generator <= 0;
          enable_generator <= 0;
-         allow_out <= 0;
+         
       end else begin
 
          prev_V <= V;
@@ -67,16 +69,16 @@ module sequence_generator_switch (
          if (V) begin
             V_internal <= 1;
             sequence_done <= 0;
-         end else if (H_rise && V_fall) begin
+         end else if (V_fall) begin
             load_generator   <= 1;
             enable_generator <= 1;
          end else if (H_fall && !sequence_done) begin
             load_generator <= 0;
             allow_counter <= 1;
             allow_out <= 1;
-            pixel_cnt <= 1;
+            pixel_cnt <= 0;
          end else if (!H && allow_counter) begin
-            if (pixel_cnt < ACTIVE_VIDEO_PIXELS - 1) begin
+            if (pixel_cnt < ACTIVE_VIDEO_PIXELS - 3) begin
                pixel_cnt <= pixel_cnt + 1;
             end else begin
                allow_out <= 0;
@@ -84,7 +86,6 @@ module sequence_generator_switch (
                sequence_done <= 1;
                V_internal <= 0;
                allow_counter <= 0;
-               pixel_cnt <= 0;
             end 
          end
       end

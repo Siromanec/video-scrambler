@@ -1,10 +1,21 @@
+// `define DEBUG
 module scrambler (
+`ifdef DEBUG
+    output wire [9:0] bt656_stream_in_delayed_out_debug,
+    output wire [9:0] bt656_stream_switch_out_debug,
+    output wire V_debug,
+    output wire H_debug,
+    output wire [7:0] raw_cut_position_out_debug,
+    output wire SEQUENCE_GENERATOR_ENABLE_debug,
+    output wire SEQUENCE_GENERATOR_LOAD_debug,
+`endif
     (* keep = "true" *) input wire  mode,// 0: scrambler, 1: descrambler
     input wire clk,
     input wire reset_n,
     input wire [9:0] bt656_stream_in,
     input wire [255:0] seed,
     output wire [9:0] bt656_stream_out
+
 );
    localparam MODE_SCRAMBLER = 0;
    localparam MODE_DESCRAMBLER = 1;
@@ -116,6 +127,20 @@ module scrambler (
    wire F_delayed;
    wire [9:0] bt656_stream_in_delayed;
 
+   assign H = H_current | H_delayed;
+   assign V = V_current;
+   assign F = F_current;
+
+`ifdef DEBUG
+    assign bt656_stream_in_delayed_out_debug = bt656_stream_in_delayed;
+    assign bt656_stream_switch_out_debug = SWITCH_DATA_OUT;
+    assign V_debug = V;
+    assign H_debug = H;
+    assign raw_cut_position_out_debug = CONSUMER_RAW_CUT_POSITION;
+    assign SEQUENCE_GENERATOR_ENABLE_debug = SEQUENCE_GENERATOR_ENABLE;
+    assign SEQUENCE_GENERATOR_LOAD_debug = SEQUENCE_GENERATOR_LOAD;
+`endif
+
    sync_parser sync_parser_current (
       .clk(clk),
       .reset_n(reset_n),
@@ -140,9 +165,7 @@ module scrambler (
       .F(F_delayed)
    );
 
-   assign H = H_current | H_delayed;
-   assign V = V_current;
-   assign F = F_current;
+
    /* 
    ----------------------------------------
       DRBG INSTANTIATION
@@ -166,7 +189,7 @@ module scrambler (
       .random_bits(DRBG_RANDOM_BITS),
       .reseed_counter(DRBG_RESEED_COUNTER),
       .busy(DRBG_BUSY),
-      .catch_up_mode(mode ? drbg_synchronizer_CATCH_UP_MODE : 0)
+      .catch_up_mode(mode ? drbg_synchronizer_CATCH_UP_MODE : 1'b0)
    );
 
    /* 
@@ -192,7 +215,7 @@ module scrambler (
          sequence_generator sequence_generator_inst (
             .clock(clk),  // input  clock_sig
             .reseed_count(DRBG_RESEED_COUNTER),  // input [31:0] sequence_sig
-            .enable(mode ? 0 : SEQUENCE_GENERATOR_ENABLE),  // input  enable_sig
+            .enable(mode ? 1'b0 : SEQUENCE_GENERATOR_ENABLE),  // input  enable_sig
             .load(SEQUENCE_GENERATOR_LOAD),  // input  load_sig
             .sequence_out(SEQUENCE_GENERATOR_OUT)  // output [9:0] sequence_out_sig
          );
@@ -209,7 +232,7 @@ module scrambler (
          */
          sequence_generator_switch sequence_generator_switch_inst (
             .clk(clk),  // input  clk
-            .reset_n(mode ? 0 : reset_n),  // input  reset_n
+            .reset_n(mode ? 1'b0 : reset_n),  // input  reset_n
             .H(H),  // input  H
             .V(V),  // input  V
             .bt656_stream_in(bt656_stream_in_delayed),  // input [9:0] bt656_stream_in_sig
@@ -231,7 +254,7 @@ module scrambler (
          sequence_detector sequence_detector_inst (
             .clock(clk),  // input  clock_sig
             .sequence_in(bt656_stream_in),  // input [9:0] sequence_in_sig
-            .reset_n(mode ? !H : 0),  // input  reset_n_sig
+            .reset_n(mode ? !H : 1'b0),  // input  reset_n_sig
             .sequence_out(SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL),  // output [31:0] sequence_out_sig
             .ready(SEQUENCE_DETECTOR_SEQUENCE_EXTERAL_VALID)  // output  ready_sig
          );
@@ -253,7 +276,7 @@ module scrambler (
          */
          drbg_synchronizer drbg_synchronizer0 (
             .clk(clk),
-            .reset_n(mode ? reset_n : 0),
+            .reset_n(mode ? reset_n : 1'b0),
             .init_done(DRBG_INIT_READY),
             .sequence_internal(DRBG_RESEED_COUNTER),
             .sequence_external(SEQUENCE_DETECTOR_SEQUENCE_EXTERNAL),

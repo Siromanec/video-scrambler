@@ -8,7 +8,7 @@ module delay_buffer_4clk #(parameter DATA_WIDTH = 10)
     reg [DATA_WIDTH-1:0] buffer [0:3];     // 4-word circular buffer
     reg [1:0] ptr;              // 2-bit pointer (wraps automatically)
 
-    always @(negedge clk or negedge reset_n) begin
+    always @(posedge clk or negedge reset_n) begin
         if (!reset_n) begin
             ptr <= 2'd0;
         end else begin

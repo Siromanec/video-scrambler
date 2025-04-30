@@ -1,14 +1,14 @@
 
 module clk_div36 (
    input  wire clk,     // Input clock
-   input  wire rst,     // Active-high reset
+   input  wire reset_n,     // Active-high reset
    output reg  clk_out  // Divided clock output
 );
 
    reg [4:0] counter = 0;  // 5-bit counter (max count 18 requires log2(18) ≈ 5 bits)
 
-   always @(posedge clk or posedge rst) begin
-      if (rst) begin
+   always @(posedge clk or negedge reset_n) begin
+      if (!reset_n) begin
          counter <= 0;
          clk_out <= 0;
       end else begin
@@ -47,7 +47,7 @@ module sequence_generator #(
    wire clk_div36;
    clk_div36 clkdiv0 (
       .clk(clock),
-      .rst(!enable),
+      .reset_n(enable),
       .clk_out(clk_div36)
    );
 

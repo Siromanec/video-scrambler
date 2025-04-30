@@ -1,4 +1,4 @@
-`timescale 1ns/100ps
+`timescale 10ns/1ns
 
 /*
 modelsim waves
@@ -28,10 +28,10 @@ sim:/line_rotator_descrambler_drbg_tb/clk_sig sim:/line_rotator_descrambler_drbg
 // ---------------- INTERNAL ----------------------
 
 
-`ifdef DEBUG
-   `define VIDEO_FRAME_CNT 10
-`elsif GATE_LEVEL
+`ifdef GATE_LEVEL
    `define VIDEO_FRAME_CNT 2
+`elsif DEBUG
+   `define VIDEO_FRAME_CNT 10
 `else
    `define VIDEO_FRAME_CNT `VIDEO_FRAME_CNT_RAW
 `endif
@@ -84,14 +84,32 @@ module descrambler_mm_tb;
    reg reset_n_sig;
    reg [9:0] bt656_stream_in_sig;
    wire [9:0] bt656_stream_out_sig;
+`ifdef GATE_LEVEL
+    wire [9:0] bt656_stream_in_delayed_out_debug;
+    wire [9:0] bt656_stream_switch_out_debug;
+    wire V_debug;
+    wire H_debug;
+    wire [7:0] raw_cut_position_out_debug;
+    wire SEQUENCE_GENERATOR_ENABLE_debug;
+    wire SEQUENCE_GENERATOR_LOAD_debug;
+`endif
 
     scrambler_mm scrambler_mm_inst
     (
-        .clk(clk),
-        .data_clk(clk),
-        .reset_n(reset_n_sig),
-        .bt656_stream_in(bt656_stream_in_sig),
-        .bt656_stream_out(bt656_stream_out_sig)
+// `ifdef GATE_LEVEL
+//       .bt656_stream_in_delayed_out_debug(bt656_stream_in_delayed_out_debug),
+//       .bt656_stream_switch_out_debug(bt656_stream_switch_out_debug),
+//       .V_debug(V_debug),
+//       .H_debug(H_debug),
+//       .raw_cut_position_out_debug(raw_cut_position_out_debug),
+//       .SEQUENCE_GENERATOR_ENABLE_debug(SEQUENCE_GENERATOR_ENABLE_debug),
+//       .SEQUENCE_GENERATOR_LOAD_debug(SEQUENCE_GENERATOR_LOAD_debug),
+// `endif 
+      .clk(clk),
+      .data_clk(clk),
+      .reset_n(reset_n_sig),
+      .bt656_stream_in(bt656_stream_in_sig),
+      .bt656_stream_out(bt656_stream_out_sig)
     );
 `ifndef GATE_LEVEL
     defparam scrambler_mm_inst.init_file = `INIT_FILE;
@@ -147,8 +165,11 @@ module descrambler_mm_tb;
       #(CLK_PERIOD * 10);
       reset_n_sig = 1;
       #(CLK_PERIOD * 100);
-
+`ifndef GATE_LEVEL
       for (i = 0; i < code / LINE_SIZE; i = i + 1) begin
+`else 
+      for (i = 0; i < code / LINE_SIZE; i = i + 1) begin
+`endif
          if (i % LINE_COUNT == 0 && i != 0) begin
             frame = frame + 1;
          end

@@ -49,8 +49,9 @@ module hash_drbg #(
    localparam [DEFAULT_PAD_ZEROS_SIZE-1:0] DEFAULT_ZEROS = 0;
    localparam NBITS_DEFAULT = SEEDLEN;
 
-   wire [BLOCKSIZE-1:0] seed_material;
-   assign seed_material = {entropy, personalization_string, 1'b1, NBITS};
+   
+   
+   
 
    reg [SEEDLEN-1:0] v;
    reg [SEEDLEN-1:0] c;
@@ -105,7 +106,7 @@ module hash_drbg #(
    function [511:0] select_sha_message(input [$clog2(TOTAL_SHA_MESSAGE_SELECTS)-1:0] select);
       case (select)
          SHA_MESSAGE_SEED: begin
-            select_sha_message = seed_material;
+            select_sha_message = {entropy, personalization_string, 1'b1, NBITS};
          end
          SHA_MESSAGE_INIT: begin
             select_sha_message = {PREPEND_INIT, do_sha_digest, 1'b1, PREPEND_ZEROS, NBITS_PREPEND};
