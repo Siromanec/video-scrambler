@@ -8,7 +8,8 @@ sim:/line_rotator_descrambler_drbg_tb/clk_sig sim:/line_rotator_descrambler_drbg
 
 // ---------------- USER DEFINED ----------------------
 
-`define DEBUG
+// `define DEBUG
+
 `define DATA_DIR "data"
 
 `ifdef V1

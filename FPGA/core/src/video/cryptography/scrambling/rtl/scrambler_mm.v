@@ -25,6 +25,7 @@ module scrambler_mm #(
     wire mode;
     wire [255:0] seed;
 
+    /* CONFIG ROM READER */
     rom_scrambler_config_reader rom_scrambler_config_reader0 (
         .reset_n(reset_n),
         .clk(clk),
@@ -34,13 +35,14 @@ module scrambler_mm #(
         .q(q),
         .address(address)
     );
-
+    /* CONFIG ROM*/
     rom_scrambler_config rom_scrambler_config0 (
 		  .q(q),
         .address(address),
         .clock(clk));
         defparam rom_scrambler_config0.init_file = init_file;
 
+    /* SCRAMBLER*/
    scrambler scrambler_inst
    (
 `ifdef DEBUG
